@@ -1,0 +1,251 @@
+{
+  "timestamp": "2025-08-30T21:34:51.856812",
+  "optimization_results": {
+    "advanced_optimizer": {
+      "success": false,
+      "error": "name 'dataclass' is not defined",
+      "timestamp": "2025-08-30T21:38:12.630546"
+    },
+    "ai_ml": {
+      "success": false,
+      "error": "No module named 'ta'",
+      "timestamp": "2025-08-30T21:38:12.810161"
+    },
+    "parameter_optimizer": {
+      "success": false,
+      "error": "unexpected indent (enhanced_parameter_optimizer.py, line 45)",
+      "timestamp": "2025-08-30T21:38:12.812820"
+    },
+    "strategy_specific": {
+      "success": true,
+      "results": {
+        "bollinger_mean_reversion_strategy": {
+          "success": false,
+          "error": "No optimization method found"
+        },
+        "momentum_breakout_strategy": {
+          "success": false,
+          "error": "No optimization method found"
+        },
+        "rsi_divergence_strategy": {
+          "success": false,
+          "error": "No optimization method found"
+        },
+        "fibonacci_strategy": {
+          "success": false,
+          "error": "No optimization method found"
+        },
+        "vwma_strategy": {
+          "success": false,
+          "error": "No optimization method found"
+        }
+      },
+      "timestamp": "2025-08-30T21:38:12.814933"
+    }
+  },
+  "backtest_results": {
+    "multi_strategy": {
+      "success": true,
+      "total_configurations": 100,
+      "successful_tests": 100,
+      "analysis": {
+        "total_backtests": 100,
+        "successful_backtests": 99,
+        "strategy_rankings": [
+          {
+            "strategy": "predictive_ranges",
+            "avg_return": 0.0017575757575757577,
+            "avg_sharpe": 1144.4189219152886,
+            "avg_win_rate": 0.6262626262626263,
+            "avg_max_drawdown": 0.0005853181051367396,
+            "total_trades": 495,
+            "num_backtests": 99,
+            "composite_score": 286.48036394727563
+          }
+        ],
+        "best_configurations": [
+          [
+            "predictive_ranges",
+            "CTSIUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ARDRUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ALGOUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "DOGEUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "IMXUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ROSEUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ATOMUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "LTCUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "MANAUSDT",
+            "1m",
+            18.537843521888657
+          ],
+          [
+            "predictive_ranges",
+            "ALGOUSDT",
+            "1m",
+            18.537843521888657
+          ]
+        ],
+        "timeframe_performance": {
+          "1m": 0.00176,
+          "5m": 0.0017333333333333337
+        },
+        "overall_stats": {
+          "avg_return": 0.0017575757575757577,
+          "avg_sharpe": 1144.4189219152886,
+          "avg_win_rate": 0.6262626262626263,
+          "avg_max_drawdown": 0.0005853181051367396
+        }
+      },
+      "timestamp": "2025-08-30T21:38:12.619559"
+    },
+    "ultra_backtester": {
+      "success": false,
+      "error": "name 'Optional' is not defined",
+      "timestamp": "2025-08-30T21:38:13.305890"
+    }
+  },
+  "performance_analysis": {
+    "summary": {
+      "total_optimizations_run": 6,
+      "successful_optimizations": 2,
+      "optimization_success_rate": "33.3%",
+      "timestamp": "2025-08-30T21:38:13.308603"
+    },
+    "best_performers": {
+      "strategy": {
+        "strategy": "predictive_ranges",
+        "avg_return": 0.0017575757575757577,
+        "avg_sharpe": 1144.4189219152886,
+        "avg_win_rate": 0.6262626262626263,
+        "avg_max_drawdown": 0.0005853181051367396,
+        "total_trades": 495,
+        "num_backtests": 99,
+        "composite_score": 286.48036394727563
+      }
+    },
+    "performance_metrics": {},
+    "optimization_success_rate": 0.3333333333333333
+  },
+  "best_configurations": {
+    "multi_strategy": {
+      "best_configurations": [
+        [
+          "predictive_ranges",
+          "CTSIUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "ARDRUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "ALGOUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "DOGEUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "IMXUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "ROSEUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "ATOMUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "LTCUSDT",
+          "1m",
+          14053.646316883425
+        ],
+        [
+          "predictive_ranges",
+          "MANAUSDT",
+          "1m",
+          18.537843521888657
+        ],
+        [
+          "predictive_ranges",
+          "ALGOUSDT",
+          "1m",
+          18.537843521888657
+        ]
+      ],
+      "timeframe_performance": {
+        "1m": 0.00176,
+        "5m": 0.0017333333333333337
+      },
+      "overall_stats": {
+        "avg_return": 0.0017575757575757577,
+        "avg_sharpe": 1144.4189219152886,
+        "avg_win_rate": 0.6262626262626263,
+        "avg_max_drawdown": 0.0005853181051367396
+      }
+    }
+  },
+  "recommendations": [
+    "\u274c Low optimization success rate - system needs attention",
+    "\ud83c\udfaf Target win rate achieved (>55%) - excellent performance",
+    "\ud83d\udcc8 Strong risk-adjusted returns - good Sharpe ratio",
+    "\u23f0 Best performing timeframe: 1m (0.18% return)"
+  ]
+}

@@ -1,0 +1,1491 @@
+{
+  "optimization_report": {
+    "title": "VIPER Comprehensive Strategy Optimization Report",
+    "generated_at": "2025-08-30T21:50:50.537185",
+    "analysis": {
+      "executive_summary": {
+        "optimization_date": "2025-08-30 21:50:50",
+        "total_strategies_tested": 1,
+        "total_configurations_tested": 60,
+        "success_rate": 0.8333333333333334,
+        "best_performing_strategy": "predictive_ranges",
+        "highest_win_rate_achieved": 0.6262626262626263,
+        "highest_return_achieved": 0.0017575757575757577,
+        "best_sharpe_ratio_achieved": 1144.4189219152886
+      },
+      "strategy_performance_ranking": [
+        {
+          "strategy": "predictive_ranges",
+          "avg_return": 0.0017575757575757577,
+          "avg_sharpe": 1144.4189219152886,
+          "avg_win_rate": 0.6262626262626263,
+          "avg_max_drawdown": 0.0005853181051367396,
+          "total_trades": 495,
+          "num_backtests": 99,
+          "composite_score": 286.48036394727563
+        }
+      ],
+      "best_configurations": {
+        "multi_strategy": [
+          [
+            "predictive_ranges",
+            "CTSIUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ARDRUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ALGOUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "DOGEUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "IMXUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ROSEUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "ATOMUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "LTCUSDT",
+            "1m",
+            14053.646316883425
+          ],
+          [
+            "predictive_ranges",
+            "MANAUSDT",
+            "1m",
+            18.537843521888657
+          ],
+          [
+            "predictive_ranges",
+            "ALGOUSDT",
+            "1m",
+            18.537843521888657
+          ]
+        ],
+        "quick_optimization": {
+          "best_return": {
+            "strategy": "ma_crossover",
+            "symbol": "BTCUSDT",
+            "timeframe": "15m",
+            "config_type": "best_return",
+            "total_return": 3.897327156458217,
+            "sharpe_ratio": 0.6024615892252642,
+            "win_rate": 0.3617021276595745,
+            "max_drawdown": -0.5786705954922391,
+            "parameters": {
+              "fast_period": 10,
+              "slow_period": 30,
+              "stop_loss": 0.03,
+              "take_profit": 0.06
+            }
+          },
+          "best_sharpe": {
+            "strategy": "ma_crossover",
+            "symbol": "BTCUSDT",
+            "timeframe": "15m",
+            "config_type": "best_return",
+            "total_return": 3.897327156458217,
+            "sharpe_ratio": 0.6024615892252642,
+            "win_rate": 0.3617021276595745,
+            "max_drawdown": -0.5786705954922391,
+            "parameters": {
+              "fast_period": 10,
+              "slow_period": 30,
+              "stop_loss": 0.03,
+              "take_profit": 0.06
+            }
+          },
+          "best_win_rate": {
+            "strategy": "rsi_mean_reversion",
+            "symbol": "BTCUSDT",
+            "timeframe": "1h",
+            "config_type": "best_sharpe",
+            "total_return": 0.013151799741395909,
+            "sharpe_ratio": 0.5488080546205393,
+            "win_rate": 1.0,
+            "max_drawdown": -0.000999999999999924,
+            "parameters": {
+              "rsi_period": 21,
+              "oversold": 25,
+              "overbought": 75,
+              "stop_loss": 0.05,
+              "take_profit": 0.12
+            }
+          }
+        }
+      },
+      "performance_metrics": {
+        "multi_strategy": {
+          "avg_return": 0.0017575757575757577,
+          "avg_sharpe": 1144.4189219152886,
+          "avg_win_rate": 0.6262626262626263,
+          "avg_max_drawdown": 0.0005853181051367396
+        },
+        "quick_strategies": {
+          "rsi_mean_reversion": {
+            "avg_return": -0.07027489739104002,
+            "avg_sharpe": 0.08666466353504212,
+            "avg_win_rate": 0.7679738562091503,
+            "avg_max_drawdown": -0.1417720564168822,
+            "total_configurations": 18
+          },
+          "ma_crossover": {
+            "avg_return": 1.3556465390707788,
+            "avg_sharpe": 0.19397250429540056,
+            "avg_win_rate": 0.3622312043624975,
+            "avg_max_drawdown": -0.4778301393149273,
+            "total_configurations": 18
+          },
+          "bollinger_bands": {
+            "avg_return": -0.2787077105562377,
+            "avg_sharpe": -0.43671890962324006,
+            "avg_win_rate": 0.5594850948509484,
+            "avg_max_drawdown": -0.34339116440293976,
+            "total_configurations": 18
+          }
+        }
+      },
+      "recommendations": [
+        "\ud83c\udf89 Excellent optimization success rate (>80%) - system is performing well",
+        "\ud83c\udfc6 Best performing strategy: Predictive Ranges",
+        "\ud83c\udfaf Excellent win rate achieved: 62.6%",
+        "\ud83d\udcc8 Outstanding risk-adjusted returns - excellent Sharpe ratio",
+        "\u26a1 Quick optimization best: Ma Crossover (135.56% return)",
+        "\ud83c\udfaf Highest win rate configuration: 100.0% (rsi_mean_reversion on BTCUSDT)",
+        "\ud83d\udca1 Consider implementing the best performing configurations in live trading",
+        "\ud83d\udd04 Re-run optimizations periodically to adapt to market conditions",
+        "\u2696\ufe0f Balance between high win rate and risk-adjusted returns"
+      ],
+      "success_rates": {
+        "total_optimizations": 24,
+        "successful_optimizations": 20,
+        "success_rate": 0.8333333333333334
+      }
+    },
+    "raw_results": {
+      "comprehensive_optimization": {
+        "timestamp": "2025-08-30T21:34:51.856812",
+        "optimization_results": {
+          "advanced_optimizer": {
+            "success": false,
+            "error": "name 'dataclass' is not defined",
+            "timestamp": "2025-08-30T21:38:12.630546"
+          },
+          "ai_ml": {
+            "success": false,
+            "error": "No module named 'ta'",
+            "timestamp": "2025-08-30T21:38:12.810161"
+          },
+          "parameter_optimizer": {
+            "success": false,
+            "error": "unexpected indent (enhanced_parameter_optimizer.py, line 45)",
+            "timestamp": "2025-08-30T21:38:12.812820"
+          },
+          "strategy_specific": {
+            "success": true,
+            "results": {
+              "bollinger_mean_reversion_strategy": {
+                "success": false,
+                "error": "No optimization method found"
+              },
+              "momentum_breakout_strategy": {
+                "success": false,
+                "error": "No optimization method found"
+              },
+              "rsi_divergence_strategy": {
+                "success": false,
+                "error": "No optimization method found"
+              },
+              "fibonacci_strategy": {
+                "success": false,
+                "error": "No optimization method found"
+              },
+              "vwma_strategy": {
+                "success": false,
+                "error": "No optimization method found"
+              }
+            },
+            "timestamp": "2025-08-30T21:38:12.814933"
+          }
+        },
+        "backtest_results": {
+          "multi_strategy": {
+            "success": true,
+            "total_configurations": 100,
+            "successful_tests": 100,
+            "analysis": {
+              "total_backtests": 100,
+              "successful_backtests": 99,
+              "strategy_rankings": [
+                {
+                  "strategy": "predictive_ranges",
+                  "avg_return": 0.0017575757575757577,
+                  "avg_sharpe": 1144.4189219152886,
+                  "avg_win_rate": 0.6262626262626263,
+                  "avg_max_drawdown": 0.0005853181051367396,
+                  "total_trades": 495,
+                  "num_backtests": 99,
+                  "composite_score": 286.48036394727563
+                }
+              ],
+              "best_configurations": [
+                [
+                  "predictive_ranges",
+                  "CTSIUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "ARDRUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "ALGOUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "DOGEUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "IMXUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "ROSEUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "ATOMUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "LTCUSDT",
+                  "1m",
+                  14053.646316883425
+                ],
+                [
+                  "predictive_ranges",
+                  "MANAUSDT",
+                  "1m",
+                  18.537843521888657
+                ],
+                [
+                  "predictive_ranges",
+                  "ALGOUSDT",
+                  "1m",
+                  18.537843521888657
+                ]
+              ],
+              "timeframe_performance": {
+                "1m": 0.00176,
+                "5m": 0.0017333333333333337
+              },
+              "overall_stats": {
+                "avg_return": 0.0017575757575757577,
+                "avg_sharpe": 1144.4189219152886,
+                "avg_win_rate": 0.6262626262626263,
+                "avg_max_drawdown": 0.0005853181051367396
+              }
+            },
+            "timestamp": "2025-08-30T21:38:12.619559"
+          },
+          "ultra_backtester": {
+            "success": false,
+            "error": "name 'Optional' is not defined",
+            "timestamp": "2025-08-30T21:38:13.305890"
+          }
+        },
+        "performance_analysis": {
+          "summary": {
+            "total_optimizations_run": 6,
+            "successful_optimizations": 2,
+            "optimization_success_rate": "33.3%",
+            "timestamp": "2025-08-30T21:38:13.308603"
+          },
+          "best_performers": {
+            "strategy": {
+              "strategy": "predictive_ranges",
+              "avg_return": 0.0017575757575757577,
+              "avg_sharpe": 1144.4189219152886,
+              "avg_win_rate": 0.6262626262626263,
+              "avg_max_drawdown": 0.0005853181051367396,
+              "total_trades": 495,
+              "num_backtests": 99,
+              "composite_score": 286.48036394727563
+            }
+          },
+          "performance_metrics": {},
+          "optimization_success_rate": 0.3333333333333333
+        },
+        "best_configurations": {
+          "multi_strategy": {
+            "best_configurations": [
+              [
+                "predictive_ranges",
+                "CTSIUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "ARDRUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "ALGOUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "DOGEUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "IMXUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "ROSEUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "ATOMUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "LTCUSDT",
+                "1m",
+                14053.646316883425
+              ],
+              [
+                "predictive_ranges",
+                "MANAUSDT",
+                "1m",
+                18.537843521888657
+              ],
+              [
+                "predictive_ranges",
+                "ALGOUSDT",
+                "1m",
+                18.537843521888657
+              ]
+            ],
+            "timeframe_performance": {
+              "1m": 0.00176,
+              "5m": 0.0017333333333333337
+            },
+            "overall_stats": {
+              "avg_return": 0.0017575757575757577,
+              "avg_sharpe": 1144.4189219152886,
+              "avg_win_rate": 0.6262626262626263,
+              "avg_max_drawdown": 0.0005853181051367396
+            }
+          }
+        },
+        "recommendations": [
+          "\u274c Low optimization success rate - system needs attention",
+          "\ud83c\udfaf Target win rate achieved (>55%) - excellent performance",
+          "\ud83d\udcc8 Strong risk-adjusted returns - good Sharpe ratio",
+          "\u23f0 Best performing timeframe: 1m (0.18% return)"
+        ]
+      },
+      "quick_optimization": {
+        "optimization_results": {
+          "rsi_mean_reversion": {
+            "BTCUSDT": {
+              "15m": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "BTCUSDT",
+                "timeframe": "15m",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.1599148715437747,
+                    "sharpe_ratio": -0.38528171813759143,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.2397354187139987,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.19925841565485136,
+                    "sharpe_ratio": -0.2641214791174465,
+                    "win_rate": 0.6078431372549019,
+                    "max_drawdown": -0.3075048170227836,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.1599148715437747,
+                    "sharpe_ratio": -0.38528171813759143,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.2397354187139987,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.35725426258505,
+                  "avg_sharpe": -0.496248675351009,
+                  "avg_win_rate": 0.5663434554183645
+                }
+              },
+              "1h": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "BTCUSDT",
+                "timeframe": "1h",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 0.07113517491336996,
+                    "sharpe_ratio": 0.4570567873618042,
+                    "win_rate": 0.7272727272727273,
+                    "max_drawdown": -0.06165668405051237,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.5488080546205393,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.5488080546205393,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 0.002610858898742102,
+                  "avg_sharpe": 0.21359081920311074,
+                  "avg_win_rate": 0.6877705627705628
+                }
+              }
+            },
+            "ETHUSDT": {
+              "15m": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "ETHUSDT",
+                "timeframe": "15m",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.1599148715437756,
+                    "sharpe_ratio": -0.38528171813759327,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.2397354187139988,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.1992584156548518,
+                    "sharpe_ratio": -0.2641214791174474,
+                    "win_rate": 0.6078431372549019,
+                    "max_drawdown": -0.30750481702278415,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.1599148715437756,
+                    "sharpe_ratio": -0.38528171813759327,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.2397354187139988,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.35725426258505044,
+                  "avg_sharpe": -0.49624867535101036,
+                  "avg_win_rate": 0.5663434554183645
+                }
+              },
+              "1h": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "ETHUSDT",
+                "timeframe": "1h",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 0.07113517491336996,
+                    "sharpe_ratio": 0.4570567873618065,
+                    "win_rate": 0.7272727272727273,
+                    "max_drawdown": -0.06165668405051217,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.5488080546205393,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.5488080546205393,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 0.0026108588987418246,
+                  "avg_sharpe": 0.21359081920311032,
+                  "avg_win_rate": 0.6877705627705628
+                }
+              }
+            },
+            "ADAUSDT": {
+              "15m": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "ADAUSDT",
+                "timeframe": "15m",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.15991487154377493,
+                    "sharpe_ratio": -0.3852817181375915,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.23973541871399826,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.1992584156548517,
+                    "sharpe_ratio": -0.2641214791174469,
+                    "win_rate": 0.6078431372549019,
+                    "max_drawdown": -0.30750481702278365,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.15991487154377493,
+                    "sharpe_ratio": -0.3852817181375915,
+                    "win_rate": 0.6363636363636364,
+                    "max_drawdown": -0.23973541871399826,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.35725426258505044,
+                  "avg_sharpe": -0.4962486753510096,
+                  "avg_win_rate": 0.5663434554183645
+                }
+              },
+              "1h": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "ADAUSDT",
+                "timeframe": "1h",
+                "total_tests": 4,
+                "successful_tests": 4,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 0.07113517491336974,
+                    "sharpe_ratio": 0.4570567873618055,
+                    "win_rate": 0.7272727272727273,
+                    "max_drawdown": -0.061656684050512604,
+                    "parameters": {
+                      "rsi_period": 14,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.548808054620539,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 0.013151799741395909,
+                    "sharpe_ratio": 0.548808054620539,
+                    "win_rate": 1.0,
+                    "max_drawdown": -0.000999999999999924,
+                    "parameters": {
+                      "rsi_period": 21,
+                      "oversold": 25,
+                      "overbought": 75,
+                      "stop_loss": 0.05,
+                      "take_profit": 0.12
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 0.002610858898741769,
+                  "avg_sharpe": 0.21359081920311027,
+                  "avg_win_rate": 0.6877705627705628
+                }
+              }
+            }
+          },
+          "ma_crossover": {
+            "BTCUSDT": {
+              "15m": {
+                "strategy": "ma_crossover",
+                "symbol": "BTCUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 3.897327156458217,
+                    "sharpe_ratio": 0.6024615892252642,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922391,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 3.897327156458217,
+                    "sharpe_ratio": 0.6024615892252642,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922391,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 1.0040693347561023,
+                    "sharpe_ratio": 0.35110673054246255,
+                    "win_rate": 0.4032258064516129,
+                    "max_drawdown": -0.5894078469405771,
+                    "parameters": {
+                      "fast_period": 15,
+                      "slow_period": 50,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 1.884685563246084,
+                  "avg_sharpe": 0.42233064271387866,
+                  "avg_win_rate": 0.38418946118312985
+                }
+              },
+              "1h": {
+                "strategy": "ma_crossover",
+                "symbol": "BTCUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.20248099697340316,
+                    "sharpe_ratio": -0.10352573217336655,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.34301597199448997,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.20248099697340316,
+                    "sharpe_ratio": -0.10352573217336655,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.34301597199448997,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.2598824193010508,
+                    "sharpe_ratio": -0.18514341887385244,
+                    "win_rate": 0.43137254901960786,
+                    "max_drawdown": -0.43419985397552974,
+                    "parameters": {
+                      "fast_period": 5,
+                      "slow_period": 20,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.2737405945473649,
+                  "avg_sharpe": -0.21655297049150254,
+                  "avg_win_rate": 0.3574660633484163
+                }
+              }
+            },
+            "ETHUSDT": {
+              "15m": {
+                "strategy": "ma_crossover",
+                "symbol": "ETHUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 3.8973271564582115,
+                    "sharpe_ratio": 0.602461589225263,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922394,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 3.8973271564582115,
+                    "sharpe_ratio": 0.602461589225263,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922394,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 1.0040693347560876,
+                    "sharpe_ratio": 0.3511067305424604,
+                    "win_rate": 0.4032258064516129,
+                    "max_drawdown": -0.5894078469405793,
+                    "parameters": {
+                      "fast_period": 15,
+                      "slow_period": 50,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 1.884685563246073,
+                  "avg_sharpe": 0.42233064271387777,
+                  "avg_win_rate": 0.38418946118312985
+                }
+              },
+              "1h": {
+                "strategy": "ma_crossover",
+                "symbol": "ETHUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.2024809969734016,
+                    "sharpe_ratio": -0.10352573217336596,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.34301597199448997,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.2024809969734016,
+                    "sharpe_ratio": -0.10352573217336596,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.34301597199448997,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.25988241930105027,
+                    "sharpe_ratio": -0.185143418873853,
+                    "win_rate": 0.43137254901960786,
+                    "max_drawdown": -0.43419985397552924,
+                    "parameters": {
+                      "fast_period": 5,
+                      "slow_period": 20,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.2737405945473644,
+                  "avg_sharpe": -0.216552970491503,
+                  "avg_win_rate": 0.3574660633484163
+                }
+              }
+            },
+            "ADAUSDT": {
+              "15m": {
+                "strategy": "ma_crossover",
+                "symbol": "ADAUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": 3.897327156458214,
+                    "sharpe_ratio": 0.6024615892252635,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922388,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": 3.897327156458214,
+                    "sharpe_ratio": 0.6024615892252635,
+                    "win_rate": 0.3617021276595745,
+                    "max_drawdown": -0.5786705954922388,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": 1.0040693347561036,
+                    "sharpe_ratio": 0.3511067305424612,
+                    "win_rate": 0.4032258064516129,
+                    "max_drawdown": -0.5894078469405778,
+                    "parameters": {
+                      "fast_period": 15,
+                      "slow_period": 50,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": 1.884685563246082,
+                  "avg_sharpe": 0.4223306427138782,
+                  "avg_win_rate": 0.38418946118312985
+                }
+              },
+              "1h": {
+                "strategy": "ma_crossover",
+                "symbol": "ADAUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.20248099697339983,
+                    "sharpe_ratio": -0.10352573217336543,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.3430159719944876,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.20248099697339983,
+                    "sharpe_ratio": -0.10352573217336543,
+                    "win_rate": 0.3076923076923077,
+                    "max_drawdown": -0.3430159719944876,
+                    "parameters": {
+                      "fast_period": 10,
+                      "slow_period": 30,
+                      "stop_loss": 0.03,
+                      "take_profit": 0.06
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.2598824193010508,
+                    "sharpe_ratio": -0.18514341887385385,
+                    "win_rate": 0.43137254901960786,
+                    "max_drawdown": -0.43419985397552846,
+                    "parameters": {
+                      "fast_period": 5,
+                      "slow_period": 20,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.27374059454736305,
+                  "avg_sharpe": -0.21655297049150224,
+                  "avg_win_rate": 0.3574660633484163
+                }
+              }
+            }
+          },
+          "bollinger_bands": {
+            "BTCUSDT": {
+              "15m": {
+                "strategy": "bollinger_bands",
+                "symbol": "BTCUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.3656714782669569,
+                    "sharpe_ratio": -0.652803619114851,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.3982358656196496,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.3656714782669569,
+                    "sharpe_ratio": -0.652803619114851,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.3982358656196496,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.8026639164766982,
+                    "sharpe_ratio": -0.700691354452823,
+                    "win_rate": 0.556910569105691,
+                    "max_drawdown": -0.8326956933476147,
+                    "parameters": {
+                      "bb_period": 30,
+                      "bb_std": 1.5,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.6071397042711956,
+                  "avg_sharpe": -0.7117441711424467,
+                  "avg_win_rate": 0.5293799349953632
+                }
+              },
+              "1h": {
+                "strategy": "bollinger_bands",
+                "symbol": "BTCUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.04607979677560459,
+                    "sharpe_ratio": -0.20467162168563585,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024144,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.04607979677560459,
+                    "sharpe_ratio": -0.20467162168563585,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024144,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.04607979677560459,
+                    "sharpe_ratio": -0.20467162168563585,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024144,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.13704751727758402,
+                  "avg_sharpe": -0.3675568363475538,
+                  "avg_win_rate": 0.54982283294443
+                }
+              }
+            },
+            "ETHUSDT": {
+              "15m": {
+                "strategy": "bollinger_bands",
+                "symbol": "ETHUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.3656714782669569,
+                    "sharpe_ratio": -0.652803619114852,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.3982358656196497,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.3656714782669569,
+                    "sharpe_ratio": -0.652803619114852,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.3982358656196497,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.8026639164766984,
+                    "sharpe_ratio": -0.7006913544528237,
+                    "win_rate": 0.556910569105691,
+                    "max_drawdown": -0.832695693347615,
+                    "parameters": {
+                      "bb_period": 30,
+                      "bb_std": 1.5,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.6071397042711953,
+                  "avg_sharpe": -0.7117441711424473,
+                  "avg_win_rate": 0.5293799349953632
+                }
+              },
+              "1h": {
+                "strategy": "bollinger_bands",
+                "symbol": "ETHUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.04607979677560481,
+                    "sharpe_ratio": -0.20467162168563935,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024135,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.04607979677560481,
+                    "sharpe_ratio": -0.20467162168563935,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024135,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.04607979677560481,
+                    "sharpe_ratio": -0.20467162168563935,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.14372652061024135,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.13704751727758413,
+                  "avg_sharpe": -0.36755683634755526,
+                  "avg_win_rate": 0.54982283294443
+                }
+              }
+            },
+            "ADAUSDT": {
+              "15m": {
+                "strategy": "bollinger_bands",
+                "symbol": "ADAUSDT",
+                "timeframe": "15m",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.36567147826695656,
+                    "sharpe_ratio": -0.6528036191148513,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.39823586561964924,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.36567147826695656,
+                    "sharpe_ratio": -0.6528036191148513,
+                    "win_rate": 0.5428571428571428,
+                    "max_drawdown": -0.39823586561964924,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.8026639164766978,
+                    "sharpe_ratio": -0.700691354452823,
+                    "win_rate": 0.556910569105691,
+                    "max_drawdown": -0.8326956933476144,
+                    "parameters": {
+                      "bb_period": 30,
+                      "bb_std": 1.5,
+                      "stop_loss": 0.04,
+                      "take_profit": 0.1
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.6071397042711956,
+                  "avg_sharpe": -0.7117441711424469,
+                  "avg_win_rate": 0.5293799349953632
+                }
+              },
+              "1h": {
+                "strategy": "bollinger_bands",
+                "symbol": "ADAUSDT",
+                "timeframe": "1h",
+                "total_tests": 3,
+                "successful_tests": 3,
+                "best_configurations": {
+                  "best_return": {
+                    "total_return": -0.04607979677560503,
+                    "sharpe_ratio": -0.20467162168563918,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.1437265206102418,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_sharpe": {
+                    "total_return": -0.04607979677560503,
+                    "sharpe_ratio": -0.20467162168563918,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.1437265206102418,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  },
+                  "best_win_rate": {
+                    "total_return": -0.04607979677560503,
+                    "sharpe_ratio": -0.20467162168563918,
+                    "win_rate": 0.5714285714285714,
+                    "max_drawdown": -0.1437265206102418,
+                    "parameters": {
+                      "bb_period": 25,
+                      "bb_std": 2.5,
+                      "stop_loss": 0.02,
+                      "take_profit": 0.08
+                    }
+                  }
+                },
+                "average_performance": {
+                  "avg_return": -0.1370475172775847,
+                  "avg_sharpe": -0.36755683634755715,
+                  "avg_win_rate": 0.54982283294443
+                }
+              }
+            }
+          }
+        },
+        "analysis": {
+          "strategy_summaries": {
+            "rsi_mean_reversion": {
+              "avg_return": -0.07027489739104002,
+              "avg_sharpe": 0.08666466353504212,
+              "avg_win_rate": 0.7679738562091503,
+              "avg_max_drawdown": -0.1417720564168822,
+              "total_configurations": 18
+            },
+            "ma_crossover": {
+              "avg_return": 1.3556465390707788,
+              "avg_sharpe": 0.19397250429540056,
+              "avg_win_rate": 0.3622312043624975,
+              "avg_max_drawdown": -0.4778301393149273,
+              "total_configurations": 18
+            },
+            "bollinger_bands": {
+              "avg_return": -0.2787077105562377,
+              "avg_sharpe": -0.43671890962324006,
+              "avg_win_rate": 0.5594850948509484,
+              "avg_max_drawdown": -0.34339116440293976,
+              "total_configurations": 18
+            }
+          },
+          "overall_stats": {
+            "total_configurations_tested": 54,
+            "avg_return": 0.3355546437078337,
+            "avg_sharpe": -0.05202724726426579,
+            "avg_win_rate": 0.5632300518075323,
+            "best_overall": {
+              "best_return": {
+                "strategy": "ma_crossover",
+                "symbol": "BTCUSDT",
+                "timeframe": "15m",
+                "config_type": "best_return",
+                "total_return": 3.897327156458217,
+                "sharpe_ratio": 0.6024615892252642,
+                "win_rate": 0.3617021276595745,
+                "max_drawdown": -0.5786705954922391,
+                "parameters": {
+                  "fast_period": 10,
+                  "slow_period": 30,
+                  "stop_loss": 0.03,
+                  "take_profit": 0.06
+                }
+              },
+              "best_sharpe": {
+                "strategy": "ma_crossover",
+                "symbol": "BTCUSDT",
+                "timeframe": "15m",
+                "config_type": "best_return",
+                "total_return": 3.897327156458217,
+                "sharpe_ratio": 0.6024615892252642,
+                "win_rate": 0.3617021276595745,
+                "max_drawdown": -0.5786705954922391,
+                "parameters": {
+                  "fast_period": 10,
+                  "slow_period": 30,
+                  "stop_loss": 0.03,
+                  "take_profit": 0.06
+                }
+              },
+              "best_win_rate": {
+                "strategy": "rsi_mean_reversion",
+                "symbol": "BTCUSDT",
+                "timeframe": "1h",
+                "config_type": "best_sharpe",
+                "total_return": 0.013151799741395909,
+                "sharpe_ratio": 0.5488080546205393,
+                "win_rate": 1.0,
+                "max_drawdown": -0.000999999999999924,
+                "parameters": {
+                  "rsi_period": 21,
+                  "oversold": 25,
+                  "overbought": 75,
+                  "stop_loss": 0.05,
+                  "take_profit": 0.12
+                }
+              }
+            }
+          },
+          "timestamp": "2025-08-30T21:47:55.348650"
+        },
+        "timestamp": "2025-08-30T21:47:55.356350"
+      },
+      "enhanced_multi_strategy": {},
+      "metadata": {
+        "timestamp": "2025-08-30T21:50:50.534455",
+        "sources_checked": [
+          "/home/runner/work/viper-/viper-/optimization_results",
+          "/home/runner/work/viper-/viper-/quick_optimization_results",
+          "/tmp/optimization_results",
+          "/tmp/quick_optimization_results"
+        ],
+        "sources_loaded": [
+          "/home/runner/work/viper-/viper-/optimization_results/comprehensive_optimization_results.json",
+          "/home/runner/work/viper-/viper-/quick_optimization_results/quick_optimization_results.json",
+          "/tmp/optimization_results/comprehensive_optimization_results.json",
+          "/tmp/quick_optimization_results/quick_optimization_results.json"
+        ]
+      }
+    }
+  }
+}

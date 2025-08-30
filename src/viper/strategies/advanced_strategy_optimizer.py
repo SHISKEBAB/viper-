@@ -16,10 +16,11 @@ Target: Achieve 55%+ win rates with optimized TP/SL and technical parameters
 """
 
 import logging
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict, List, Any
 import warnings
 warnings.filterwarnings('ignore')
-
 
 from rich.console import Console
 

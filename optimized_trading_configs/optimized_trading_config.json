@@ -1,0 +1,95 @@
+{
+  "trading_configuration": {
+    "version": "1.0",
+    "generated_at": "2025-08-30T21:51:59.001144",
+    "source": "VIPER Comprehensive Optimization Results",
+    "default_strategy": {
+      "strategy_name": "predictive_ranges",
+      "expected_performance": {
+        "win_rate": 0.6262626262626263,
+        "avg_return": 0.0017575757575757577,
+        "sharpe_ratio": 1144.4189219152886,
+        "max_drawdown": 0.0005853181051367396
+      },
+      "risk_level": "moderate",
+      "recommended_for": "general trading"
+    },
+    "strategy_configurations": {
+      "high_win_rate": [
+        {
+          "strategy": "rsi_mean_reversion",
+          "symbol": "BTCUSDT",
+          "timeframe": "1h",
+          "parameters": {
+            "rsi_period": 21,
+            "oversold": 25,
+            "overbought": 75,
+            "stop_loss": 0.05,
+            "take_profit": 0.12
+          },
+          "performance": {
+            "win_rate": 1.0,
+            "total_return": 0.013151799741395909,
+            "sharpe_ratio": 0.5488080546205393,
+            "max_drawdown": -0.000999999999999924
+          },
+          "risk_level": "conservative",
+          "recommended_for": "high win rate focused trading"
+        }
+      ],
+      "high_return": [
+        {
+          "strategy": "ma_crossover",
+          "symbol": "BTCUSDT",
+          "timeframe": "15m",
+          "parameters": {
+            "fast_period": 10,
+            "slow_period": 30,
+            "stop_loss": 0.03,
+            "take_profit": 0.06
+          },
+          "performance": {
+            "win_rate": 0.3617021276595745,
+            "total_return": 3.897327156458217,
+            "sharpe_ratio": 0.6024615892252642,
+            "max_drawdown": -0.5786705954922391
+          },
+          "risk_level": "aggressive",
+          "recommended_for": "high return focused trading"
+        }
+      ],
+      "balanced": [
+        {
+          "strategy": "ma_crossover",
+          "symbol": "BTCUSDT",
+          "timeframe": "15m",
+          "parameters": {
+            "fast_period": 10,
+            "slow_period": 30,
+            "stop_loss": 0.03,
+            "take_profit": 0.06
+          },
+          "performance": {
+            "win_rate": 0.3617021276595745,
+            "total_return": 3.897327156458217,
+            "sharpe_ratio": 0.6024615892252642,
+            "max_drawdown": -0.5786705954922391
+          },
+          "risk_level": "balanced",
+          "recommended_for": "risk-adjusted return optimization"
+        }
+      ]
+    },
+    "global_risk_management": {
+      "max_position_size": 0.05,
+      "max_daily_loss": 0.02,
+      "max_open_positions": 3,
+      "emergency_stop_loss": 0.1
+    },
+    "trading_schedule": {
+      "active_hours": "24/7",
+      "maintenance_window": "02:00-04:00 UTC",
+      "holiday_trading": false
+    }
+  }
+}
