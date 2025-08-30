@@ -19,6 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, Any
 
 # Rich for beautiful output
 from rich.console import Console
