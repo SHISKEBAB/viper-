@@ -41,10 +41,10 @@ except ImportError:
     ENHANCED_SYSTEM_AVAILABLE = False
     logging.warning("# Warning Enhanced system not available")
 
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - PARAM_OPTIMIZER - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 @dataclass
