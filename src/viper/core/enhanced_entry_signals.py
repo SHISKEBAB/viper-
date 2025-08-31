@@ -28,12 +28,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class EntrySignalQuality(Enum):
-    """Entry signal quality levels"""
+    """Entry signal quality levels (simplified)"""
     POOR = 1
     FAIR = 2  
     GOOD = 3
     EXCELLENT = 4
-    PREMIUM = 5
 
 class MarketCondition(Enum):
     """Market condition classifications"""
@@ -97,8 +96,8 @@ class EnhancedEntrySignalGenerator:
             '1m': 0.1    # Micro timing
         }
         
-        self.min_quality_threshold = EntrySignalQuality.GOOD
-        self.min_confidence = 0.75
+        self.min_quality_threshold = EntrySignalQuality.FAIR  # Lowered from GOOD
+        self.min_confidence = 0.50  # Lowered from 0.75
         self.min_risk_reward = 1.5
         
         logger.info("   ✅ Enhanced Entry Signal Generator initialized")
@@ -458,71 +457,34 @@ class EnhancedEntrySignalGenerator:
     def _calculate_entry_score(self, base_score: float, timeframe_consensus: Dict[str, bool], 
                              volume_confirmation: bool, momentum_alignment: bool, 
                              trend_alignment: bool, risk_reward_ratio: float) -> float:
-        """Calculate comprehensive entry score"""
+        """Simplified entry score calculation"""
         
         score = base_score
         
-        # Timeframe consensus bonus
+        # Simple bonuses (reduced complexity)
         if timeframe_consensus.get('has_consensus', False):
-            consensus_score = timeframe_consensus.get('consensus_score', 0)
-            score += consensus_score * 0.15  # Up to 15% bonus
-        
-        # Volume confirmation bonus
+            score += 0.10  # Flat bonus for consensus
         if volume_confirmation:
-            score += 0.08  # 8% bonus
-        
-        # Momentum alignment bonus
+            score += 0.05  # Volume bonus
         if momentum_alignment:
-            score += 0.05  # 5% bonus
-        
-        # Trend alignment bonus
+            score += 0.05  # Momentum bonus
         if trend_alignment:
-            score += 0.1   # 10% bonus
+            score += 0.05  # Trend bonus
+        if risk_reward_ratio >= 2.0:
+            score += 0.05  # Good risk/reward bonus
         
-        # Risk-reward bonus
-        rr_bonus = min(0.1, (risk_reward_ratio - 1.5) * 0.02)  # Up to 10% bonus for good R/R
-        score += rr_bonus
-        
-        return min(1.0, score)  # Cap at 1.0
+        return min(1.0, score)
     
     def _assess_signal_quality(self, entry_score: float, timeframe_consensus: Dict[str, bool],
                              volume_confirmation: bool, momentum_alignment: bool) -> EntrySignalQuality:
-        """Assess overall signal quality"""
+        """Simplified signal quality assessment"""
         
-        quality_score = 0
-        
-        # Base score contribution
-        if entry_score >= 0.9:
-            quality_score += 3
-        elif entry_score >= 0.8:
-            quality_score += 2
-        elif entry_score >= 0.7:
-            quality_score += 1
-        
-        # Timeframe consensus contribution
-        if timeframe_consensus.get('has_consensus', False):
-            consensus_score = timeframe_consensus.get('consensus_score', 0)
-            if consensus_score >= 0.9:
-                quality_score += 2
-            elif consensus_score >= 0.7:
-                quality_score += 1
-        
-        # Volume confirmation contribution
-        if volume_confirmation:
-            quality_score += 1
-        
-        # Momentum alignment contribution
-        if momentum_alignment:
-            quality_score += 1
-        
-        # Convert to quality enum
-        if quality_score >= 7:
-            return EntrySignalQuality.PREMIUM
-        elif quality_score >= 5:
+        # Simplified quality assessment based primarily on entry score
+        if entry_score >= 0.8:
             return EntrySignalQuality.EXCELLENT
-        elif quality_score >= 3:
+        elif entry_score >= 0.6:
             return EntrySignalQuality.GOOD
-        elif quality_score >= 1:
+        elif entry_score >= 0.4:
             return EntrySignalQuality.FAIR
         else:
             return EntrySignalQuality.POOR
@@ -530,34 +492,27 @@ class EnhancedEntrySignalGenerator:
     def _calculate_entry_confidence(self, quality: EntrySignalQuality, timeframe_consensus: Dict[str, bool],
                                   volume_confirmation: bool, momentum_alignment: bool, 
                                   trend_alignment: bool) -> float:
-        """Calculate entry confidence score"""
+        """Simplified entry confidence calculation"""
         
-        # Base confidence from quality
+        # Base confidence from quality (simplified)
         base_confidence = {
-            EntrySignalQuality.PREMIUM: 0.95,
             EntrySignalQuality.EXCELLENT: 0.85,
-            EntrySignalQuality.GOOD: 0.75,
-            EntrySignalQuality.FAIR: 0.65,
-            EntrySignalQuality.POOR: 0.5
+            EntrySignalQuality.GOOD: 0.70,
+            EntrySignalQuality.FAIR: 0.55,
+            EntrySignalQuality.POOR: 0.40
         }
         
-        confidence = base_confidence.get(quality, 0.5)
+        confidence = base_confidence.get(quality, 0.40)
         
-        # Adjustments
+        # Simple bonus for strong confirmations
         if timeframe_consensus.get('has_consensus', False):
-            consensus_score = timeframe_consensus.get('consensus_score', 0)
-            confidence += (consensus_score - 0.7) * 0.2  # Bonus for strong consensus
-        
+            confidence += 0.10
         if volume_confirmation:
             confidence += 0.05
+        if momentum_alignment and trend_alignment:
+            confidence += 0.05
         
-        if momentum_alignment:
-            confidence += 0.03
-        
-        if trend_alignment:
-            confidence += 0.07
-        
-        return min(1.0, max(0.0, confidence))
+        return min(1.0, confidence)
     
     def _generate_entry_reasons(self, trigger_type: EntryTriggerType, quality: EntrySignalQuality,
                               timeframe_consensus: Dict[str, bool], volume_confirmation: bool,

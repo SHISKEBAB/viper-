@@ -186,8 +186,8 @@ class LiveTradeExecutor:
                 print(f"# Warning Signal rejected: Poor RR ratio ({signal.risk_reward_ratio:.2f})")
                 continue
 
-            # Check entry quality
-            if signal.entry_quality not in ['PREMIUM', 'EXCELLENT', 'GOOD']:
+            # Check entry quality (simplified - more permissive)
+            if signal.entry_quality not in ['EXCELLENT', 'GOOD', 'FAIR']:
                 print(f"# Warning Signal rejected: Poor quality ({signal.entry_quality})")
                 continue
 
