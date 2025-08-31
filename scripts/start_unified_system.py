@@ -32,8 +32,10 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 # Add project root to path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent  
 sys.path.append(str(project_root))
+sys.path.append(str(project_root / 'src' / 'viper' / 'core'))
+sys.path.append(str(project_root / 'src' / 'viper' / 'execution'))
 
 # Import mandatory enforcement system
 from docker_mcp_enforcer import DockerMCPEnforcer, enforce_docker_mcp_requirements

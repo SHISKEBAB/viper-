@@ -1,0 +1,20 @@
+{"scan_results": [
+    {
+        "file_path": "services/workflow-monitor/main.py",
+        "line": 618,
+        "severity": "warning", 
+        "category": "deprecation",
+        "rule_id": "DEPRECATED_API",
+        "description": "on_event is deprecated, use lifespan event handlers instead",
+        "suggested_fix": "Replace @app.on_event with lifespan context manager"
+    },
+    {
+        "file_path": "services/workflow-monitor/main.py", 
+        "line": 629,
+        "severity": "warning",
+        "category": "deprecation", 
+        "rule_id": "DEPRECATED_API",
+        "description": "on_event is deprecated, use lifespan event handlers instead",
+        "suggested_fix": "Replace @app.on_event with lifespan context manager"
+    }
+]}
