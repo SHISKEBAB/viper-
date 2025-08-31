@@ -213,7 +213,7 @@ import secrets
         """Execute function with retry logic"""
         last_exception = None
 
-        for attempt in range(self.max_retries + 1)""":
+        for attempt in range(self.max_retries + 1)"""
             try:
                 if attempt > 0:
                     delay = self._calculate_delay(attempt - 1)
@@ -282,7 +282,7 @@ class ServiceClient:
             return response.json()
 
         # Execute with circuit breaker and retry logic
-        return await self.circuit_breaker.call()
+        return await self.circuit_breaker.call(
             self.retry_logic.execute_with_retry,
             _http_request
         )
@@ -345,7 +345,7 @@ def example_async_service() -> Dict:
             "/api/ticker/BTCUSDT",
             redis_client=redis_client
         )
-    """
+    
     # Get service URL from environment
     base_url = os.getenv(f"{service_name.upper()}_URL", f"http://{service_name}:8000")
 

@@ -11,10 +11,10 @@ import logging
 from datetime import datetime
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - FINAL_SYSTEM - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 async def run_complete_live_system():
@@ -23,30 +23,30 @@ async def run_complete_live_system():
     
     # Enforce Docker and MCP requirements
     try:
-from docker_mcp_enforcer import enforce_docker_mcp_requirements
-
+        from docker_mcp_enforcer import enforce_docker_mcp_requirements
         
         if not enforce_docker_mcp_requirements():
+            logger.error("❌ Docker/MCP requirements not met")
             sys.exit(1)
         
     except ImportError as e:
+        logger.error(f"❌ Failed to import docker_mcp_enforcer: {e}")
         sys.exit(1)
     
     # Validate live trading environment
-from dotenv import load_dotenv
-
+    from dotenv import load_dotenv
     load_dotenv()
     
     if os.getenv('USE_MOCK_DATA', '').lower() == 'true':
+        logger.error("❌ Mock data mode detected - live trading blocked")
         sys.exit(1)
     
 
     try:
         # Import the enhanced trader
-from .viper_async_trader import ViperAsyncTrader
+        from .viper_async_trader import ViperAsyncTrader
 
-
-        print("# Tool Initializing Complete Trading System...")
+        print("🔧 Initializing Complete Trading System...")
         trader = ViperAsyncTrader()
 
         print(f"   • Risk per Trade: {trader.risk_per_trade*100}%")
@@ -65,12 +65,11 @@ from .viper_async_trader import ViperAsyncTrader
         # Get initial balance
         try:
             balance = await trader.get_account_balance()
-            print(f"💰 Swap Wallet Balance: ${balance:.2f} USDT")
+            print(f"💰 Wallet Balance: ${balance:.2f} USDT")
         except Exception as e:
-            pass
+            logger.warning(f"Could not get balance: {e}")
 
-
-        print("# Chart Monitoring market for trading opportunities...")
+        print("📊 Monitoring market for trading opportunities...")
 
         # Start the main trading loop
         cycle_count = 0
@@ -82,15 +81,17 @@ from .viper_async_trader import ViperAsyncTrader
                 # Get current balance
                 try:
                     balance = await trader.get_account_balance()
+                    print(f"💰 Balance: ${balance:.2f}")
                 except Exception as e:
-                    pass
+                    logger.warning(f"Could not get balance: {e}")
 
                 # Monitor positions
                 try:
                     position_status = await trader.monitor_positions()
                     active_positions = position_status.get('active_positions', 0)
+                    print(f"📊 Active positions: {active_positions}")
                 except Exception as e:
-                    pass
+                    logger.warning(f"Could not get positions: {e}")
 
                 # Run system diagnostics occasionally
                 if cycle_count % 10 == 0:  # Every 10 cycles
@@ -98,8 +99,9 @@ from .viper_async_trader import ViperAsyncTrader
                         diagnostic_results = await trader.run_system_diagnostic()
                         if diagnostic_results:
                             score = diagnostic_results.get('overall_score', 'N/A')
+                            print(f"🔍 System health score: {score}")
                     except Exception as e:
-                        pass
+                        logger.warning(f"Could not run diagnostics: {e}")
 
                 # Wait before next cycle (30 seconds)
                 await asyncio.sleep(30)
@@ -110,17 +112,17 @@ from .viper_async_trader import ViperAsyncTrader
                 logger.error(f"# X System error in cycle {cycle_count}: {e}")
                 await asyncio.sleep(10)  # Shorter wait on error
 
-        print("# Party Thank you for using VIPER Live Trading System!")
+        print("🎉 Thank you for using VIPER Live Trading System!")
 
     except Exception as e:
-        logger.error(f"# X Failed to start complete system: {e}")
+        logger.error(f"❌ Failed to start complete system: {e}")
         return False
 
     return True
 
 if __name__ == "__main__":
     try:
-        pass
+        print("🚀 Starting VIPER Live Trading System...")
 
         success = asyncio.run(run_complete_live_system())
 
@@ -130,6 +132,8 @@ if __name__ == "__main__":
             sys.exit(1)
 
     except KeyboardInterrupt:
+        print("⏹️ Shutdown requested by user")
         sys.exit(0)
     except Exception as e:
+        logger.error(f"❌ System startup failed: {e}")
         sys.exit(1)

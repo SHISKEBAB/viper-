@@ -899,11 +899,10 @@ async def get_scoring_stats():
             "total_signals_generated": total_signals,
             "average_active_score": round(avg_score, 2),
             "signals_by_type": {
-                "LONG": len([s for s in viper_service.active_signals.values())
-(                           if isinstance(s, dict) and s.get('type') == 'LONG']),:
-                               pass
-                "SHORT": len([s for s in viper_service.active_signals.values())
-(                            if isinstance(s, dict) and s.get('type') == 'SHORT'])
+                "LONG": len([s for s in viper_service.active_signals.values()
+                           if isinstance(s, dict) and s.get('type') == 'LONG']),
+                "SHORT": len([s for s in viper_service.active_signals.values()
+                            if isinstance(s, dict) and s.get('type') == 'SHORT'])
             }
         }
     except Exception as e:

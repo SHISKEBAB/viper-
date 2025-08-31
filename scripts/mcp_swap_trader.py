@@ -51,7 +51,7 @@ class MCPSwapTrader:
         self.pair_signals = {}
 
         # Initialize exchange connection
-        self.exchange = ccxt.bitget({)
+        self.exchange = ccxt.bitget({
             'apiKey': BITGET_API_KEY,
             'secret': BITGET_API_SECRET,
             'password': BITGET_API_PASSWORD,
@@ -60,7 +60,7 @@ class MCPSwapTrader:
                 'adjustForTimeDifference': True,
             },
             'sandbox': False,
-(        })
+        })
 
         # Load all available swap pairs
         self.all_pairs = []
@@ -76,7 +76,7 @@ class MCPSwapTrader:
         print(f"# Target Risk per trade: {self.risk_per_trade*100}%")
 
     def load_all_pairs(self) -> None:
-        """Load all available swap pairs from Bitget""""""
+        """Load all available swap pairs from Bitget"""
         try:
             markets = self.exchange.loadMarkets()
             self.all_pairs = [
@@ -90,7 +90,7 @@ class MCPSwapTrader:
             self.all_pairs = []
 
     def check_mcp_server(self) -> bool:
-        """Check if MCP server is running and accessible""""""
+        """Check if MCP server is running and accessible"""
         try:
             response = requests.get(f"{self.mcp_server_url}/health", timeout=5)
             return response.status_code == 200
@@ -98,7 +98,7 @@ class MCPSwapTrader:
             return False
 
     def get_market_data(self, symbol: str) -> Optional[Dict]
-        """Get current market data for a symbol""":"""
+        """Get current market data for a symbol""""""
         try:
             ticker = self.exchange.fetch_ticker(symbol)
             return {
@@ -114,7 +114,7 @@ class MCPSwapTrader:
             return None
 
     def calculate_viper_score(self, market_data: Dict) -> float:
-        """Calculate VIPER score for trading signal""""""
+        """Calculate VIPER score for trading signal"""
         try:
             price_change = market_data.get('price_change', 0)
             volume = market_data.get('volume', 0)
@@ -134,7 +134,7 @@ class MCPSwapTrader:
             return 0
 
     def generate_signal(self, symbol: str, viper_score: float, market_data: Dict) -> Optional[Dict]
-        """Generate trading signal based on VIPER score""":"""
+        """Generate trading signal based on VIPER score""""""
         try:
             # Check if we already have a position
             if symbol in self.active_positions:
@@ -175,7 +175,7 @@ class MCPSwapTrader:
             return None
 
     def execute_mcp_trade(self, signal: Dict) -> bool:
-        """Execute trade via MCP server""""""
+        """Execute trade via MCP server"""
         try:
             # Prepare trade parameters
             trade_params = {
@@ -216,7 +216,7 @@ class MCPSwapTrader:
             return False
 
     def monitor_positions(self) -> None:
-        """Monitor active positions and close if needed""""""
+        """Monitor active positions and close if needed"""
         try:
             for symbol, position in list(self.active_positions.items()):
                 market_data = self.get_market_data(symbol)
@@ -241,7 +241,7 @@ class MCPSwapTrader:
             pass
 
     def close_position(self, symbol: str, reason: str) -> None:
-        """Close a position via MCP""""""
+        """Close a position via MCP"""
         try:
             if symbol in self.active_positions:
                 position = self.active_positions[symbol]
