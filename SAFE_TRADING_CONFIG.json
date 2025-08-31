@@ -1,25 +1,193 @@
 {
-  "SAFE_TRADING_CONFIG": {
-    "description": "EMERGENCY SAFE CONFIGURATION - Prevents capital depletion",
-    "position_size_usdt": 1.0,
-    "max_capital_usage": 10.0,
-    "risk_per_trade": 0.01,
-    "max_positions": 3,
-    "max_leverage": 10,
-    "emergency_balance_threshold": 15.0,
-    "max_loops_without_progress": 10,
-    "scan_interval": 30,
-    "safety_features": {
-      "capital_protection": true,
-      "position_size_limits": true,
-      "emergency_stop": true,
-      "balance_monitoring": true
+  "trading_safety": {
+    "enabled": true,
+    "emergency_stop_enabled": true,
+    "circuit_breaker_enabled": true,
+    "risk_limits": {
+      "max_daily_loss_percent": 3.0,
+      "max_single_trade_loss_percent": 2.0,
+      "max_open_positions": 15,
+      "max_leverage": 50,
+      "max_position_size_percent": 10.0,
+      "min_margin_requirement": 1.0
     },
-    "warnings": [
-      "NEVER increase position_size_usdt above 5.0",
-      "NEVER increase max_capital_usage above 20.0",
-      "NEVER increase max_leverage above 20",
-      "Monitor account balance continuously"
-    ]
+    "safety_checks": {
+      "pre_trade_validation": true,
+      "market_data_verification": true,
+      "liquidity_check": true,
+      "volatility_filter": true,
+      "blacklist_check": true
+    },
+    "monitoring": {
+      "real_time_position_tracking": true,
+      "pnl_monitoring": true,
+      "risk_exposure_tracking": true,
+      "alert_system_enabled": true,
+      "performance_logging": true
+    }
+  },
+  "exchange_config": {
+    "bitget": {
+      "enabled": true,
+      "api_rate_limits": {
+        "requests_per_second": 10,
+        "burst_limit": 50,
+        "timeout_seconds": 30,
+        "retry_attempts": 3,
+        "retry_delay": 1.0
+      },
+      "trading_pairs": {
+        "usdt_margined_only": true,
+        "supported_symbols": ["BTCUSDT_UMCBL", "ETHUSDT_UMCBL", "BNBUSDT_UMCBL"],
+        "max_pairs_per_session": 50,
+        "pair_filtering_enabled": true
+      },
+      "order_settings": {
+        "default_order_type": "limit",
+        "time_in_force": "GTC",
+        "price_slippage_tolerance": 0.001,
+        "min_order_size": 5.0,
+        "max_order_size": 1000.0
+      }
+    }
+  },
+  "risk_management": {
+    "position_sizing": {
+      "fixed_amount_usdt": 100.0,
+      "percentage_based": false,
+      "kelly_criterion": false,
+      "martingale_disabled": true,
+      "anti_martingale_enabled": true
+    },
+    "stop_loss": {
+      "enabled": true,
+      "default_percent": 2.5,
+      "trailing_stop_enabled": true,
+      "trailing_stop_distance": 1.0,
+      "emergency_stop_percent": 5.0
+    },
+    "take_profit": {
+      "enabled": true,
+      "default_percent": 3.0,
+      "partial_tp_enabled": true,
+      "tp_levels": [1.0, 2.0, 3.0],
+      "tp_percentages": [30, 30, 40]
+    },
+    "capital_protection": {
+      "max_daily_drawdown": 5.0,
+      "max_weekly_drawdown": 10.0,
+      "max_monthly_drawdown": 15.0,
+      "auto_hedging_enabled": false,
+      "correlation_limits": {
+        "max_pair_correlation": 0.8,
+        "correlation_window_days": 30
+      }
+    }
+  },
+  "market_conditions": {
+    "volatility_filters": {
+      "max_volatility_percent": 5.0,
+      "min_volume_requirement": 1000000,
+      "liquidity_score_threshold": 7.0,
+      "spread_threshold": 0.001
+    },
+    "market_hours": {
+      "trading_enabled_24_7": true,
+      "weekend_trading_enabled": true,
+      "holiday_trading_disabled": false,
+      "market_open_buffer": 300,
+      "market_close_buffer": 300
+    },
+    "news_events": {
+      "high_impact_news_filter": true,
+      "news_buffer_minutes": 30,
+      "auto_pause_on_high_impact": true,
+      "economic_calendar_monitoring": false
+    }
+  },
+  "performance_optimization": {
+    "execution": {
+      "max_latency_ms": 500,
+      "order_execution_timeout": 30,
+      "cancel_unfilled_orders": true,
+      "auto_retry_failed_orders": true
+    },
+    "data_quality": {
+      "price_data_validation": true,
+      "volume_data_validation": true,
+      "timestamp_validation": true,
+      "data_freshness_seconds": 30
+    },
+    "system_resources": {
+      "max_memory_usage_percent": 80,
+      "max_cpu_usage_percent": 70,
+      "connection_pool_size": 20,
+      "thread_pool_size": 10
+    }
+  },
+  "alerting": {
+    "email_alerts": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "alert_emails": []
+    },
+    "telegram_alerts": {
+      "enabled": false,
+      "bot_token": "",
+      "chat_ids": []
+    },
+    "system_alerts": {
+      "api_connection_failure": true,
+      "order_execution_failure": true,
+      "position_limit_exceeded": true,
+      "daily_loss_limit_reached": true,
+      "system_error": true
+    }
+  },
+  "backtesting": {
+    "validation": {
+      "required_tests_pass": true,
+      "min_sharpe_ratio": 1.0,
+      "max_drawdown_limit": 20.0,
+      "min_win_rate": 55.0,
+      "profit_factor_minimum": 1.2
+    },
+    "walk_forward_testing": {
+      "enabled": true,
+      "window_size_months": 6,
+      "step_size_months": 1,
+      "min_oos_period_months": 3
+    }
+  },
+  "compliance": {
+    "regulatory_requirements": {
+      "position_reporting_enabled": true,
+      "trade_logging_enabled": true,
+      "audit_trail_enabled": true,
+      "data_retention_days": 2555
+    },
+    "security": {
+      "api_key_rotation_days": 90,
+      "two_factor_required": false,
+      "ip_whitelist_enabled": false,
+      "encryption_enabled": true
+    }
+  },
+  "emergency_procedures": {
+    "auto_shutdown": {
+      "enabled": true,
+      "shutdown_triggers": [
+        "daily_loss_limit_exceeded",
+        "api_connection_permanent_failure",
+        "system_critical_error"
+      ]
+    },
+    "recovery": {
+      "auto_restart_enabled": true,
+      "max_restart_attempts": 3,
+      "restart_delay_minutes": 5,
+      "manual_override_required": false
+    }
   }
 }
