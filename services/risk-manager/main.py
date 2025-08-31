@@ -148,7 +148,7 @@ class RiskManager:
         sl_percent = stop_loss_percent or self.default_stop_loss_percent
         tp_percent = take_profit_percent or self.default_take_profit_percent
         tsl_percent = trailing_stop_percent or self.default_trailing_stop_percent
-:"""
+        
         if side == PositionSide.LONG:
             stop_loss = entry_price * (1 - sl_percent)
             take_profit = entry_price * (1 + tp_percent)
@@ -167,8 +167,8 @@ class RiskManager:
             'trailing_activation': trailing_activation
         }
 
-    async def validate_trade_signal(self, signal: TradeSignal) -> Dict[str, Any]
-        """Validate trading signal with TP/SL/TSL and risk management rules"""""":
+    async def validate_trade_signal(self, signal: TradeSignal) -> Dict[str, Any]:
+        """Validate trading signal with TP/SL/TSL and risk management rules"""
         try:
             # Check if we already have a position in this symbol
             if signal.symbol in self.active_symbols:
@@ -262,7 +262,7 @@ class RiskManager:
         return position"""
 
     def update_position_tp_sl_tsl(self, symbol: str, current_price: float) -> Optional[Dict[str, Any]]
-        """Update position TP/SL/TSL levels based on current price""":"""
+        """Update position TP/SL/TSL levels based on current price""""""
         if symbol not in self.active_positions:
             return None
 
@@ -335,7 +335,7 @@ class RiskManager:
         return action_taken
 
     def initialize_redis(self) -> bool:
-        """Initialize Redis connection""""""
+        """Initialize Redis connection"""
         try:
             self.redis_client = redis.Redis.from_url(self.redis_url, decode_responses=True)
             self.redis_client.ping()
@@ -346,7 +346,7 @@ class RiskManager:
             return False
 
     async def get_account_balance(self) -> Optional[float]
-        """Get current account balance from exchange connector"""""":
+        """Get current account balance from exchange connector"""
         if call_service and CIRCUIT_BREAKER_AVAILABLE:
             try:
                 result = await call_service()
@@ -375,7 +375,7 @@ class RiskManager:
                 return None
 
     async def get_positions(self) -> Optional[List]
-        """Get current positions from exchange connector"""""":
+        """Get current positions from exchange connector"""
         if call_service and CIRCUIT_BREAKER_AVAILABLE:
             try:
                 result = await call_service()
@@ -404,7 +404,7 @@ class RiskManager:
                 return []
 
     def calculate_risk_score(self, balance: float, positions: List) -> Dict:
-        """Calculate overall risk score with 30-35% capital utilization check""""""
+        """Calculate overall risk score with 30-35% capital utilization check"""
         try:
             # Initialize risk metrics
             total_exposure = 0.0
@@ -484,7 +484,7 @@ class RiskManager:
             }
 
     def check_daily_loss_limit(self) -> Dict:
-        """Check if daily loss limit has been breached""""""
+        """Check if daily loss limit has been breached"""
         try:
             if self.starting_balance <= 0:
                 return {'breached': False, 'current_loss': 0.0, 'limit': self.daily_loss_limit}
@@ -504,7 +504,7 @@ class RiskManager:
             return {'breached': False, 'error': str(e)}
 
     def check_capital_utilization(self, balance: float, positions: List) -> Dict:
-        """Check if capital utilization is within 30-35% range""""""
+        """Check if capital utilization is within 30-35% range"""
         try:
             total_exposure = 0.0
 
@@ -555,7 +555,7 @@ class RiskManager:
             }
 
     def check_position_limits(self, symbol: str) -> Dict:
-        """Check if new position is allowed based on limits""""""
+        """Check if new position is allowed based on limits"""
         try:
             # Check 15-position limit
             current_positions = len(self.open_positions)
@@ -588,7 +588,7 @@ class RiskManager:
             return {'allowed': False, 'error': str(e)}
 
     def check_risk_limits(self, symbol: str, position_size: float, price: float, balance: float) -> Dict:
-        """Check if trade meets all risk management rules""""""
+        """Check if trade meets all risk management rules"""
         try:
             # Check 2% risk per trade limit
             risk_amount = balance * 0.02  # 2% of balance
@@ -631,7 +631,7 @@ class RiskManager:
             return {'allowed': False, 'error': str(e)}
 
     def register_position(self, symbol: str, position_data: Dict) -> bool:
-        """Register a new position in risk tracking""""""
+        """Register a new position in risk tracking"""
         try:
             if symbol in self.active_symbols:
                 logger.warning(f"# Warning Symbol {symbol} already has an active position")
@@ -648,7 +648,7 @@ class RiskManager:
             return False
 
     def close_position(self, symbol: str) -> bool:
-        """Remove a position from risk tracking""""""
+        """Remove a position from risk tracking"""
         try:
             if symbol in self.open_positions:
                 del self.open_positions[symbol]
@@ -665,7 +665,7 @@ class RiskManager:
     def calculate_position_size(self, symbol: str, price: float, balance: float,)
 (                               risk_per_trade: float = 0.02) -> Dict:
                                    pass
-        """Calculate safe position size based on risk management""""""
+        """Calculate safe position size based on risk management"""
         try:
             # Get available balance for trading
             available_balance = balance * self.max_position_size_percent
@@ -762,7 +762,7 @@ class RiskManager:
         return alerts
 
     async def update_daily_pnl(self):
-        """Update daily P&L tracking""""""
+        """Update daily P&L tracking"""
         try:
             current_balance = await self.get_account_balance()
             if current_balance is not None:
@@ -791,7 +791,7 @@ class RiskManager:
             logger.error(f"# X Error updating daily P&L: {e}")
 
     def load_daily_pnl(self) -> bool:
-        """Load daily P&L from Redis""""""
+        """Load daily P&L from Redis"""
         try:
             data = self.redis_client.get('viper:daily_pnl')
             if data:
@@ -864,7 +864,7 @@ risk_manager = RiskManager()
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize services on startup""""""
+    """Initialize services on startup"""
     if not risk_manager.initialize_redis():
         logger.error("# X Failed to initialize Redis. Exiting...")
         return
@@ -880,7 +880,7 @@ async def shutdown_event():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint""""""
+    """Health check endpoint"""
     try:
         return {
             "status": "healthy",
@@ -903,7 +903,7 @@ async def health_check():
 
 @app.get("/api/risk/status")
 async def get_risk_status():
-    """Get current risk status""""""
+    """Get current risk status"""
     try:
         balance = await risk_manager.get_account_balance()
         positions = await risk_manager.get_positions()
@@ -932,7 +932,7 @@ async def get_risk_status():
 
 @app.post("/api/position/size")
 async def calculate_position_size(request: Request):
-    """Calculate recommended position size""""""
+    """Calculate recommended position size"""
     try:
         data = await request.json()
 
@@ -957,7 +957,7 @@ async def calculate_position_size(request: Request):
 
 @app.get("/api/alerts")
 async def get_risk_alerts(limit: int = Query(50, description="Number of alerts to retrieve", ge=1, le=100))
-    """Get recent risk alerts""""""
+    """Get recent risk alerts"""
     try:
         alerts = risk_manager.redis_client.lrange('viper:risk_alerts', 0, limit - 1)
         parsed_alerts = []
@@ -975,7 +975,7 @@ async def get_risk_alerts(limit: int = Query(50, description="Number of alerts t
 
 @app.delete("/api/alerts")
 async def clear_risk_alerts():
-    """Clear all risk alerts""""""
+    """Clear all risk alerts"""
     try:
         risk_manager.redis_client.delete('viper:risk_alerts')
         return {'status': 'cleared', 'message': 'All risk alerts cleared'}
@@ -996,7 +996,7 @@ async def get_risk_limits():
 
 @app.get("/api/capital/utilization")
 async def get_capital_utilization():
-    """Get current capital utilization status""""""
+    """Get current capital utilization status"""
     try:
         balance = await risk_manager.get_account_balance()
         positions = await risk_manager.get_positions()
@@ -1014,7 +1014,7 @@ async def get_capital_utilization():
 
 @app.post("/api/limits")
 async def update_risk_limits(request: Request):
-    """Update risk limits""""""
+    """Update risk limits"""
     try:
         data = await request.json()
 
@@ -1055,7 +1055,7 @@ async def check_position_limits(symbol: str):
 
 @app.post("/api/position/check")
 async def check_trade_risk(request: Request):
-    """Check if a trade meets risk management rules""""""
+    """Check if a trade meets risk management rules"""
     try:
         data = await request.json()
         symbol = data.get('symbol', '')
@@ -1076,7 +1076,7 @@ async def check_trade_risk(request: Request):
 
 @app.post("/api/position/register")
 async def register_position(request: Request):
-    """Register a new position for risk tracking""""""
+    """Register a new position for risk tracking"""
     try:
         data = await request.json()
         symbol = data.get('symbol', '')
@@ -1119,7 +1119,7 @@ async def get_position_status():
 # TP/SL/TSL Management Endpoints
 @app.post("/api/tp-sl-tsl/calculate")
 async def calculate_tp_sl_tsl(request: Request):
-    """Calculate TP/SL/TSL levels for a trade""""""
+    """Calculate TP/SL/TSL levels for a trade"""
     try:
         data = await request.json()
         symbol = data.get('symbol')
@@ -1159,7 +1159,7 @@ async def calculate_tp_sl_tsl(request: Request):
 
 @app.post("/api/tp-sl-tsl/validate-signal")
 async def validate_trading_signal(request: Request):
-    """Validate a trading signal with TP/SL/TSL""""""
+    """Validate a trading signal with TP/SL/TSL"""
     try:
         data = await request.json()
         signal = TradeSignal()
@@ -1192,7 +1192,7 @@ async def validate_trading_signal(request: Request):
 
 @app.post("/api/tp-sl-tsl/create-position")
 async def create_position_from_signal(request: Request):
-    """Create a position from a validated signal""""""
+    """Create a position from a validated signal"""
     try:
         data = await request.json()
 
@@ -1243,7 +1243,7 @@ async def create_position_from_signal(request: Request):
 
 @app.post("/api/tp-sl-tsl/update-price")
 async def update_position_price(request: Request):
-    """Update position prices and check for TP/SL/TSL triggers""""""
+    """Update position prices and check for TP/SL/TSL triggers"""
     try:
         data = await request.json()
         symbol = data.get('symbol')
@@ -1299,7 +1299,7 @@ async def get_tp_sl_tsl_positions():
 
 @app.delete("/api/tp-sl-tsl/position/{symbol}")
 async def close_tp_sl_tsl_position(symbol: str):
-    """Close a position and remove TP/SL/TSL tracking""""""
+    """Close a position and remove TP/SL/TSL tracking"""
     try:
         if symbol not in risk_manager.active_positions:
             raise HTTPException(status_code=404, detail=f"Position not found for {symbol}")
@@ -1340,7 +1340,7 @@ async def get_tp_sl_tsl_config():
 
 @app.post("/api/tp-sl-tsl/config")
 async def update_tp_sl_tsl_config(request: Request):
-    """Update TP/SL/TSL configuration""""""
+    """Update TP/SL/TSL configuration"""
     try:
         data = await request.json()
 
