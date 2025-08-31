@@ -22,16 +22,26 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 sys.path.append(str(project_root / "src"))
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - VIPER_FIXED_TRADER - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/viper_fixed_trader.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Configure ADVANCED logging system 🚀
+try:
+    from infrastructure.shared.structured_logger import (
+        get_logger, log_advanced_error, monitor_performance, debug_var
+    )
+    logger = get_logger('viper-fixed-trader')
+    ADVANCED_LOGGING = True
+    logger.info("🚀 VIPER Fixed Trader initialized with ADVANCED logging system!")
+except ImportError:
+    # Fallback to basic logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - VIPER_FIXED_TRADER - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('logs/viper_fixed_trader.log'),
+            logging.StreamHandler()
+        ]
+    )
+    logger = logging.getLogger(__name__)
+    ADVANCED_LOGGING = False
 
 class FixedVIPERTrader:
     """VIPER Trader with FIXED Bitget API configuration for unilateral positions"""

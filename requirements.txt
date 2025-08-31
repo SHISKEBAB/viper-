@@ -37,8 +37,9 @@ docker>=6.1.0
 # Scheduling
 schedule>=1.2.0
 
-# Rich Terminal Output
+# Rich Terminal Output & Advanced Logging
 rich>=13.0.0
+memory-profiler>=0.60.0  # For advanced memory profiling
 
 # WebSocket Support
 websockets>=12.0
