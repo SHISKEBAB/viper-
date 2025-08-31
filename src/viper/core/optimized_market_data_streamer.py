@@ -36,7 +36,7 @@ import hashlib
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@dataclass"""
+@dataclass
 class CacheEntry:
     """Cache entry with TTL and metadata"""
     data: Any
