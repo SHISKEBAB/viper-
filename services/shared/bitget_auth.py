@@ -282,7 +282,7 @@ class BitgetAuthenticator:
         """Get account balance for USDT swap trading"""
         try:
             params = {
-                'productType': 'usdt-futures',  # V2 API: USDT-M Futures
+                'productType': 'UMCBL',  # V2 API: USDT-M Futures (correct format)
                 'marginCoin': 'USDT'
             }
 
@@ -297,7 +297,7 @@ class BitgetAuthenticator:
         """Get all positions for USDT swap trading"""
         try:
             params = {
-                'productType': 'usdt-futures',  # V2 API: USDT-M Futures
+                'productType': 'UMCBL',  # V2 API: USDT-M Futures (correct format)
                 'marginCoin': 'USDT'
             }
 
@@ -306,6 +306,37 @@ class BitgetAuthenticator:
 
         except Exception as e:
             logger.error(f"Failed to get positions: {e}")
+            return {'code': '500', 'msg': str(e), 'data': []}
+
+    async def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """Get market ticker for USDT swap trading"""
+        try:
+            params = {
+                'symbol': symbol,
+                'productType': 'UMCBL'  # V2 API: USDT-M Futures (correct format)
+            }
+
+            response = await self.make_request('GET', 'ticker', params)
+            return response
+
+        except Exception as e:
+            logger.error(f"Failed to get ticker: {e}")
+            return {'code': '500', 'msg': str(e), 'data': []}
+
+    async def get_open_orders(self, symbol: str = 'BTCUSDT') -> Dict[str, Any]:
+        """Get open orders for USDT swap trading"""
+        try:
+            params = {
+                'symbol': symbol,
+                'productType': 'UMCBL',  # V2 API: USDT-M Futures (correct format)
+                'marginCoin': 'USDT'
+            }
+
+            response = await self.make_request('GET', 'open_orders', params)
+            return response
+
+        except Exception as e:
+            logger.error(f"Failed to get open orders: {e}")
             return {'code': '500', 'msg': str(e), 'data': []}
 
     async def place_order(self, symbol: str, side: str, size: str,

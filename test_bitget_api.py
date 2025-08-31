@@ -210,20 +210,20 @@ async def test_bitget_api():
     timestamp = str(int(time.time() * 1000))
     body_json = json.dumps(order_params, separators=(',', ':'))
     message = timestamp + 'POST' + '/api/v2/mix/order/place-order' + body_json
-    signature = hmac.new(
+        signature = hmac.new(
         auth.api_secret.encode('utf-8'),
-        message.encode('utf-8'),
-        hashlib.sha256
-    ).digest()
+            message.encode('utf-8'),
+            hashlib.sha256
+        ).digest()
     manual_sig = base64.b64encode(signature).decode('utf-8')
 
     manual_headers = {
         'ACCESS-KEY': auth.api_key,
         'ACCESS-SIGN': manual_sig,
-        'ACCESS-TIMESTAMP': timestamp,
+            'ACCESS-TIMESTAMP': timestamp,
         'ACCESS-PASSPHRASE': auth.api_password,
-        'Content-Type': 'application/json'
-    }
+            'Content-Type': 'application/json'
+        }
 
     async with aiohttp.ClientSession() as session:
         async with session.post(f"{auth.base_url}/api/mix/v1/order/placeOrder", headers=manual_headers, json=order_params) as response:
