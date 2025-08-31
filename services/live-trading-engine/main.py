@@ -1,25 +1,37 @@
 #!/usr/bin/env python3
 """
 # Rocket VIPER Trading Bot - Live Trading Engine
-Real-time automated trading with Bitget API integration
+Real-time automated USDT swap trading with Bitget API integration
 
 Features:
-- Real-time market data
-- Automated trade execution
-- Risk management
+- Real-time USDT swap market data
+- Automated trade execution with HMAC authentication
+- Risk management for leveraged positions
 - Performance tracking
+- USDT-M futures focus
 """
 
 import os
 import time
 import logging
 import threading
+import sys
 from datetime import datetime
 from typing import Dict, Optional
 import ccxt
 import redis
 import json
 import requests
+
+# Add shared modules to path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'shared'))
+
+try:
+    from bitget_auth import BitgetAuthenticator
+    BITGET_AUTH_AVAILABLE = True
+except ImportError:
+    BitgetAuthenticator = None
+    BITGET_AUTH_AVAILABLE = False
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
@@ -35,19 +47,37 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class LiveTradingEngine:
-    """Live trading engine for VIPER bot - REAL DATA ONLY MODE"""
+    """Live trading engine for VIPER bot - USDT SWAP FOCUSED"""
 
     def __init__(self):
         self.exchange = None
         self.redis_client = None
+        self.authenticator = None
         self.is_running = False
 
-        # Load configuration - REAL DATA ONLY
-        self.api_key = None
-        self.api_secret = None
-        self.api_password = None
+        # Load configuration - USDT swap focus
+        self.api_key = os.getenv('BITGET_API_KEY', '')
+        self.api_secret = os.getenv('BITGET_API_SECRET', '')
+        self.api_password = os.getenv('BITGET_API_PASSWORD', '')
         self.risk_per_trade = float(os.getenv('RISK_PER_TRADE', '0.02'))
         self.max_leverage = int(os.getenv('MAX_LEVERAGE', '50'))
+        
+        # USDT swap trading symbols
+        self.trading_symbols = [
+            'BTCUSDT_UMCBL', 'ETHUSDT_UMCBL', 'BNBUSDT_UMCBL',
+            'ADAUSDT_UMCBL', 'SOLUSDT_UMCBL', 'MATICUSDT_UMCBL'
+        ]
+        
+        # Initialize HMAC authenticator for USDT swaps
+        if BITGET_AUTH_AVAILABLE and all([self.api_key, self.api_secret, self.api_password]):
+            self.authenticator = BitgetAuthenticator(
+                api_key=self.api_key,
+                api_secret=self.api_secret,
+                api_password=self.api_password
+            )
+            logger.info("# Check HMAC authenticator initialized for live trading")
+        else:
+            logger.warning("# Warning HMAC authenticator not available - limited functionality")
 
         # Bitget USDT swap configuration
         self.trading_mode = os.getenv('TRADING_MODE', 'CRYPTO')
