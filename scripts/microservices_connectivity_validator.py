@@ -204,27 +204,27 @@ class MicroservicesConnectivityValidator:
             docker_status["docker_available"] = result.returncode == 0
             
             # Check if Docker Compose is available
-            result = subprocess.run()
+            result = subprocess.run(
                 ["docker", "compose", "version"], 
                 capture_output=True, 
                 text=True, 
                 timeout=10
-(            )
+            )
             docker_status["compose_available"] = result.returncode == 0
             
             # List running containers
             if docker_status["docker_available"]:
-                result = subprocess.run()
+                result = subprocess.run(
                     ["docker", "ps", "--format", "{{.Names}}"], 
                     capture_output=True, 
                     text=True, 
                     timeout=10
-(                )
+                )
                 
                 if result.returncode == 0:
                     running_containers = [
                         name.strip() for name in result.stdout.split('\n') 
-                        if name.strip():
+                        if name.strip()
                     ]
                     docker_status["services_running"] = running_containers
                     docker_status["total_services"] = len(running_containers)
@@ -448,20 +448,20 @@ echo "# Chart Use 'scripts/comprehensive_system_validator.py' for detailed analy
         
         return report
     
-    def _generate_recommendations()
+    def _generate_recommendations(
         self, 
         docker_status: Dict[str, Any], 
         env_status: Dict[str, Any], 
         connectivity_results: List[ConnectivityResult]
-(    ) -> List[str]
+    ) -> List[str]:
         """Generate recommendations based on validation results"""
         recommendations = []
         
-        # Docker recommendations"""
+        # Docker recommendations
         if not docker_status["docker_available"]:
             recommendations.append("Install Docker to enable containerized services")
         elif not docker_status["compose_available"]:
-            recommendations.append("Install Docker Compose for multi-container management"):
+            recommendations.append("Install Docker Compose for multi-container management")
         elif docker_status["total_services"] == 0:
             recommendations.append("Start Docker containers using 'docker compose up -d'")
         
@@ -552,11 +552,13 @@ async def main():
         print(f"🌐 Total Services: {report['validation_summary']['total_services']}")
         print(f"# Check Reachable: {report['validation_summary']['reachable_services']}")
         print(f"# X Unreachable: {report['validation_summary']['unreachable_services']}")
-        success_rate = (report['validation_summary']['reachable_services'] / )
-(                       report['validation_summary']['total_services'] * 100)
+        success_rate = (report['validation_summary']['reachable_services'] / 
+                       report['validation_summary']['total_services']) * 100
         
         if report['recommendations']:
             for rec in report['recommendations']:
+                print(f"   • {rec}")
+        
         print(f"   • Start services: {report['generated_scripts']['startup_script']}")
         print(f"   • Check status: {report['generated_scripts']['check_script']}")
         
