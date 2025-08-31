@@ -51,7 +51,7 @@ class LiveTradingOptimizer:
         self.live_trading_engine_url = "http://localhost:8007"
 
         # Trading parameters
-        self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))
+        self.max_positions = int(os.getenv('MAX_POSITIONS', '10'))
         self.risk_per_trade = float(os.getenv('RISK_PER_TRADE', '0.02'))
         self.daily_loss_limit = float(os.getenv('DAILY_LOSS_LIMIT', '0.03'))
 

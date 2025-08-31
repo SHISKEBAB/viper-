@@ -167,7 +167,7 @@ class ViperLiveSystem:
         try:
             real_data_only = os.getenv('REAL_DATA_ONLY', '').lower() == 'true'
             risk_per_trade = float(os.getenv('RISK_PER_TRADE', '0.02'))
-            max_positions = int(os.getenv('MAX_POSITIONS', '15'))
+            max_positions = int(os.getenv('MAX_POSITIONS', '10'))
 
             # Validate ranges
             if not real_data_only:

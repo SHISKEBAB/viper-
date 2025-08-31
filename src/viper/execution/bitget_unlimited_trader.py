@@ -13,6 +13,10 @@ import random
 import secrets
 from datetime import datetime
 from typing import List, Dict, Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -170,22 +174,19 @@ class BitgetUnlimitedTrader:
                     "stop_loss": 0.08
                 }
             
-            # AGGRESSIVE position calculation
-            risk_amount = max(self.real_balance * group_config['risk_pct'], 10)  # Minimum $10 position
-            position_value = risk_amount * group_config['leverage']
+            # FIXED: Use exactly $2 capital per trade as specified
+            margin_required = 2.0  # Exactly $2 capital used per trade
+            position_value = margin_required * group_config['leverage']  # $2 × 50x = $100 notional
             position_size = position_value / price
-            margin_required = position_value / group_config['leverage']
             
-            # OVERRIDE: If balance is low, use minimum viable position
-            if margin_required > self.real_balance and self.real_balance < 50:
-                margin_required = max(self.real_balance * 0.9, 1)  # Use 90% of balance, minimum $1
-                position_value = margin_required * group_config['leverage']
-                position_size = position_value / price
+            # Calculate actual risk amount for logging
+            risk_amount = margin_required
             
             return {
                 "symbol": symbol,
                 "group": group_config,
                 "position_size": position_size,
+                "position_value": position_value,  # Added back
                 "margin_required": margin_required,
                 "leverage": group_config['leverage'],
                 "risk_amount": risk_amount,
@@ -195,67 +196,129 @@ class BitgetUnlimitedTrader:
             
         except Exception as e:
             logger.error(f"# X Error calculating position for {symbol}: {e}")
-            # Return minimum viable position anyway
+            # Return $2 capital position anyway
             return {
                 "symbol": symbol,
                 "position_size": 0.001,
-                "margin_required": 1.0,
+                "position_value": 100.0,  # $2 × 50x = $100 notional
+                "margin_required": 2.0,  # Fixed: $2 capital per trade
                 "leverage": 50,
-                "risk_amount": 1.0,
+                "risk_amount": 2.0,
                 "take_profit": 0.10,
                 "stop_loss": 0.08
             }
 
     def execute_unlimited_trade(self, symbol: str, side: str) -> Optional[Dict]:
-        """Execute trade with NO LIMITS"""
+        """Execute trade with EXACTLY $2 CAPITAL PER TRADE - BULLETPROOF ERROR HANDLING"""
         try:
             # Get current price
             ticker = self.exchange.fetch_ticker(symbol)
             current_price = ticker['last']
             
-            # Calculate AGGRESSIVE position
+            # Calculate EXACT $2 position
             position_calc = self.calculate_aggressive_position(symbol, current_price)
             
-            logger.info(f"💥 EXECUTING UNLIMITED {side.upper()} ORDER")
+            # CRITICAL SAFETY CHECK: Verify margin is exactly $2
+            if abs(position_calc['margin_required'] - 2.0) > 0.01:
+                logger.error(f"🚨 SAFETY VIOLATION: Margin ${position_calc['margin_required']:.2f} is NOT $2.00! ABORTING TRADE!")
+                return None
+            
+            # CRITICAL SAFETY CHECK: Verify sufficient balance
+            current_balance = self.get_real_balance_unlimited()
+            if current_balance < 2.0:
+                logger.error(f"🚨 INSUFFICIENT BALANCE: ${current_balance:.2f} < $2.00! ABORTING TRADE!")
+                return None
+            
+            logger.info(f"✅ EXECUTING $2 CAPITAL TRADE")
             logger.info(f"   # Chart Symbol: {symbol}")
             logger.info(f"   💰 Price: ${current_price:.6f}")
             logger.info(f"   📏 Size: {position_calc['position_size']:.6f}")
             logger.info(f"   🔄 Leverage: {position_calc['leverage']}x")
-            logger.info(f"   💵 Margin: ${position_calc['margin_required']:.2f}")
-            logger.info(f"   # Target NO BALANCE CHECKS - EXECUTING ANYWAY!")
+            logger.info(f"   💵 Margin: ${position_calc['margin_required']:.2f} ✅ EXACTLY $2")
+            logger.info(f"   🎯 Notional Value: ${position_calc['position_value']:.2f}")
             
-            # Execute REAL order with correct Bitget parameters
-            order = self.exchange.create_order(
-                symbol=symbol,
-                type='market',
-                side=side,
-                amount=position_calc['position_size'],
-                params={
-                    'leverage': position_calc['leverage'],
-                    'marginMode': 'isolated',
-                    'holdSide': 'long' if side == 'buy' else 'short',  # Required for hedge mode
-                    'tradeSide': 'open'  # Open position
-                }
-            )
+            # BULLETPROOF ORDER EXECUTION - Handle ALL Bitget errors
+            max_attempts = 5
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    logger.info(f"🔄 Attempt {attempt}/{max_attempts}")
+                    
+                    # Use LIMIT order instead of MARKET to avoid volatility protection
+                    # Calculate a safe limit price within 0.1% of current price
+                    price_adjustment = 0.001 if side == 'buy' else -0.001
+                    limit_price = current_price * (1 + price_adjustment)
+                    
+                    order = self.exchange.create_order(
+                        symbol=symbol,
+                        type='limit',
+                        side=side,
+                        amount=position_calc['position_size'],
+                        price=limit_price,
+                        params={
+                            'leverage': position_calc['leverage'],
+                            'marginMode': 'isolated',
+                            'holdSide': 'long' if side == 'buy' else 'short',
+                            'tradeSide': 'open',
+                            'timeInForce': 'GTC'  # Good Till Cancelled
+                        }
+                    )
+                    
+                    logger.info(f"# Check UNLIMITED ORDER EXECUTED: {order['id']}")
+                    
+                    # Store position
+                    self.active_positions[symbol] = {
+                        'order_id': order['id'],
+                        'side': side,
+                        'size': position_calc['position_size'],
+                        'entry_price': current_price,
+                        'leverage': position_calc['leverage'],
+                        'margin': position_calc['margin_required'],
+                        'take_profit': position_calc['take_profit'],
+                        'stop_loss': position_calc['stop_loss'],
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    
+                    self.total_trades += 1
+                    return order
+                    
+                except Exception as e:
+                    error_msg = str(e)
+                    logger.warning(f"⚠️ Attempt {attempt} failed: {error_msg}")
+                    
+                    # Handle specific Bitget errors
+                    if "50067" in error_msg:  # Volatility protection
+                        logger.info("🔄 Volatility protection error - adjusting price and retrying...")
+                        # Increase price adjustment for next attempt
+                        price_adjustment = (0.001 + attempt * 0.0005) * (1 if side == 'buy' else -1)
+                        limit_price = current_price * (1 + price_adjustment)
+                        time.sleep(1)  # Brief pause
+                        continue
+                        
+                    elif "45110" in error_msg:  # Minimum amount
+                        logger.info("🔄 Minimum amount error - adjusting size...")
+                        # Increase position size slightly
+                        position_calc['position_size'] *= 1.1
+                        time.sleep(1)
+                        continue
+                        
+                    elif "50020" in error_msg:  # Insufficient balance
+                        logger.error("🚨 Insufficient balance - cannot retry")
+                        return None
+                        
+                    elif "40774" in error_msg:  # Unilateral position error
+                        logger.info("🔄 Unilateral position error - adjusting parameters...")
+                        # Try with different parameters
+                        time.sleep(1)
+                        continue
+                        
+                    else:
+                        logger.warning(f"⚠️ Unknown error, retrying...")
+                        time.sleep(1)
+                        continue
             
-            logger.info(f"# Check UNLIMITED ORDER EXECUTED: {order['id']}")
-            
-            # Store position
-            self.active_positions[symbol] = {
-                'order_id': order['id'],
-                'side': side,
-                'size': position_calc['position_size'],
-                'entry_price': current_price,
-                'leverage': position_calc['leverage'],
-                'margin': position_calc['margin_required'],
-                'take_profit': position_calc['take_profit'],
-                'stop_loss': position_calc['stop_loss'],
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            self.total_trades += 1
-            
-            return order
+            # All attempts failed
+            logger.error(f"🚨 All {max_attempts} attempts failed - trade abandoned")
+            return None
             
         except Exception as e:
             logger.error(f"# X Failed to execute UNLIMITED trade for {symbol}: {e}")

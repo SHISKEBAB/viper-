@@ -56,7 +56,7 @@ class V2RiskOptimizedTradingJob:
         # FIXED MARGIN RISK PARAMETERS
         self.fixed_margin_per_position = 2.0  # $2 fixed margin per position
         self.max_leverage = 50      # MAXIMUM LEVERAGE
-        self.max_positions = 15     # MAX POSITIONS (one per symbol)
+        self.max_positions = 10     # MAX POSITIONS (one per symbol)
         
         # Legacy parameters (kept for compatibility)
         self.risk_per_trade = 0.02  # 2% RISK PER TRADE (legacy)

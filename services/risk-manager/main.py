@@ -113,7 +113,7 @@ class RiskManager:
         self.daily_loss_limit = float(os.getenv('DAILY_LOSS_LIMIT', '0.03'))  # 3%
         self.max_position_size_percent = float(os.getenv('MAX_POSITION_SIZE_PERCENT', '0.1'))  # 10%
         self.enable_auto_stops = os.getenv('ENABLE_AUTO_STOPS', 'true').lower() == 'true'
-        self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))  # 15 position limit
+        self.max_positions = int(os.getenv('MAX_POSITIONS', '10'))  # 10 position limit
 
         # Risk tracking
         self.daily_pnl = 0.0

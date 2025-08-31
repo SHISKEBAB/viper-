@@ -57,7 +57,7 @@ class FixedVIPERTrader:
         self.max_leverage = int(os.getenv('MAX_LEVERAGE', '50'))  # 50x as per your rules
         self.take_profit_pct = float(os.getenv('TAKE_PROFIT_PCT', '3.0'))
         self.stop_loss_pct = float(os.getenv('STOP_LOSS_PCT', '2.0'))
-        self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))  # 15 positions max
+        self.max_positions = int(os.getenv('MAX_POSITIONS', '10'))  # 10 positions max
 
         self.exchange = None
         self.all_pairs = []

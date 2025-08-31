@@ -57,7 +57,7 @@ class TradingConfig(BaseModel):
     max_position_size_percent: float = Field(default=0.10, ge=0.01, le=1.0)  # 1% to 100%
     daily_loss_limit: float = Field(default=0.03, ge=0.001, le=0.1)  # 0.1% to 10%
     enable_auto_stops: bool = Field(default=True)
-    max_positions: int = Field(default=15, ge=1, le=50)
+    max_positions: int = Field(default=10, ge=1, le=50)
     max_leverage: int = Field(default=50, ge=1, le=125)
 
     # Market Data
@@ -129,7 +129,7 @@ class ConfigurationManager:
                 max_position_size_percent=float(os.getenv('MAX_POSITION_SIZE_PERCENT', '0.10')),
                 daily_loss_limit=float(os.getenv('DAILY_LOSS_LIMIT', '0.03')),
                 enable_auto_stops=os.getenv('ENABLE_AUTO_STOPS', 'true').lower() == 'true',
-                max_positions=int(os.getenv('MAX_POSITIONS', '15')),
+                max_positions=int(os.getenv('MAX_POSITIONS', '10')),
                 max_leverage=int(os.getenv('MAX_LEVERAGE', '50')),
                 enable_data_streaming=os.getenv('ENABLE_DATA_STREAMING', 'true').lower() == 'true',
                 streaming_interval=int(os.getenv('STREAMING_INTERVAL', '5')),

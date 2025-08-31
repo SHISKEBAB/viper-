@@ -147,7 +147,7 @@ class ViperAsyncTrader:
         
         # Trading parameters
         self.max_concurrent_jobs = 10
-        self.max_positions = 20
+        self.max_positions = 10
         self.risk_per_trade = 0.03
         self.max_leverage = 50
 

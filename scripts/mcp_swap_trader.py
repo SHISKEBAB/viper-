@@ -69,7 +69,7 @@ class MCPSwapTrader:
         # Trading parameters
         self.risk_per_trade = 0.02  # 2% per trade
         self.max_leverage = 50  # 50x leverage
-        self.max_positions = 15  # Maximum concurrent positions
+        self.max_positions = 10  # Maximum concurrent positions
         self.min_volume_threshold = 1000000  # Minimum 24h volume
 
         print(f"# Chart Loaded {len(self.all_pairs)} swap pairs")

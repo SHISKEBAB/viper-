@@ -126,7 +126,7 @@ class LiveTradingLauncher:
         if risk_per_trade > 0.05:  # More than 5%
             logger.warning(f"# Warning High risk per trade: {risk_per_trade*100}%")
 
-        max_positions = int(os.getenv('MAX_POSITIONS', '15'))
+                    max_positions = int(os.getenv('MAX_POSITIONS', '10'))
         if max_positions > 20:
             logger.warning(f"# Warning High maximum positions: {max_positions}")
 

@@ -178,7 +178,7 @@ class EnhancedOrderExecutor:
         
         # Risk management
         self.daily_loss_limit = float(os.getenv('DAILY_LOSS_LIMIT', '0.05'))  # 5%
-        self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))
+        self.max_positions = int(os.getenv('MAX_POSITIONS', '10'))
         
         logger.info("# Construction Enhanced Order Executor initialized")
     

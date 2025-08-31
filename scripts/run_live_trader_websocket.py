@@ -51,8 +51,8 @@ class WebSocketMultiPairVIPERTrader:
         self.max_leverage = int(os.getenv('MAX_LEVERAGE', '50'))
         self.take_profit_pct = float(os.getenv('TAKE_PROFIT_PCT', '3.0'))
         self.stop_loss_pct = float(os.getenv('STOP_LOSS_PCT', '2.0'))
-        self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))
-        self.min_margin_per_trade = float(os.getenv('MIN_MARGIN_PER_TRADE', '1.0'))  # $1.0 as requested
+        self.max_positions = int(os.getenv('MAX_POSITIONS', '10'))
+        self.min_margin_per_trade = float(os.getenv('MIN_MARGIN_PER_TRADE', '2.0'))  # $2.0 as per rules
 
         self.exchange = None
         self.all_pairs = []
