@@ -34,10 +34,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from mcp_error_fixer import MCPErrorFixer, MCPFixerConfig
 from batch_fix_processor import BatchFixOrchestrator, BatchProcessorConfig
-from fix_validator import FixValidator"""
+from fix_validator import FixValidator
 
 class MCPFixProcessRunner:
-    """Complete MCP fix process runner""""""
+    """Complete MCP fix process runner"""
 
     def __init__(self, config: Dict[str, Any] = None):
         self.config = config or {}
@@ -45,24 +45,23 @@ class MCPFixProcessRunner:
         self.results = {}
 
         # Initialize components
-        self.fixer_config = MCPFixerConfig()
+        self.fixer_config = MCPFixerConfig(
             mcp_server_url=self.config.get('mcp_url', 'http://localhost:3000'),
             dry_run=self.config.get('dry_run', False),
             backup_enabled=self.config.get('backup_enabled', True)
-(        )
+        )
 
-        self.processor_config = BatchProcessorConfig()
+        self.processor_config = BatchProcessorConfig(
             max_workers=self.config.get('max_workers', 4),
             enable_parallel=self.config.get('parallel', True)
-(        )
+        )
 
         self.fixer = MCPErrorFixer(self.fixer_config)
         self.validator = FixValidator()
 
-    def run_complete_process(self, scan_file: str = None) -> Dict[str, Any]
+    def run_complete_process(self, scan_file: str = None) -> Dict[str, Any]:
         """Run the complete MCP fix process"""
         self.start_time = time.time()
-:
         print(f"⏰ Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
         try:
@@ -106,10 +105,9 @@ class MCPFixProcessRunner:
             }
             return self.results
 
-    def _load_and_analyze_scan(self, scan_file: str = None) -> List[Dict[str, Any]]
+    def _load_and_analyze_scan(self, scan_file: str = None) -> List[Dict[str, Any]]:
         """Load and analyze scan results"""
         issues = self.fixer.load_scan_results(scan_file)
-:"""
         if not issues:
             raise Exception("No scan results found")
 
@@ -123,14 +121,17 @@ class MCPFixProcessRunner:
             category_counts[issue['category']] = category_counts.get(issue['category'], 0) + 1
 
         for severity, count in severity_counts.items():
+            print(f"# Tool {severity.title()}: {count} issues")
+        
         for category, count in category_counts.items():
+            print(f"# Tool {category}: {count} issues")
+            
         return issues
 
-    def _process_fixes(self, scan_file: str) -> Dict[str, Any]
+    def _process_fixes(self, scan_file: str) -> Dict[str, Any]:
         """Process fixes using batch orchestrator"""
         orchestrator = BatchFixOrchestrator(self.fixer_config, self.processor_config)
         fix_results = orchestrator.orchestrate_fixes(scan_file)
-:"""
         if 'error' in fix_results:
             raise Exception(f"Fix processing failed: {fix_results['error']}")
 
@@ -140,17 +141,16 @@ class MCPFixProcessRunner:
 
         return fix_results
 
-    def _validate_fixes(self, fix_results: Dict[str, Any]) -> Dict[str, Any]
+    def _validate_fixes(self, fix_results: Dict[str, Any]) -> Dict[str, Any]:
         """Validate applied fixes"""
         validation_results = self.validator.validate_batch_results(fix_results['results'])
-:
         print(f"# Check Validations completed: {validation_results['total_validations']}")
         print(f"# Check Passed: {validation_results['passed_validations']}")
         print(f"# X Failed: {validation_results['failed_validations']}")
 
         return validation_results
 
-    def _generate_final_report(self, fix_results: Dict[str, Any], validation_results: Dict[str, Any]) -> Dict[str, str]
+    def _generate_final_report(self, fix_results: Dict[str, Any], validation_results: Dict[str, Any]) -> Dict[str, str]:
         """Generate final comprehensive report"""
         timestamp = int(time.time())
 
@@ -159,7 +159,7 @@ class MCPFixProcessRunner:
 
         # Generate validation report
         validation_report = self.validator.generate_validation_report(validation_results)
-        validation_report_path = Path(f"reports/final_validation_report_{timestamp}.txt"):
+        validation_report_path = Path(f"reports/final_validation_report_{timestamp}.txt")
         with open(validation_report_path, 'w', encoding='utf-8') as f:
             f.write(validation_report)
 
@@ -173,6 +173,8 @@ class MCPFixProcessRunner:
         }
 
         for report_type, path in reports.items():
+            print(f"# Tool Generated {report_type}: {path}")
+            
         return reports
 
     def _generate_summary_report(self, fix_results: Dict[str, Any], validation_results: Dict[str, Any], timestamp: int) -> Path:
@@ -243,20 +245,19 @@ VIPER Development Team
 
     def _calculate_success_rate(self, fix_results: Dict[str, Any], validation_results: Dict[str, Any]) -> float:
         """Calculate overall success rate"""
-        fix_success = ()
+        fix_success = (
             fix_results.get('results', {}).get('completed_jobs', 0) /
             max(fix_results.get('results', {}).get('total_jobs', 1), 1)
-(        ) * 100
+        ) * 100
 
         validation_success = validation_results.get('success_rate', 0)
 
         # Weighted average (70% fixes, 30% validation)
-        return (fix_success * 0.7) + (validation_success * 0.3)"""
+        return (fix_success * 0.7) + (validation_success * 0.3)
 
-    def _generate_final_recommendations(self, success_rate: float) -> List[str]
+    def _generate_final_recommendations(self, success_rate: float) -> List[str]:
         """Generate final recommendations"""
         recommendations = []
-:"""
         if success_rate >= 90:
             recommendations.append("# Party Excellent results! All fixes applied successfully")
             recommendations.append("# Check Proceed with deployment to production")
@@ -292,6 +293,8 @@ VIPER Development Team
 
         if self.results.get('recommendations'):
             for rec in self.results.get('recommendations', []):
+                print(f"# Idea {rec}")
+                
         print(f"\n📄 Reports saved in: reports/ directory")
 
 def main():

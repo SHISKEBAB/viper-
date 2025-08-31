@@ -76,14 +76,14 @@ class MCPFixerConfig:
     dry_run: bool = False
 
 class MCPServerClient:
-    """Client for Code Analyzer MCP Server""""""
+    """Client for Code Analyzer MCP Server"""
 
     def __init__(self, server_url: str):
         self.server_url = server_url.rstrip('/')
         self.session = requests.Session() if HAS_REQUESTS else None
 
-    def analyze_code(self, file_path: str, language: str = "python") -> Dict[str, Any]
-        """Analyze code using MCP server""":"""
+    def analyze_code(self, file_path: str, language: str = "python") -> Dict[str, Any]:
+        """Analyze code using MCP server"""
         if not self.session:
             return {"error": "Requests library not available"}
 
@@ -98,11 +98,11 @@ class MCPServerClient:
                 "fix": False  # Analysis only first
             }
 
-            response = self.session.post()
+            response = self.session.post(
                 f"{self.server_url}/analyze",
                 json=payload,
                 timeout=30
-(            )
+            )
 
             if response.status_code == 200:
                 return response.json()
