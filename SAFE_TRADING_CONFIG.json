@@ -1,0 +1,25 @@
+{
+  "SAFE_TRADING_CONFIG": {
+    "description": "EMERGENCY SAFE CONFIGURATION - Prevents capital depletion",
+    "position_size_usdt": 1.0,
+    "max_capital_usage": 10.0,
+    "risk_per_trade": 0.01,
+    "max_positions": 3,
+    "max_leverage": 10,
+    "emergency_balance_threshold": 15.0,
+    "max_loops_without_progress": 10,
+    "scan_interval": 30,
+    "safety_features": {
+      "capital_protection": true,
+      "position_size_limits": true,
+      "emergency_stop": true,
+      "balance_monitoring": true
+    },
+    "warnings": [
+      "NEVER increase position_size_usdt above 5.0",
+      "NEVER increase max_capital_usage above 20.0",
+      "NEVER increase max_leverage above 20",
+      "Monitor account balance continuously"
+    ]
+  }
+}
