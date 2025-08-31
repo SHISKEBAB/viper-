@@ -288,8 +288,8 @@ class MultiPairVIPERTrader:
                 min_amount = market.get('limits', {}).get('amount', {}).get('min', 0)
 
                 if position_size < min_amount and min_amount > 0:
-                logger.warning(f"⚠️ Position size {position_size} below market minimum {min_amount}")
-                return False
+                    logger.warning(f"⚠️ Position size {position_size} below market minimum {min_amount}")
+                    return False
 
                 # Additional validation: check notional value requirements (relaxed for micro accounts)
                 current_price = self.exchange.fetch_ticker(symbol)['last']
@@ -298,12 +298,12 @@ class MultiPairVIPERTrader:
 
                 # For micro accounts (< $1 balance), be very lenient with notional minimums
                 if notional_value < min_notional:
-                # Allow trades with notional < $1 for micro accounts
-                if notional_value < 1.0:
-                    logger.info(f"ℹ️ Allowing micro trade: notional ${notional_value:.2f} < minimum ${min_notional} (micro account exception)")
-                else:
-                    logger.warning(f"⚠️ Notional value ${notional_value:.2f} below market minimum ${min_notional}")
-                    return False
+                    # Allow trades with notional < $1 for micro accounts
+                    if notional_value < 1.0:
+                        logger.info(f"ℹ️ Allowing micro trade: notional ${notional_value:.2f} < minimum ${min_notional} (micro account exception)")
+                    else:
+                        logger.warning(f"⚠️ Notional value ${notional_value:.2f} below market minimum ${min_notional}")
+                        return False
 
             logger.info(f"✅ Trade validation passed for {symbol} (${margin_value_usdt:.2f})")
             return True
@@ -326,8 +326,8 @@ class MultiPairVIPERTrader:
 
                 # If position mode is set to hedge but we want unilateral, warn user
                 if position_mode.get('posMode') == 'hedge_mode':
-                logger.warning("⚠️ Account is in hedge mode but bot is configured for unilateral mode")
-                logger.warning("🔄 Consider switching account to unilateral mode in Bitget UI")
+                    logger.warning("⚠️ Account is in hedge mode but bot is configured for unilateral mode")
+                    logger.warning("🔄 Consider switching account to unilateral mode in Bitget UI")
 
             except Exception as mode_error:
                 logger.debug(f"Could not retrieve position mode: {mode_error}")
@@ -380,8 +380,8 @@ class MultiPairVIPERTrader:
 
                 # Very flexible entry: only avoid extreme conditions
                 if current_price > recent_low * 1.005:  # More responsive with 1m data
-                logger.info(f"📈 {symbol}: BULLISH SIGNAL - 15m:{primary_trend}, 5m:{secondary_trend}, 1m:{fast_trend} - Entry at ${current_price}")
-                return 'BUY'
+                    logger.info(f"📈 {symbol}: BULLISH SIGNAL - 15m:{primary_trend}, 5m:{secondary_trend}, 1m:{fast_trend} - Entry at ${current_price}")
+                    return 'BUY'
 
             elif (primary_trend in ['BEARISH', 'WEAK_BEARISH'] and 
                   secondary_trend in ['BEARISH', 'WEAK_BEARISH', 'SIDEWAYS'] and
@@ -392,10 +392,10 @@ class MultiPairVIPERTrader:
                 recent_low = min(closes_1m[-5:])
                 recent_low = min(closes_5m[-5:])
 
-                # Very flexible entry: only avoid extreme conditions
+                # Very flexible entry: only avoid extreme conditions  
                 if current_price < recent_high * 0.995:  # Much more flexible:
-                logger.info(f"📉 {symbol}: BEARISH SIGNAL - Primary:{primary_trend}, Secondary:{secondary_trend} - Entry at ${current_price}")
-                return 'SELL'
+                    logger.info(f"📉 {symbol}: BEARISH SIGNAL - Primary:{primary_trend}, Secondary:{secondary_trend} - Entry at ${current_price}")
+                    return 'SELL'
 
             # EVEN MORE FLEXIBLE: Single timeframe signals
             elif primary_trend in ['BULLISH', 'WEAK_BULLISH'] or secondary_trend in ['BULLISH', 'WEAK_BULLISH']:

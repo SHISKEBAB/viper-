@@ -7,10 +7,10 @@ Automatically enforces a clean root directory by moving misplaced files
 import os
 import shutil
 from pathlib import Path
-from datetime import datetime"""
+from datetime import datetime
 
 class CleanRootEnforcer:
-    """Automatically maintains a clean root directory""""""
+    """Automatically maintains a clean root directory"""
     
     def __init__(self, repo_root: Path):
         self.repo_root = Path(repo_root)
@@ -65,7 +65,7 @@ class CleanRootEnforcer:
         """Scan root directory for violations"""
         violations = []
         
-        for item in self.repo_root.iterdir()""":
+        for item in self.repo_root.iterdir():
             if item.is_file() and not item.name.startswith('.'):
                 if item.name not in self.allowed_files:
                     suggested_location = self._get_auto_move_location(item)
@@ -201,7 +201,7 @@ def main():
     args = parser.parse_args()
     
     repo_root = Path.cwd()
-    enforcer = CleanRootEnforcer(repo_root)"""
+    enforcer = CleanRootEnforcer(repo_root)
     
     if args.create_monitor:
         enforcer.create_root_monitor()
