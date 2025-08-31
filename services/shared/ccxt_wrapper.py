@@ -237,6 +237,33 @@ class CCXTBitgetWrapper:
             except ValueError:
                 amount = 0.001  # Default safe size
             
+            # CRITICAL FIX: Validate minimum order value before placing order
+            try:
+                # Get current market price for validation
+                ticker = await self.exchange.fetch_ticker(ccxt_symbol)
+                current_price = float(ticker['last'])
+                
+                # Calculate order value in USDT
+                order_value_usdt = amount * current_price
+                
+                # Bitget minimum order value is 1 USDT
+                min_order_value_usdt = 1.0
+                
+                if order_value_usdt < min_order_value_usdt:
+                    # Adjust amount to meet minimum USDT requirement
+                    required_amount = min_order_value_usdt / current_price
+                    logger.warning(f"⚠️ Order value ${order_value_usdt:.6f} below minimum ${min_order_value_usdt}")
+                    logger.info(f"🔧 Adjusting amount from {amount:.6f} to {required_amount:.6f} to meet minimum")
+                    amount = required_amount
+                    
+                    # Recalculate final order value
+                    order_value_usdt = amount * current_price
+                    logger.info(f"✅ Adjusted order value: ${order_value_usdt:.2f}")
+                    
+            except Exception as validation_error:
+                logger.warning(f"⚠️ Could not validate order amount: {validation_error}")
+                # Continue with original amount if validation fails
+            
             order_params = {}
             if order_type == 'limit' and price:
                 order_params['price'] = float(price)
