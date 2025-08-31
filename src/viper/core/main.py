@@ -315,7 +315,11 @@ class SimpleVIPERTrader:
                 'apiKey': self.api_key,
                 'secret': self.api_secret,
                 'password': self.api_password,
-                'options': {'defaultType': 'swap', 'adjustForTimeDifference': True},
+                'options': {
+                    'defaultType': 'swap', 
+                    'adjustForTimeDifference': True,
+                    'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
+                },
                 'sandbox': False,
             })
 

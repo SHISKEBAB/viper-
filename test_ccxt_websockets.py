@@ -20,6 +20,7 @@ async def test_ccxt_websockets():
         'password': os.getenv('BITGET_API_PASSWORD'),
         'options': {
             'defaultType': 'swap',
+            'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
         },
         'sandbox': False,
     })

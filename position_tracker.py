@@ -54,6 +54,7 @@ class PositionTracker:
                 'defaultType': 'swap',
                 'adjustForTimeDifference': True,
                 'hedgeMode': False,
+                'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
             },
             'sandbox': False,
         })

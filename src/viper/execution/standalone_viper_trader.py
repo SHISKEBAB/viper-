@@ -137,7 +137,7 @@ class StandaloneVIPERTrader:
             if not all([api_key, api_secret, api_password]):
                 raise ValueError("Missing Bitget API credentials in environment")
                 
-            self.exchange = ccxt.bitget(})
+            self.exchange = ccxt.bitget({
                 'apiKey': api_key,
                 'secret': api_secret,
                 'password': api_password,
@@ -145,8 +145,9 @@ class StandaloneVIPERTrader:
                 'options': {
                     'defaultType': 'swap',  # Use perpetual futures
                     'adjustForTimeDifference': True,
+                    'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                 }
-(            })
+            })
             
             # Test connection
             self.exchange.load_markets()

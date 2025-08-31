@@ -49,7 +49,8 @@ class CCXTBitgetWrapper:
             'options': {
                 'defaultType': 'swap',  # Use USDT-M futures
                 'defaultMarginMode': 'cross',
-                'defaultLeverage': 10
+                'defaultLeverage': 10,
+                'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
             }
         })
         
