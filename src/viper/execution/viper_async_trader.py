@@ -136,10 +136,14 @@ class ViperAsyncTrader:
         self.use_enhanced_technical = ENHANCED_TECHNICAL_AVAILABLE
         self.enhanced_technical = None
         
-        # Configuration
-        self.api_key = os.getenv('BITGET_API_KEY', 'bg_d20a392139710bc38b8ab39e970114eb')
-        self.api_secret = os.getenv('BITGET_API_SECRET', '23ed4a7fe10b9c947d41a15223647f1b263f0d932b7d5e9e7bdfac01d3b84b36')
-        self.api_password = os.getenv('BITGET_API_PASSWORD', '22672267')
+        # Configuration - Load from environment (no hardcoded fallbacks for security)
+        self.api_key = os.getenv('BITGET_API_KEY')
+        self.api_secret = os.getenv('BITGET_API_SECRET')
+        self.api_password = os.getenv('BITGET_API_PASSWORD')
+        
+        # Validate required API credentials
+        if not all([self.api_key, self.api_secret, self.api_password]):
+            raise ValueError("Missing required API credentials. Please set BITGET_API_KEY, BITGET_API_SECRET, and BITGET_API_PASSWORD environment variables.")
         
         # Trading parameters
         self.max_concurrent_jobs = 10

@@ -1,0 +1,567 @@
+{
+  "timestamp": "2025-08-31T14:13:43.653829",
+  "diagnostic_mode": "COMPONENT_LEVEL",
+  "api_credentials_validation": {
+    "key_file_status": "EXISTS",
+    "env_file_status": "COMPLETE",
+    "credentials_match": true,
+    "format_validation": {
+      "api_key": "VALID_FORMAT",
+      "api_secret": "VALID_LENGTH",
+      "api_password": "VALID_FORMAT"
+    },
+    "completeness_check": {}
+  },
+  "component_analysis": {},
+  "source_code_analysis": {
+    "services_analyzed": {
+      "live-trading-engine": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 3,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 100
+      },
+      "exchange-connector": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "order-lifecycle-manager": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "position-synchronizer": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "market-data-manager": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "market-data-streamer": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "viper-scoring-service": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "signal-processor": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "risk-manager": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "credential-vault": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "monitoring-service": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "ultra-backtester": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "strategy-optimizer": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "unified-scanner": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 3,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 100
+      },
+      "api-server": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "alert-system": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "centralized-logger": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "mcp-server": {
+        "directory_exists": true,
+        "files_found": [
+          "main.py",
+          "__init__.py",
+          "Dockerfile",
+          "requirements.txt"
+        ],
+        "key_files_present": {
+          "main.py": true,
+          "app.py": false,
+          "__init__.py": true,
+          "Dockerfile": true,
+          "requirements.txt": true
+        },
+        "python_files_count": 2,
+        "has_dockerfile": true,
+        "has_main_entry": true,
+        "estimated_completeness": 80
+      },
+      "prometheus": {
+        "directory_exists": false,
+        "files_found": [],
+        "key_files_present": {},
+        "python_files_count": 0,
+        "has_dockerfile": false,
+        "has_main_entry": false,
+        "estimated_completeness": 0
+      },
+      "grafana": {
+        "directory_exists": false,
+        "files_found": [],
+        "key_files_present": {},
+        "python_files_count": 0,
+        "has_dockerfile": false,
+        "has_main_entry": false,
+        "estimated_completeness": 0
+      },
+      "elasticsearch": {
+        "directory_exists": false,
+        "files_found": [],
+        "key_files_present": {},
+        "python_files_count": 0,
+        "has_dockerfile": false,
+        "has_main_entry": false,
+        "estimated_completeness": 0
+      },
+      "kibana": {
+        "directory_exists": false,
+        "files_found": [],
+        "key_files_present": {},
+        "python_files_count": 0,
+        "has_dockerfile": false,
+        "has_main_entry": false,
+        "estimated_completeness": 0
+      }
+    },
+    "total_services": 22,
+    "services_with_complete_code": 18,
+    "common_issues": [],
+    "code_quality_summary": {}
+  },
+  "configuration_analysis": {
+    "risk_parameters": {
+      "RISK_PER_TRADE": {
+        "value": 0.02,
+        "status": "VALID"
+      },
+      "MAX_DAILY_RISK": {
+        "value": 0.05,
+        "status": "VALID"
+      },
+      "DAILY_LOSS_LIMIT": {
+        "value": 0.03,
+        "status": "VALID"
+      },
+      "MAX_CAPITAL_USAGE": {
+        "value": 40.0,
+        "status": "OUT_OF_RANGE"
+      }
+    },
+    "position_parameters": {
+      "POSITION_SIZE_USDT": {
+        "value": 5.0,
+        "status": "VALID"
+      },
+      "MAX_LEVERAGE": {
+        "value": 50,
+        "status": "VALID"
+      },
+      "MAX_POSITIONS": {
+        "value": 15,
+        "status": "VALID"
+      },
+      "MAX_POSITION_SIZE_PERCENT": {
+        "value": 0.1,
+        "status": "VALID"
+      }
+    },
+    "viper_parameters": {
+      "VIPER_THRESHOLD": true,
+      "VIPER_THRESHOLD_HIGH": false,
+      "VIPER_THRESHOLD_MEDIUM": false,
+      "SIGNAL_COOLDOWN": true,
+      "MAX_SIGNALS_PER_SYMBOL": true
+    },
+    "exchange_parameters": {},
+    "system_parameters": {},
+    "configuration_completeness": 77,
+    "parameter_validation": {}
+  },
+  "mathematical_validation": {
+    "viper_files": [
+      "scripts/launch_viper.py",
+      "scripts/launch_viper_websocket.py",
+      "tools/diagnostics/viper_all_pairs_scanner.py",
+      "src/viper/execution/viper_async_trader.py",
+      "src/viper/execution/viper_unified_trading_job.py",
+      "src/viper/execution/standalone_viper_trader.py",
+      "src/viper/core/fixed_viper_trader.py",
+      "src/viper/core/ultimate_viper_comprehensive_job.py",
+      "src/viper/core/viper_live_optimized.py",
+      "src/viper/core/viper.py",
+      "src/viper/core/install_viper.py",
+      "deployments/backups/deployment_backup/backup_20250829_200845/viper_async_trader.py",
+      "deployments/backups/deployment_backup/backup_20250829_200845/viper_unified_trading_job.py",
+      "deployments/backups/deployment_backup/backup_20250829_201449/viper_async_trader.py",
+      "deployments/backups/deployment_backup/backup_20250829_201449/viper_unified_trading_job.py",
+      "deployments/backups/deployment_backup/backup_20250829_201207/viper_async_trader.py",
+      "deployments/backups/deployment_backup/backup_20250829_201207/viper_unified_trading_job.py"
+    ],
+    "scoring_functions": [
+      "viper_async_trader.py",
+      "standalone_viper_trader.py",
+      "viper_async_trader.py",
+      "viper_async_trader.py",
+      "viper_async_trader.py"
+    ],
+    "algorithm_completeness": 100,
+    "mathematical_functions": [],
+    "indicators_found": [
+      "volume",
+      "sma",
+      "ema",
+      "momentum",
+      "rsi",
+      "atr",
+      "price"
+    ],
+    "config_parameters": {
+      "VIPER_THRESHOLD": "85"
+    }
+  },
+  "integration_tests": {
+    "docker_integration": "SUCCESS",
+    "redis_integration": "SUCCESS",
+    "file_system_access": "SUCCESS",
+    "environment_loading": "SUCCESS",
+    "python_path_setup": "SUCCESS"
+  },
+  "performance_analysis": {},
+  "security_analysis": {
+    "credential_security": {
+      "hardcoded_keys": [
+        "src/viper/execution/viper_async_trader.py",
+        "src/viper/execution/bitget_unlimited_trader.py",
+        "deployments/backups/deployment_backup/backup_20250829_200845/viper_async_trader.py",
+        "deployments/backups/deployment_backup/backup_20250829_201449/viper_async_trader.py",
+        "deployments/backups/deployment_backup/backup_20250829_201207/viper_async_trader.py"
+      ]
+    },
+    "file_permissions": {
+      ".env": {
+        "exists": true,
+        "world_readable": true,
+        "permissions": "644"
+      },
+      "key.txt": {
+        "exists": true,
+        "world_readable": true,
+        "permissions": "644"
+      }
+    },
+    "sensitive_file_check": {},
+    "environment_security": {}
+  },
+  "recommendations": [
+    "\ud83d\udea8 URGENT: Fix critical issues before proceeding",
+    "   \u21b3 Hardcoded API credentials detected",
+    "\ud83d\ude80 Start core services: docker compose up -d data-manager risk-manager exchange-connector",
+    "\u23f3 Wait for services to start, then run: docker compose up -d viper-scoring-service signal-processor",
+    "\ud83d\udd04 Finally start: docker compose up -d live-trading-engine api-server",
+    "\u2699\ufe0f Complete configuration setup - missing trading parameters",
+    "\ud83d\udd12 SECURITY: Remove hardcoded credentials from source files",
+    "\ud83d\udcca Set up monitoring: docker compose up -d prometheus grafana",
+    "\ud83d\udccb Enable logging: docker compose up -d elasticsearch kibana",
+    "\ud83e\uddea Test individual services after startup",
+    "\ud83d\udd04 Run diagnostics regularly to monitor system health",
+    "\ud83d\udcc8 Monitor system resources during trading operations"
+  ],
+  "critical_issues": [
+    "Hardcoded API credentials detected"
+  ],
+  "warnings": [
+    ".env is world-readable",
+    "key.txt is world-readable"
+  ],
+  "overall_status": "GOOD",
+  "trading_readiness": "READY_FOR_STARTUP"
+}
