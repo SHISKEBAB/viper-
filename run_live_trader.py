@@ -409,9 +409,9 @@ class MultiPairVIPERTrader:
                 return None
 
                 # FIXED: Use environment-configured minimum margin to meet Bitget requirements
-                margin_value_usdt = self.min_margin_per_trade  # Use configured minimum margin ($5)
+                margin_value_usdt = self.min_margin_per_trade  # Use configured minimum margin
 
-                # Check if account has enough balance for $1 margin
+                # Check if account has enough balance for the margin
                 if usdt_balance < margin_value_usdt:
                 logger.warning(f"⚠️ Insufficient balance: ${usdt_balance:.2f} < ${margin_value_usdt:.2f} required margin")
                 return None
@@ -430,18 +430,18 @@ class MultiPairVIPERTrader:
                 notional_value_usdt = margin_value_usdt * coin_max_leverage
                 position_size = notional_value_usdt / current_price
 
-                logger.info(f"💰 FIXED: $1 Margin × {coin_max_leverage}x Leverage = ${notional_value_usdt:.2f} Notional | Account: ${usdt_balance:.2f}")
+                logger.info(f"💰 FIXED: ${margin_value_usdt} Margin × {coin_max_leverage}x Leverage = ${notional_value_usdt:.2f} Notional | Account: ${usdt_balance:.2f}")
 
                 # Final safety check: ensure notional value doesn't exceed account balance
                 if notional_value_usdt > usdt_balance * 0.5:  # Max 50% of account as notional:
-                # Recalculate with safer margin but keep $1 minimum
-                if usdt_balance >= 1.0:
-                    margin_value_usdt = max(1.0, usdt_balance * 0.02)  # Minimum $1 or 2% of balance
+                # Recalculate with safer margin but keep configured minimum
+                if usdt_balance >= self.min_margin_per_trade:
+                    margin_value_usdt = max(self.min_margin_per_trade, usdt_balance * 0.02)  # Minimum configured margin or 2% of balance
                     notional_value_usdt = margin_value_usdt * coin_max_leverage
                     position_size = notional_value_usdt / current_price
-                    logger.info(f"💰 Reduced margin for safety (${margin_value_usdt:.2f}) but kept minimum $1")
+                    logger.info(f"💰 Reduced margin for safety (${margin_value_usdt:.2f}) but kept minimum ${self.min_margin_per_trade}")
                 else:
-                    logger.warning(f"⚠️ Account balance too low for $1 minimum margin")
+                    logger.warning(f"⚠️ Account balance too low for ${self.min_margin_per_trade} minimum margin")
                     return None
 
                 # Adjust for precision requirements (this will ensure we meet exchange minimums)
