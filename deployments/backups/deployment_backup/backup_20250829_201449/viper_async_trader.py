@@ -84,8 +84,8 @@ class ViperAsyncTrader:
         self.running_tasks: Set[asyncio.Task] = set()
         
         # Configuration
-        self.api_key = os.getenv('BITGET_API_KEY', 'bg_d20a392139710bc38b8ab39e970114eb')
-        self.api_secret = os.getenv('BITGET_API_SECRET', '23ed4a7fe10b9c947d41a15223647f1b263f0d932b7d5e9e7bdfac01d3b84b36')
+        self.api_key = os.getenv('BITGET_API_KEY', '[REDACTED]')
+        self.api_secret = os.getenv('BITGET_API_SECRET', '[REDACTED]')
         self.api_password = os.getenv('BITGET_API_PASSWORD', '22672267')
         
         # Trading parameters
