@@ -85,7 +85,7 @@ class MicroservicesConnectivityValidator:
         
         logger.info("🌐 Microservices Connectivity Validator initialized")
     
-    def _load_service_endpoints(self) -> List[ServiceEndpoint]
+    def _load_service_endpoints(self) -> List[ServiceEndpoint]:
         """Load all service endpoints with their expected configurations"""
         endpoints = [
             ServiceEndpoint("api-server", "localhost", 8000, "/health"),
@@ -117,10 +117,10 @@ class MicroservicesConnectivityValidator:
         
         logger.info(f"🌐 Configured {len(endpoints)} service endpoints")
         return endpoints
-    :
+    
     async def test_service_connectivity(self, endpoint: ServiceEndpoint) -> ConnectivityResult:
         """Test connectivity to a single service endpoint"""
-        start_time = time.time()"""
+        start_time = time.time()
         
         try:
             timeout = aiohttp.ClientTimeout(total=5.0)  # 5 second timeout
@@ -129,7 +129,7 @@ class MicroservicesConnectivityValidator:
                 async with session.get(endpoint.url) as response:
                     response_time_ms = (time.time() - start_time) * 1000
                     
-                    return ConnectivityResult()
+                    return ConnectivityResult(
                         service_name=endpoint.service_name,
                         endpoint_url=endpoint.url,
                         is_reachable=True,
@@ -137,11 +137,11 @@ class MicroservicesConnectivityValidator:
                         status_code=response.status,
                         error_message=None,
                         timestamp=datetime.now().isoformat()
-(                    )
+                    )
                     
-        except asyncio.TimeoutError
+        except asyncio.TimeoutError:
             response_time_ms = (time.time() - start_time) * 1000
-            return ConnectivityResult()
+            return ConnectivityResult(
                 service_name=endpoint.service_name,
                 endpoint_url=endpoint.url,
                 is_reachable=False,
@@ -149,11 +149,11 @@ class MicroservicesConnectivityValidator:
                 status_code=None,
                 error_message="Connection timeout",
                 timestamp=datetime.now().isoformat()
-(            )
+            )
             
         except Exception as e:
             response_time_ms = (time.time() - start_time) * 1000
-            return ConnectivityResult()
+            return ConnectivityResult(
                 service_name=endpoint.service_name,
                 endpoint_url=endpoint.url,
                 is_reachable=False,
@@ -161,16 +161,16 @@ class MicroservicesConnectivityValidator:
                 status_code=None,
                 error_message=str(e),
                 timestamp=datetime.now().isoformat()
-(            )
+            )
     
-    async def test_all_services_connectivity(self) -> List[ConnectivityResult]
+    async def test_all_services_connectivity(self) -> List[ConnectivityResult]:
         """Test connectivity to all configured services"""
         logger.info("🔗 Testing connectivity to all microservices...")
         
         # Test all services concurrently
         tasks = [
             self.test_service_connectivity(endpoint) 
-            for endpoint in self.service_endpoints:
+            for endpoint in self.service_endpoints
         ]
         
         results = await asyncio.gather(*tasks)
@@ -179,16 +179,13 @@ class MicroservicesConnectivityValidator:
         # Log summary
         reachable_count = len([r for r in results if r.is_reachable])
         total_count = len(results)
-        :
-        logger.info(f"🔗 Connectivity test complete: {reachable_count}/{total_count} services reachable")
-        
         return results
     
-    def check_docker_services(self) -> Dict[str, Any]
+    def check_docker_services(self) -> Dict[str, Any]:
         """Check if Docker services are running"""
         logger.info("🐳 Checking Docker services...")
         
-        docker_status = {:
+        docker_status = {
             "docker_available": False,
             "compose_available": False,
             "services_running": [],
@@ -198,36 +195,36 @@ class MicroservicesConnectivityValidator:
         
         try:
             # Check if Docker is available
-            result = subprocess.run()
+            result = subprocess.run(
                 ["docker", "--version"], 
                 capture_output=True, 
                 text=True, 
                 timeout=10
-(            )
+            )
             docker_status["docker_available"] = result.returncode == 0
             
             # Check if Docker Compose is available
-            result = subprocess.run()
+            result = subprocess.run(
                 ["docker", "compose", "version"], 
                 capture_output=True, 
                 text=True, 
                 timeout=10
-(            )
+            )
             docker_status["compose_available"] = result.returncode == 0
             
             # List running containers
             if docker_status["docker_available"]:
-                result = subprocess.run()
+                result = subprocess.run(
                     ["docker", "ps", "--format", "{{.Names}}"], 
                     capture_output=True, 
                     text=True, 
                     timeout=10
-(                )
+                )
                 
                 if result.returncode == 0:
                     running_containers = [
                         name.strip() for name in result.stdout.split('\n') 
-                        if name.strip():
+                        if name.strip()
                     ]
                     docker_status["services_running"] = running_containers
                     docker_status["total_services"] = len(running_containers)
@@ -237,11 +234,11 @@ class MicroservicesConnectivityValidator:
         
         return docker_status
     
-    def check_environment_configuration(self) -> Dict[str, Any]
+    def check_environment_configuration(self) -> Dict[str, Any]:
         """Check environment configuration for services"""
         logger.info("⚙️ Checking environment configuration...")
         
-        env_status = {:
+        env_status = {
             "env_file_exists": False,
             "required_vars_present": [],
             "missing_vars": [],
@@ -399,12 +396,12 @@ echo "# Chart Use 'scripts/comprehensive_system_validator.py' for detailed analy
         logger.info(f"📝 Service check script saved: {check_script_path}")
         return str(check_script_path)
     
-    async def run_comprehensive_connectivity_test(self) -> Dict[str, Any]
+    async def run_comprehensive_connectivity_test(self) -> Dict[str, Any]:
         """Run comprehensive connectivity validation"""
         logger.info("# Rocket Starting comprehensive microservices connectivity validation...")
         
         start_time = datetime.now()
-        :
+        
         # Test 1: Check Docker services
         docker_status = self.check_docker_services()
         
@@ -451,20 +448,20 @@ echo "# Chart Use 'scripts/comprehensive_system_validator.py' for detailed analy
         
         return report
     
-    def _generate_recommendations()
+    def _generate_recommendations(
         self, 
         docker_status: Dict[str, Any], 
         env_status: Dict[str, Any], 
         connectivity_results: List[ConnectivityResult]
-(    ) -> List[str]
+    ) -> List[str]:
         """Generate recommendations based on validation results"""
         recommendations = []
         
-        # Docker recommendations"""
+        # Docker recommendations
         if not docker_status["docker_available"]:
             recommendations.append("Install Docker to enable containerized services")
         elif not docker_status["compose_available"]:
-            recommendations.append("Install Docker Compose for multi-container management"):
+            recommendations.append("Install Docker Compose for multi-container management")
         elif docker_status["total_services"] == 0:
             recommendations.append("Start Docker containers using 'docker compose up -d'")
         
@@ -555,11 +552,13 @@ async def main():
         print(f"🌐 Total Services: {report['validation_summary']['total_services']}")
         print(f"# Check Reachable: {report['validation_summary']['reachable_services']}")
         print(f"# X Unreachable: {report['validation_summary']['unreachable_services']}")
-        success_rate = (report['validation_summary']['reachable_services'] / )
-(                       report['validation_summary']['total_services'] * 100)
+        success_rate = (report['validation_summary']['reachable_services'] / 
+                       report['validation_summary']['total_services']) * 100
         
         if report['recommendations']:
             for rec in report['recommendations']:
+                print(f"   • {rec}")
+        
         print(f"   • Start services: {report['generated_scripts']['startup_script']}")
         print(f"   • Check status: {report['generated_scripts']['check_script']}")
         
