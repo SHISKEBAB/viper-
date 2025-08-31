@@ -10,6 +10,10 @@ import time
 import logging
 import ccxt
 import random
+import asyncio
+import threading
+from collections import defaultdict, deque
+from typing import Dict, List, Optional
 
 from pathlib import Path
 from dotenv import load_dotenv
@@ -37,7 +41,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class MultiPairVIPERTrader:
-    """VIPER Trader that scans and trades ALL available pairs"""
+    """VIPER Trader with CCXT WebSocket integration for real-time data"""
 
     def __init__(self):
         # Load API credentials
@@ -51,15 +55,23 @@ class MultiPairVIPERTrader:
         self.take_profit_pct = float(os.getenv('TAKE_PROFIT_PCT', '3.0'))
         self.stop_loss_pct = float(os.getenv('STOP_LOSS_PCT', '2.0'))
         self.max_positions = int(os.getenv('MAX_POSITIONS', '15'))  # 15 positions as per your rules
-        self.min_margin_per_trade = float(os.getenv('MIN_MARGIN_PER_TRADE', '5.0'))  # $5.0 minimum margin for exchange requirements
+        self.min_margin_per_trade = float(os.getenv('MIN_MARGIN_PER_TRADE', '1.0'))  # $1.0 minimum margin as requested
 
         self.exchange = None
         self.all_pairs = []
         self.active_positions = {}  # Track positions by symbol
         self.is_running = False
 
+        # WebSocket integration
+        self.use_websockets = True  # Enable websocket data
+        self.ws_thread = None
+        self.ws_data_lock = threading.RLock()
+        self.tickers_ws = {}  # Real-time ticker data from websockets
+        self.ohlcv_ws = defaultdict(lambda: defaultdict(deque))  # WebSocket OHLCV data
+
         logger.info(f"🎯 POSITION LIMIT SET TO: {self.max_positions} positions maximum")
         logger.info(f"📊 Risk per trade: {self.position_size_percent*100}% of account balance")
+        logger.info(f"📡 WebSocket integration: {'ENABLED' if self.use_websockets else 'DISABLED'}")
 
         # Advanced position tracking and adoption
         self.position_adoption_system = PositionAdoptionSystem()
@@ -118,11 +130,122 @@ class MultiPairVIPERTrader:
             
             logger.info("✅ VALIDATION PASSED: All pairs are USDT swaps only")
             logger.info(f"🔥 Will scan and trade across ALL {len(self.all_pairs)} pairs!")
+            
+            # Start WebSocket data feeds
+            if self.use_websockets:
+                self._start_websocket_feeds()
+            
             return True
 
         except Exception as e:
             logger.error(f"❌ Connection error: {e}")
             return False
+
+    def _start_websocket_feeds(self):
+        """Start WebSocket feeds for real-time market data"""
+        logger.info("🔗 Starting CCXT WebSocket feeds...")
+        
+        # Start websocket thread for real-time data
+        self.ws_thread = threading.Thread(target=self._run_websocket_feeds)
+        self.ws_thread.daemon = True
+        self.ws_thread.start()
+        
+        # Give websockets time to connect
+        time.sleep(3)
+        logger.info("✅ WebSocket feeds started successfully")
+
+    def _run_websocket_feeds(self):
+        """Run websocket feeds in separate thread"""
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            loop.run_until_complete(self._websocket_manager())
+        except Exception as e:
+            logger.error(f"❌ WebSocket manager error: {e}")
+        finally:
+            loop.close()
+
+    async def _websocket_manager(self):
+        """Manage websocket connections for real-time data"""
+        logger.info("📡 Setting up WebSocket connections...")
+        
+        tasks = []
+        
+        # Get top trading pairs for websocket feeds
+        top_pairs = self.all_pairs[:30]  # Monitor top 30 pairs via websockets
+        
+        # Watch tickers for real-time price data
+        if hasattr(self.exchange, 'watch_tickers'):
+            tasks.append(self._watch_tickers(top_pairs))
+        
+        # Watch positions for real-time position updates
+        if hasattr(self.exchange, 'watch_positions'):
+            tasks.append(self._watch_positions())
+        
+        # Run all websocket tasks concurrently
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def _watch_tickers(self, symbols: List[str]):
+        """Watch real-time ticker data"""
+        logger.info(f"📊 Watching tickers for {len(symbols)} symbols via WebSocket...")
+        
+        while self.is_running:
+            try:
+                tickers = await self.exchange.watch_tickers(symbols)
+                
+                with self.ws_data_lock:
+                    self.tickers_ws.update(tickers)
+                
+                logger.debug(f"📡 Updated {len(tickers)} tickers via WebSocket")
+                
+            except Exception as e:
+                logger.debug(f"⚠️ Ticker WebSocket error: {e}")
+                await asyncio.sleep(1)
+
+    async def _watch_positions(self):
+        """Watch real-time position updates"""
+        logger.info("📊 Watching positions via WebSocket...")
+        
+        while self.is_running:
+            try:
+                positions = await self.exchange.watch_positions()
+                
+                with self.ws_data_lock:
+                    # Update active positions based on real-time data
+                    open_symbols = {pos['symbol'] for pos in positions if float(pos.get('contracts', 0)) > 0}
+                    
+                    # Remove closed positions from tracking
+                    positions_to_remove = [symbol for symbol in self.active_positions if symbol not in open_symbols]
+                    for symbol in positions_to_remove:
+                        logger.info(f"🎯 Position closed via WebSocket: {symbol}")
+                        del self.active_positions[symbol]
+                
+            except Exception as e:
+                logger.debug(f"⚠️ Position WebSocket error: {e}")
+                await asyncio.sleep(5)
+
+    def get_current_price_enhanced(self, symbol: str) -> float:
+        """Get current price with WebSocket data preference"""
+        try:
+            # Try WebSocket data first (real-time)
+            if self.use_websockets:
+                with self.ws_data_lock:
+                    if symbol in self.tickers_ws:
+                        ws_price = self.tickers_ws[symbol].get('last')
+                        if ws_price:
+                            logger.debug(f"📡 Using WebSocket price for {symbol}: ${ws_price}")
+                            return float(ws_price)
+            
+            # Fallback to REST API
+            ticker = self.exchange.fetch_ticker(symbol)
+            rest_price = ticker['last']
+            logger.debug(f"🔄 Using REST API price for {symbol}: ${rest_price}")
+            return float(rest_price)
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error getting price for {symbol}: {e}")
+            return 0.0
 
     def adjust_for_precision(self, symbol, position_size):
         """Adjust position size to meet exchange precision requirements"""
@@ -393,11 +516,13 @@ class MultiPairVIPERTrader:
         return None
 
     def execute_trade(self, symbol, signal):
-        """Execute trade for any pair with proper Bitget unilateral position parameters"""
+        """Execute trade for any pair with CCXT WebSocket enhanced pricing"""
         try:
-            # Get current price
-            ticker = self.exchange.fetch_ticker(symbol)
-            current_price = ticker['last']
+            # Get current price with WebSocket data preference
+            current_price = self.get_current_price_enhanced(symbol)
+            if current_price <= 0:
+                logger.error(f"❌ Could not get valid price for {symbol}")
+                return None
 
             # Calculate position size based on account balance percentage
             try:
@@ -1076,9 +1201,15 @@ class MultiPairVIPERTrader:
         return result
 
     def stop(self):
-        """Stop trading"""
+        """Stop trading and cleanup WebSocket connections"""
         logger.info("🛑 Stopping multi-pair trader...")
         self.is_running = False
+        
+        # Stop WebSocket feeds
+        if self.ws_thread and self.ws_thread.is_alive():
+            logger.info("🔌 Stopping WebSocket connections...")
+            self.ws_thread.join(timeout=5)
+            logger.info("✅ WebSocket connections stopped")
 
 def main():
     """Main entry point"""
