@@ -138,16 +138,15 @@ class CCXTBitgetWrapper:
     async def get_ticker(self, symbol: str) -> Dict[str, Any]:
         """Get market ticker"""
         try:
-            # Convert symbol format for CCXT - Bitget uses BTC/USDT format
+            # Convert symbol format for CCXT - Bitget swaps use BTCUSDT_UMCBL format
             if symbol == 'BTCUSDT':
-                ccxt_symbol = 'BTC/USDT'
+                ccxt_symbol = 'BTCUSDT_UMCBL'
             elif symbol == 'ETHUSDT':
-                ccxt_symbol = 'ETH/USDT'
+                ccxt_symbol = 'ETHUSDT_UMCBL'
             else:
-                # Handle other symbols like XCZNBTCUSDT -> XCZNBTC/USDT, or keep as-is if already formatted
-                if 'USDT' in symbol:
-                    base = symbol.replace('USDT', '')
-                    ccxt_symbol = f"{base}/USDT"
+                # Handle other symbols - add _UMCBL suffix for futures/swaps
+                if 'USDT' in symbol and not symbol.endswith('_UMCBL'):
+                    ccxt_symbol = f"{symbol}_UMCBL"
                 else:
                     ccxt_symbol = symbol
             
@@ -212,20 +211,19 @@ class CCXTBitgetWrapper:
             logger.error(f"Error fetching open orders: {e}")
             return {'code': '500', 'msg': str(e), 'data': []}
     
-    async def place_order(self, symbol: str, side: str, size: str, 
+    async def place_order(self, symbol: str, side: str, size: str,
                          order_type: str = 'market', price: str = None) -> Dict[str, Any]:
         """Place an order"""
         try:
-            # Convert symbol format for CCXT - Bitget uses BTC/USDT format
+            # Convert symbol format for CCXT - Bitget swaps use BTCUSDT_UMCBL format
             if symbol == 'BTCUSDT':
-                ccxt_symbol = 'BTC/USDT'
+                ccxt_symbol = 'BTCUSDT_UMCBL'
             elif symbol == 'ETHUSDT':
-                ccxt_symbol = 'ETH/USDT'
+                ccxt_symbol = 'ETHUSDT_UMCBL'
             else:
-                # Handle other symbols like XCZNBTCUSDT -> XCZNBTC/USDT, or keep as-is if already formatted
-                if 'USDT' in symbol:
-                    base = symbol.replace('USDT', '')
-                    ccxt_symbol = f"{base}/USDT"
+                # Handle other symbols - add _UMCBL suffix for futures/swaps
+                if 'USDT' in symbol and not symbol.endswith('_UMCBL'):
+                    ccxt_symbol = f"{symbol}_UMCBL"
                 else:
                     ccxt_symbol = symbol
             
