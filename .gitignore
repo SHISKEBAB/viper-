@@ -151,6 +151,9 @@ __pycache__/
 # Prevent files in root directory (except allowed ones)
 /*.py
 !setup.py
+!start_trading.py
+!launch_viper.py
+!system_launch_status.py
 /*.json
 !pyproject.toml
 /*.txt
@@ -168,6 +171,8 @@ test_*.py
 *_demo.py
 *_test.py
 validate_*.py
+!validate_launch_system.py
+!system_launch_status.py
 scan_*.py
 show_*.py
 
