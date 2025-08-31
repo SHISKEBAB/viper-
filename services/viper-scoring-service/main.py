@@ -18,6 +18,8 @@ import json
 import logging
 import asyncio
 import threading
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional, Any
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -57,7 +59,7 @@ class SignalStrength(Enum):
     VERY_STRONG = "VERY_STRONG"
 
 class VIPERScoringService:
-    """Centralized VIPER scoring and signal generation service""""""
+    """Centralized VIPER scoring and signal generation service"""
 
     def __init__(self):
         self.redis_client = None
@@ -66,10 +68,10 @@ class VIPERScoringService:
         self.signal_history = {}  # Track signal history
         self.last_signal_time = {}  # Cooldown tracking
         self.scoring_weights = {
-            'volume_score': 0.25,      # Volume importance (reduced from 30%)
-            'price_score': 0.30,       # Price momentum (reduced from 35%)
-            'external_score': 0.30,    # Market microstructure (increased from 20%)
-            'range_score': 0.15        # Volatility/range (unchanged)
+            'volume_score': 0.25,      # Reduced from 30%
+            'price_score': 0.30,       # Reduced from 35% 
+            'external_score': 0.30,    # INCREASED from 20% - Major emphasis on execution cost
+            'range_score': 0.15        # Unchanged
         }
 
         # Scoring parameters
@@ -80,7 +82,7 @@ class VIPERScoringService:
         logger.info("# Target VIPER Scoring Service initialized")
 
     def initialize_redis(self) -> bool:
-        """Initialize Redis connection""""""
+        """Initialize Redis connection"""
         try:
             self.redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
             self.redis_client.ping()
@@ -91,7 +93,7 @@ class VIPERScoringService:
             return False
 
     def calculate_volume_score(self, market_data: Dict, symbol: str) -> float:
-        """Calculate volume-based score component""""""
+        """Calculate volume-based score component"""
         try:
             ticker = market_data.get('ticker', {})
             volume = ticker.get('volume', 0)
@@ -124,7 +126,7 @@ class VIPERScoringService:
             return 0.0
 
     def calculate_price_score(self, market_data: Dict, symbol: str) -> float:
-        """Calculate price momentum score component""""""
+        """Calculate price momentum score component"""
         try:
             ticker = market_data.get('ticker', {})
             price_change = ticker.get('price_change', 0)
@@ -164,47 +166,72 @@ class VIPERScoringService:
             return 50.0
 
     def calculate_execution_cost(self, market_data: Dict, position_size_usd: float = 5000) -> float:
-        """Calculate enhanced execution cost including spread cost and market impact""""""
+        """Calculate enhanced execution cost including spread cost and market impact"""
         try:
             ticker = market_data.get('ticker', {})
             orderbook = market_data.get('orderbook', {})
+            symbol = market_data.get('symbol', '')
             
-            # Get spread
-            bids = orderbook.get('bids', [])
-            asks = orderbook.get('asks', [])
+            # Get price and volume
+            price = ticker.get('price', 0) or ticker.get('last', 0)
+            volume = ticker.get('volume', 0) or ticker.get('quoteVolume', 0)
             
-            if not bids or not asks:
-                return 10.0  # High cost for no orderbook data
-                
-            best_bid = bids[0][0] if isinstance(bids[0], list) else bids[0]
-            best_ask = asks[0][0] if isinstance(asks[0], list) else asks[0]
-            spread = best_ask - best_bid
-            current_price = ticker.get('price', (best_bid + best_ask) / 2)
-            
-            if current_price <= 0:
+            if price <= 0:
                 return 10.0
+                
+            # IMPROVED spread estimation based on symbol liquidity
+            if 'BTC' in symbol:
+                base_spread_pct = 0.0003  # 0.03% for BTC (very tight)
+            elif 'ETH' in symbol:
+                base_spread_pct = 0.0005  # 0.05% for ETH (tight)
+            elif any(coin in symbol for coin in ['BNB', 'SOL', 'ADA']):
+                base_spread_pct = 0.001   # 0.1% for major alts
+            else:
+                base_spread_pct = 0.002   # 0.2% for other coins
+            
+            # Adjust spread based on volume (higher volume = tighter spreads)
+            if volume > 10000000:  # $10M+
+                spread_multiplier = 0.8
+            elif volume > 5000000: # $5M+
+                spread_multiplier = 0.9
+            elif volume > 1000000: # $1M+
+                spread_multiplier = 1.0
+            elif volume > 500000:  # $500k+
+                spread_multiplier = 1.2
+            else:
+                spread_multiplier = 1.5
+            
+            effective_spread_pct = base_spread_pct * spread_multiplier
             
             # Spread cost (half spread for market order)
-            spread_cost = position_size_usd * (spread / current_price) / 2
+            spread_cost = position_size_usd * effective_spread_pct / 2
             
-            # Market impact using square-root law
-            volume = ticker.get('volume', 0) or ticker.get('quoteVolume', 0)
+            # IMPROVED market impact calculation
             if volume <= 0:
                 volume = 100_000  # Conservative fallback
-                
-            market_impact_rate = 0.0001 * (position_size_usd / max(volume, 100_000)) ** 0.5
+            
+            # Market impact using improved formula
+            volume_ratio = position_size_usd / volume
+            if volume_ratio > 0.01:  # Large trade relative to volume
+                market_impact_rate = 0.002 * volume_ratio ** 0.7  # Higher impact for large trades
+            else:
+                market_impact_rate = 0.0001 * volume_ratio ** 0.5  # Original formula for smaller trades
+            
             market_impact_cost = position_size_usd * market_impact_rate
             
-            total_execution_cost = spread_cost + market_impact_cost
+            # Add exchange fee (typically 0.1% for futures)
+            exchange_fee = position_size_usd * 0.001
             
-            return max(0.01, total_execution_cost)  # Minimum 1 cent
+            total_execution_cost = spread_cost + market_impact_cost + exchange_fee
+            
+            return max(0.01, total_execution_cost)
             
         except Exception as e:
             logger.error(f"# X Error calculating execution cost: {e}")
             return 5.0  # Conservative default
 
     def calculate_external_score(self, market_data: Dict, symbol: str) -> float:
-        """Calculate execution cost-aware external factors score""""""
+        """Calculate execution cost-aware external factors score"""
         try:
             ticker = market_data.get('ticker', {})
             orderbook = market_data.get('orderbook', {})
@@ -212,7 +239,7 @@ class VIPERScoringService:
             # Calculate execution cost first
             execution_cost = self.calculate_execution_cost(market_data)
             
-            # Execution Cost-Aware External Score (0-100)
+            # Execution Cost-Aware External Score (0-100) - ENHANCED
             if execution_cost >= 3.0:
                 external_score = 0      # Zero score for high execution cost
             elif execution_cost >= 2.0:
@@ -220,23 +247,21 @@ class VIPERScoringService:
             elif execution_cost >= 1.0:
                 external_score = 60     # Medium score
             else:
-                # For low execution costs, apply improved sensitivity to spread
-                bids = orderbook.get('bids', [])
-                asks = orderbook.get('asks', [])
+                # For low execution costs, apply IMPROVED sensitivity
+                external_score = max(100 - (execution_cost * 2000), 50)  # More sensitive than before
                 
-                if bids and asks and len(bids) > 0 and len(asks) > 0:
-                    best_bid = bids[0][0] if isinstance(bids[0], list) else bids[0]
-                    best_ask = asks[0][0] if isinstance(asks[0], list) else asks[0]
-                    current_price = ticker.get('price', (best_bid + best_ask) / 2)
-
-                    if current_price > 0:
-                        spread = (best_ask - best_bid) / current_price
-                        # Improved sensitivity formula
-                        external_score = max(100 - (spread * 5000), 50)
-                    else:
-                        external_score = 50
+                # Additional market quality factors
+                volume = ticker.get('volume', 0) or ticker.get('quoteVolume', 0)
+                
+                # Volume quality bonus for liquid markets
+                if volume > 10000000:  # $10M+
+                    volume_bonus = 10
+                elif volume > 5000000: # $5M+
+                    volume_bonus = 5
                 else:
-                    external_score = 50
+                    volume_bonus = 0
+                
+                external_score = min(100, external_score + volume_bonus)
 
             # Additional market microstructure analysis
             if orderbook.get('bids') and orderbook.get('asks'):
@@ -262,8 +287,8 @@ class VIPERScoringService:
             logger.error(f"# X Error calculating external score for {symbol}: {e}")
             return 50.0
 
-    def calculate_s1s2r1r2_levels(self, market_data: Dict, symbol: str) -> Dict[str, float]
-        """Calculate S1S2R1R2 support and resistance levels""":"""
+    def calculate_s1s2r1r2_levels(self, market_data: Dict, symbol: str) -> Dict[str, float]:
+        """Calculate S1S2R1R2 support and resistance levels"""
         try:
             ticker = market_data.get('ticker', {})
             ohlcv_data = market_data.get('ohlcv', {}).get('ohlcv', [])
@@ -297,7 +322,7 @@ class VIPERScoringService:
             return {'S2': 0, 'S1': 0, 'R1': 0, 'R2': 0, 'pivot': 0}
 
     def calculate_range_score(self, market_data: Dict, symbol: str) -> float:
-        """Calculate enhanced range/volatility score with S1S2R1R2 predictive ranges""""""
+        """Calculate enhanced range/volatility score with S1S2R1R2 predictive ranges"""
         try:
             ticker = market_data.get('ticker', {})
             high = ticker.get('high', 0)
@@ -391,8 +416,8 @@ class VIPERScoringService:
             logger.error(f"# X Error calculating range score for {symbol}: {e}")
             return 50.0
 
-    def calculate_viper_score(self, market_data: Dict, symbol: str) -> Dict[str, Any]
-        """Calculate complete VIPER score with all components""":"""
+    def calculate_viper_score(self, market_data: Dict, symbol: str) -> Dict[str, Any]:
+        """Calculate complete VIPER score with all components"""
         try:
             # Calculate individual component scores
             volume_score = self.calculate_volume_score(market_data, symbol)
@@ -401,12 +426,12 @@ class VIPERScoringService:
             range_score = self.calculate_range_score(market_data, symbol)
 
             # Calculate weighted overall score
-            overall_score = ()
+            overall_score = (
                 volume_score * self.scoring_weights['volume_score'] +
                 price_score * self.scoring_weights['price_score'] +
                 external_score * self.scoring_weights['external_score'] +
                 range_score * self.scoring_weights['range_score']
-(            )
+            )
 
             # Determine signal strength
             if overall_score >= 90:
@@ -460,8 +485,8 @@ class VIPERScoringService:
                 'symbol': symbol
             }
 
-    def generate_signal(self, market_data: Dict, symbol: str) -> Optional[Dict[str, Any]]
-        """Generate trading signal based on VIPER score""":"""
+    def generate_signal(self, market_data: Dict, symbol: str) -> Optional[Dict[str, Any]]:
+        """Generate trading signal based on VIPER score"""
         try:
             # Check cooldown period
             current_time = datetime.now()
@@ -472,7 +497,7 @@ class VIPERScoringService:
 
             # Check maximum signals per symbol
             symbol_signals = [s for s in self.active_signals.values()
-                            if isinstance(s, dict) and s.get('symbol') == symbol]:
+                            if isinstance(s, dict) and s.get('symbol') == symbol]
             if len(symbol_signals) >= MAX_SIGNALS_PER_SYMBOL:
                 return None
 
@@ -591,7 +616,7 @@ class VIPERScoringService:
             return None
 
     def process_market_data(self, market_data: Dict):
-        """Process incoming market data and generate signals""""""
+        """Process incoming market data and generate signals"""
         try:
             symbol = market_data.get('symbol')
             if not symbol:
@@ -615,7 +640,7 @@ class VIPERScoringService:
             logger.error(f"# X Error processing market data: {e}")
 
     def subscribe_to_market_data(self):
-        """Subscribe to market data streams""""""
+        """Subscribe to market data streams"""
         try:
             pubsub = self.redis_client.pubsub()
 
@@ -641,7 +666,7 @@ class VIPERScoringService:
             logger.error(f"# X Error in market data subscription: {e}")
 
     def start_background_processing(self):
-        """Start signal processing in background thread""""""
+        """Start signal processing in background thread"""
         def run_processor():
             self.subscribe_to_market_data()
 
@@ -649,32 +674,31 @@ class VIPERScoringService:
         thread.start()
         logger.info("# Target Signal processing started in background")
 
-    def get_active_signals(self, symbol: Optional[str] = None) -> Dict[str, Any]
-        """Get active signals, optionally filtered by symbol""":"""
+    def get_active_signals(self, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """Get active signals, optionally filtered by symbol"""
         if symbol:
             return {k: v for k, v in self.active_signals.items()
-                   if isinstance(v, dict) and v.get('symbol') == symbol}:
-                       pass
+                   if isinstance(v, dict) and v.get('symbol') == symbol}
         return self.active_signals.copy()
 
-    def get_signal_history(self, symbol: str, limit: int = 50) -> List[Dict]
+    def get_signal_history(self, symbol: str, limit: int = 50) -> List[Dict]:
         """Get signal history for a symbol"""
-        history = self.signal_history.get(symbol, []):
-        return history[-limit:] if history else []"""
+        history = self.signal_history.get(symbol, [])
+        return history[-limit:] if history else []
 
-    def get_viper_scores(self, symbols: List[str]) -> Dict[str, Dict]
+    def get_viper_scores(self, symbols: List[str]) -> Dict[str, Dict]:
         """Get VIPER scores for multiple symbols"""
-        scores = {}:
+        scores = {}
         for symbol in symbols:
             # Get cached market data
-            market_data = self.get_cached_market_data(symbol)"""
+            market_data = self.get_cached_market_data(symbol)
             if market_data:
                 scores[symbol] = self.calculate_viper_score(market_data, symbol)
 
         return scores
 
-    def get_cached_market_data(self, symbol: str) -> Optional[Dict]
-        """Get cached market data for scoring""":"""
+    def get_cached_market_data(self, symbol: str) -> Optional[Dict]:
+        """Get cached market data for scoring"""
         try:
             cache_key = f"market_data:{symbol}"
             cached_data = self.redis_client.get(cache_key)
@@ -688,7 +712,7 @@ class VIPERScoringService:
             return None
 
     def start(self):
-        """Start the VIPER scoring service""""""
+        """Start the VIPER scoring service"""
         try:
             logger.info("# Rocket Starting VIPER Scoring Service...")
 
@@ -727,17 +751,17 @@ class VIPERScoringService:
         logger.info("# Check VIPER Scoring Service stopped")
 
 # FastAPI application
-app = FastAPI()
+app = FastAPI(
     title="VIPER Scoring Service",
     version="1.0.0",
     description="Centralized VIPER scoring and signal generation"
-()
+)
 
 viper_service = VIPERScoringService()
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize services on startup""""""
+    """Initialize services on startup"""
     if not viper_service.initialize_redis():
         logger.error("# X Failed to initialize Redis")
         return
@@ -753,7 +777,7 @@ async def shutdown_event():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint""""""
+    """Health check endpoint"""
     try:
         return {
             "status": "healthy",
@@ -764,18 +788,18 @@ async def health_check():
             "symbols_tracked": len(viper_service.signal_history)
         }
     except Exception as e:
-        return JSONResponse()
+        return JSONResponse(
             status_code=503,
             content={
                 "status": "unhealthy",
                 "service": "viper-scoring-service",
                 "error": str(e)
             }
-(        )
+        )
 
 @app.post("/api/score")
 async def calculate_score(request: Request):
-    """Calculate VIPER score for market data""""""
+    """Calculate VIPER score for market data"""
     try:
         data = await request.json()
         symbol = data.get('symbol', '')
@@ -794,7 +818,7 @@ async def calculate_score(request: Request):
 
 @app.post("/api/signal")
 async def generate_signal(request: Request):
-    """Generate trading signal for market data""""""
+    """Generate trading signal for market data"""
     try:
         data = await request.json()
         symbol = data.get('symbol', '')
@@ -813,8 +837,8 @@ async def generate_signal(request: Request):
         raise HTTPException(status_code=500, detail=f"Signal generation failed: {e}")
 
 @app.get("/api/signals")
-async def get_signals(symbol: Optional[str] = None, limit: int = Query(50, ge=1, le=200))
-    """Get active signals""""""
+async def get_signals(symbol: Optional[str] = None, limit: int = Query(50, ge=1, le=200)):
+    """Get active signals"""
     try:
         signals = viper_service.get_active_signals(symbol)
         signal_list = list(signals.values())[-limit:] if signals else []
@@ -827,8 +851,8 @@ async def get_signals(symbol: Optional[str] = None, limit: int = Query(50, ge=1,
         raise HTTPException(status_code=503, detail=f"Unable to get signals: {e}")
 
 @app.get("/api/history/{symbol}")
-async def get_signal_history(symbol: str, limit: int = Query(50, ge=1, le=200))
-    """Get signal history for a symbol""""""
+async def get_signal_history(symbol: str, limit: int = Query(50, ge=1, le=200)):
+    """Get signal history for a symbol"""
     try:
         history = viper_service.get_signal_history(symbol, limit)
         return {
@@ -841,7 +865,7 @@ async def get_signal_history(symbol: str, limit: int = Query(50, ge=1, le=200))
 
 @app.post("/api/batch/score")
 async def batch_score(request: Request):
-    """Calculate VIPER scores for multiple symbols""""""
+    """Calculate VIPER scores for multiple symbols"""
     try:
         data = await request.json()
         symbols = data.get('symbols', [])
@@ -881,15 +905,15 @@ async def get_scoring_config():
 
 @app.get("/api/stats")
 async def get_scoring_stats():
-    """Get scoring service statistics""""""
+    """Get scoring service statistics"""
     try:
         total_signals = sum(len(history) for history in viper_service.signal_history.values())
         avg_score = 0.0
 
         if viper_service.active_signals:
             scores = [s.get('viper_score', {}).get('overall_score', 0)
-                     for s in viper_service.active_signals.values():
-                     if isinstance(s, dict)]:
+                     for s in viper_service.active_signals.values()
+                     if isinstance(s, dict)]
             if scores:
                 avg_score = sum(scores) / len(scores)
 
@@ -911,10 +935,10 @@ async def get_scoring_stats():
 if __name__ == "__main__":
     port = int(os.getenv("VIPER_SCORING_SERVICE_PORT", 8009))
     logger.info(f"Starting VIPER Scoring Service on port {port}")
-    uvicorn.run()
+    uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=port,
         reload=os.getenv("DEBUG_MODE", "false").lower() == "true",
         log_level="info"
-(    )
+    )
