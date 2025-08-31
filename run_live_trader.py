@@ -408,8 +408,8 @@ class MultiPairVIPERTrader:
                 logger.error(f"❌ No USDT balance available for {symbol}")
                 return None
 
-                # FIXED: EXACTLY $1 MARGIN PER TRADE + COIN'S MAX LEVERAGE
-                margin_value_usdt = 1.0  # Always use exactly $1 margin per trade
+                # FIXED: Use environment-configured minimum margin to meet Bitget requirements
+                margin_value_usdt = self.min_margin_per_trade  # Use configured minimum margin ($5)
 
                 # Check if account has enough balance for $1 margin
                 if usdt_balance < margin_value_usdt:
