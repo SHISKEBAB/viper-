@@ -81,14 +81,30 @@ class FixedVIPERTrader:
             # Configure position mode before trading
             self.configure_position_mode()
 
-            # Load ALL available swap pairs
+            # Load ALL available USDT swap pairs ONLY
             markets = self.exchange.load_markets()
             self.all_pairs = [
                 symbol for symbol in markets.keys()
-                if symbol.endswith(':USDT') and markets[symbol]['active']
+                if (markets[symbol]['active'] and 
+                    markets[symbol].get('type') == 'swap' and
+                    markets[symbol].get('quote') == 'USDT' and
+                    (symbol.endswith('USDT') or 
+                     symbol.endswith(':USDT')) and          # Handle both formats: BTCUSDT or BTC:USDT
+                    symbol.count('USDT') == 1)              # Only one USDT occurrence
             ]
 
             logger.info(f"✅ Connected to Bitget - {len(self.all_pairs)} swap pairs available")
+            
+            # Validation: Ensure ALL pairs are USDT swaps only
+            non_usdt_pairs = [symbol for symbol in self.all_pairs 
+                            if (not (symbol.endswith('USDT') or symbol.endswith(':USDT')) or 
+                                symbol.count('USDT') != 1)]
+            if non_usdt_pairs:
+                logger.error(f"❌ Non-USDT pairs found: {non_usdt_pairs}")
+                self.all_pairs = [p for p in self.all_pairs if p not in non_usdt_pairs]
+                logger.info(f"✅ Filtered to {len(self.all_pairs)} USDT-only pairs")
+            
+            logger.info("✅ VALIDATION PASSED: All pairs are USDT swaps only")
             logger.info(f"🔥 Ready to trade across ALL {len(self.all_pairs)} pairs with unilateral positions!")
             return True
 
