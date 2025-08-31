@@ -43,7 +43,7 @@ class OptimizedEntrySignal:
     position_size: float
     expected_profit: float
     win_probability: float
-    entry_quality: str  # 'PREMIUM', 'EXCELLENT', 'GOOD', 'FAIR', 'POOR'
+    entry_quality: str  # 'EXCELLENT', 'GOOD', 'FAIR', 'POOR'
     entry_factors: Dict[str, float]  # Individual factor scores
     timeframe_confluence: float
     volume_confirmation: float
@@ -94,10 +94,9 @@ class OptimizedTradeEntrySystem:
             'technical_weight': 0.3,
             'max_entry_signals_per_symbol': 3,
             'entry_quality_thresholds': {
-                'PREMIUM': 0.9,
                 'EXCELLENT': 0.8,
-                'GOOD': 0.7,
-                'FAIR': 0.6,
+                'GOOD': 0.6,
+                'FAIR': 0.4,
                 'POOR': 0.0
             }
         }
@@ -597,13 +596,11 @@ class OptimizedTradeEntrySystem:
         return np.clip(base_probability, 0.4, 0.75)
 
     def _determine_entry_quality(self, confidence_score: float) -> str:
-        """Determine entry signal quality"""
+        """Simplified entry signal quality determination"""
 
         thresholds = self.config['entry_quality_thresholds']
 
-        if confidence_score >= thresholds['PREMIUM']:
-            return 'PREMIUM'
-        elif confidence_score >= thresholds['EXCELLENT']:
+        if confidence_score >= thresholds['EXCELLENT']:
             return 'EXCELLENT'
         elif confidence_score >= thresholds['GOOD']:
             return 'GOOD'
@@ -621,8 +618,8 @@ class OptimizedTradeEntrySystem:
         signals = self.entry_signals[symbol]
 
         total_signals = len(signals)
-        premium_signals = len([s for s in signals if s.entry_quality == 'PREMIUM'])
         excellent_signals = len([s for s in signals if s.entry_quality == 'EXCELLENT'])
+        good_signals = len([s for s in signals if s.entry_quality == 'GOOD'])
 
         avg_confidence = np.mean([s.confidence_score for s in signals])
         avg_rr_ratio = np.mean([s.risk_reward_ratio for s in signals])
@@ -631,14 +628,14 @@ class OptimizedTradeEntrySystem:
         return {
             "symbol": symbol,
             "total_signals": total_signals,
-            "premium_signals": premium_signals,
             "excellent_signals": excellent_signals,
+            "good_signals": good_signals,
             "avg_confidence": avg_confidence,
             "avg_rr_ratio": avg_rr_ratio,
             "avg_win_probability": avg_win_prob,
             "quality_distribution": {
                 quality: len([s for s in signals if s.entry_quality == quality])
-                for quality in ['PREMIUM', 'EXCELLENT', 'GOOD', 'FAIR', 'POOR']
+                for quality in ['EXCELLENT', 'GOOD', 'FAIR', 'POOR']
             }
         }
 

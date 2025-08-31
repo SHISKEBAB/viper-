@@ -28,7 +28,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class EntryQuality(Enum):
-    PREMIUM = 5      # Only the absolute best entries
     EXCELLENT = 4    # High quality entries
     GOOD = 3         # Acceptable entries
     FAIR = 2         # Below average entries  
@@ -107,11 +106,10 @@ class BestEntryPointSystem:
             'entry_validity_hours': 2,
             'revalidation_interval_minutes': 15,
             
-            # Quality requirements - Adjusted thresholds
-            'premium_threshold': 0.85,   # Reduced from 0.9
-            'excellent_threshold': 0.75, # Reduced from 0.8
-            'good_threshold': 0.65,      # Reduced from 0.7
-            'fair_threshold': 0.55       # Reduced from 0.6
+            # Quality requirements - Simplified thresholds (removed premium)
+            'excellent_threshold': 0.75, 
+            'good_threshold': 0.60,      
+            'fair_threshold': 0.45
         }
     
     def _initialize_entry_systems(self):
@@ -429,10 +427,8 @@ class BestEntryPointSystem:
         return min(position_size, account_balance * 0.2)  # Max 20% of balance
     
     def _determine_entry_quality(self, confidence_score: float) -> EntryQuality:
-        """Determine entry quality based on confidence score"""
-        if confidence_score >= self.config['premium_threshold']:
-            return EntryQuality.PREMIUM
-        elif confidence_score >= self.config['excellent_threshold']:
+        """Simplified entry quality determination"""
+        if confidence_score >= self.config['excellent_threshold']:
             return EntryQuality.EXCELLENT
         elif confidence_score >= self.config['good_threshold']:
             return EntryQuality.GOOD
@@ -506,8 +502,8 @@ class BestEntryPointSystem:
             'average_confidence': np.mean(confidences) if confidences else 0,
             'average_rr_ratio': np.mean(rr_ratios) if rr_ratios else 0,
             'systems_active': len(self.systems),
-            'premium_entries': quality_counts.get('PREMIUM', 0),
-            'excellent_entries': quality_counts.get('EXCELLENT', 0)
+            'excellent_entries': quality_counts.get('EXCELLENT', 0),
+            'good_entries': quality_counts.get('GOOD', 0)
         }
 
 def get_best_entry_point_system() -> BestEntryPointSystem:

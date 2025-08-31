@@ -41,7 +41,6 @@ class SignalQuality(Enum):
     FAIR = 2
     GOOD = 3
     EXCELLENT = 4
-    PREMIUM = 5
 
 class MarketRegime(Enum):
     TRENDING_UP = "TRENDING_UP"
@@ -133,7 +132,7 @@ class EnhancedTradeEntryOptimizer:
         # Advanced configuration
         self.config = {
             'timeframes': ['15m', '1h', '4h', '1d'],
-            'min_signal_quality': SignalQuality.GOOD,
+            'min_signal_quality': SignalQuality.FAIR,  # Lowered from GOOD
             'max_risk_per_trade': 0.02,  # 2% max risk
             'min_risk_reward': 2.0,      # 1:2 minimum RR
             'max_drawdown_limit': 0.05,  # 5% max drawdown
@@ -681,37 +680,24 @@ class EnhancedTradeEntryOptimizer:
         return None
 
     def _determine_signal_quality(self, confidence: float) -> SignalQuality:
-        """Determine signal quality based on confidence score"""
-        if confidence >= 0.9:
-            return SignalQuality.PREMIUM
-        elif confidence >= 0.8:
+        """Simplified signal quality determination"""
+        if confidence >= 0.8:
             return SignalQuality.EXCELLENT
-        elif confidence >= 0.7:
-            return SignalQuality.GOOD
         elif confidence >= 0.6:
+            return SignalQuality.GOOD
+        elif confidence >= 0.4:
             return SignalQuality.FAIR
         else:
             return SignalQuality.POOR
 
     def _filter_signals_by_quality(self, signals: List[EnhancedEntrySignal]) -> List[EnhancedEntrySignal]:
-        """Filter signals based on quality and other criteria"""
+        """Simplified signal filtering - reduced gating"""
         filtered = []
 
         for signal in signals:
-            # Quality filter
-            if signal.quality.value < self.config['min_signal_quality'].value:
-                continue
-
-            # Risk-reward filter
-            if signal.risk_reward_ratio < self.config['min_risk_reward']:
-                continue
-
-            # Market regime filter (avoid certain regimes for certain signals)
-            if signal.market_regime == MarketRegime.HIGH_VOLATILITY:
-                if signal.signal_type in [EntrySignalType.MEAN_REVERSION]:
-                    continue  # Skip mean reversion in high volatility
-
-            filtered.append(signal)
+            # Only basic quality filter (more permissive)
+            if signal.quality.value >= self.config['min_signal_quality'].value:
+                filtered.append(signal)
 
         return filtered
 
