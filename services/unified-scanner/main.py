@@ -117,9 +117,12 @@ class UnifiedScannerService:
                     data = response.json()
                     all_pairs = data.get('symbols', [])
                     
-                    # Filter for USDT swap pairs only
+                    # Filter for USDT swap pairs ONLY - strict validation
                     swap_pairs = [s for s in all_pairs if 
-                                 ('SWAP' in s.upper() or ':' in s) and 'USDT' in s]
+                                 ('SWAP' in s.upper() or ':' in s) and 
+                                 'USDT' in s and
+                                 s.endswith('USDT') and  # Must end with USDT
+                                 s.count('USDT') == 1]   # Only one USDT occurrence
                     
                     logger.info(f"# Check Retrieved {len(swap_pairs)} USDT swap pairs from market data manager")
                     return swap_pairs[:MAX_PAIRS_LIMIT] if MAX_PAIRS_LIMIT > 0 else swap_pairs
@@ -135,7 +138,10 @@ class UnifiedScannerService:
                 for symbol, market in markets.items():
                     if (market.get('active', False) and 
                         market.get('type') == 'swap' and
-                        'USDT' in symbol):  # Only USDT swap pairs
+                        market.get('quote') == 'USDT' and          # Explicit USDT quote validation
+                        (symbol.endswith('USDT') or 
+                         symbol.endswith(':USDT')) and            # Handle both formats: BTCUSDT or BTC:USDT
+                        symbol.count('USDT') == 1):               # Only one USDT occurrence
                         swap_pairs.append(symbol)
                 
                 logger.info(f"# Check Found {len(swap_pairs)} USDT swap pairs via direct API")

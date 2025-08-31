@@ -164,15 +164,29 @@ class DirectBitgetTrader:
                         # Contracts endpoint
                         self.all_pairs = [item['symbol'] for item in data if item.get('status') == 'normal']
                     elif endpoint == '/api/v2/mix/market/tickers':
-                        # Tickers endpoint
-                        self.all_pairs = [item['symbol'] for item in data if item.get('symbol', '').endswith('USDT')]
+                        # Tickers endpoint - strict USDT filtering
+                        self.all_pairs = [item['symbol'] for item in data 
+                                        if (item.get('symbol', '').endswith('USDT') and
+                                            not item.get('symbol', '').endswith(':USDT') and  # Avoid double notation
+                                            item.get('symbol', '').count('USDT') == 1)]  # Only one USDT occurrence
                     elif endpoint == '/api/v2/public/symbols':
-                        # Symbols endpoint
-                        self.all_pairs = [item['symbol'] for item in data if 'USDT' in item.get('symbol', '')]
+                        # Symbols endpoint - strict USDT filtering
+                        self.all_pairs = [item['symbol'] for item in data 
+                                        if ('USDT' in item.get('symbol', '') and
+                                            item.get('symbol', '').endswith('USDT') and
+                                            item.get('symbol', '').count('USDT') == 1)]  # Only one USDT occurrence
 
                     if self.all_pairs:
+                        # Validation: Ensure ALL pairs are USDT only
+                        non_usdt = [p for p in self.all_pairs 
+                                  if not p.endswith('USDT') or p.count('USDT') != 1]
+                        if non_usdt:
+                            logger.error(f"❌ Non-USDT pairs found: {non_usdt}")
+                            self.all_pairs = [p for p in self.all_pairs if p not in non_usdt]
+                        
                         logger.info(f"📊 Loaded {len(self.all_pairs)} active USDT futures pairs")
                         logger.info(f"🎯 Sample pairs: {self.all_pairs[:5]}")
+                        logger.info("✅ VALIDATION PASSED: All pairs are USDT swaps only")
                         break
                 else:
                     logger.warning(f"⚠️ Endpoint {endpoint} failed: {result}")
