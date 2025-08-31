@@ -38,7 +38,7 @@ class ComprehensiveDebugger:
     """Comprehensive debugger for the entire VIPER trading system"""
 
     def __init__(self):
-        self.project_root = Path(__file__).parent
+        self.project_root = Path(__file__).parent.parent.parent  # Go up to repo root
         self.issues_found = []
         self.fixes_applied = []
         self.components_status = {}
