@@ -197,23 +197,72 @@ class OptimizedScoringEngine:
         
         return scores * 15  # Scale to 15% weight
     
-    def score_opportunities_batch(self, opportunities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Optimized batch scoring with vectorization"""
+    def score_opportunities_batch_websocket_only(self, opportunities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """WEBSOCKET-ONLY optimized batch scoring with vectorization - NO REST FALLBACKS"""
         if not opportunities:
             return []
             
         scored_opportunities = []
         batch_size = len(opportunities)
         
+        logger.info(f"⚡ WEBSOCKET-ONLY batch scoring: {batch_size} opportunities")
+        
         # Pre-allocate arrays for batch processing
         volumes = np.array([opp.get('volume', 0) for opp in opportunities])
         price_changes = np.array([opp.get('change_24h', 0) for opp in opportunities])
         leverages = np.array([opp.get('pair_info', {}).get('leverage', 1) for opp in opportunities])
+        prices = np.array([opp.get('price', 0) for opp in opportunities])
         
-        # Batch calculate scores
-        volume_scores = np.array([self.calculate_volume_score(float(v)) for v in volumes])
-        price_scores = np.array([self.calculate_price_score(float(pc)) for pc in price_changes])
-        leverage_scores = np.array([self.calculate_leverage_score(int(l)) for l in leverages])
+        # Ultra-fast vectorized batch calculations
+        volume_scores = np.interp(volumes, self.volume_thresholds, 
+                                 np.array([0, 5, 15, 25, 35, 45, 50]))
+        price_scores = np.interp(np.abs(price_changes), self.price_change_thresholds,
+                                np.array([0, 10, 20, 30, 40, 50, 60]))
+        leverage_scores = np.interp(leverages, self.leverage_thresholds,
+                                   np.array([10, 15, 20, 25, 20]))
+        
+        # Risk scoring based on volatility and volume
+        volatilities = np.array([opp.get('volatility', 0) for opp in opportunities])
+        risk_scores = np.where(volatilities > 10, -5, 10)  # High volatility = higher risk
+        
+        # Technical scores (simplified for speed)
+        technical_scores = np.where(price_changes > 0, 15, 5)  # Basic momentum
+        
+        # Vectorized weighted combination
+        overall_scores = (
+            volume_scores * self.scoring_weights['volume'] +
+            price_scores * self.scoring_weights['price'] +
+            leverage_scores * self.scoring_weights['leverage'] +
+            technical_scores * self.scoring_weights['technical'] +
+            risk_scores * self.scoring_weights['risk']
+        )
+        
+        # Apply WebSocket quality bonus
+        websocket_bonus = np.array([5.0 if opp.get('websocket_data', False) else 0.0 
+                                   for opp in opportunities])
+        overall_scores += websocket_bonus
+        
+        # Create enhanced opportunity objects
+        for idx, opp in enumerate(opportunities):
+            opp['score_breakdown'] = {
+                'volume': float(volume_scores[idx]),
+                'price': float(price_scores[idx]),
+                'leverage': float(leverage_scores[idx]),
+                'technical': float(technical_scores[idx]),
+                'risk': float(risk_scores[idx]),
+                'websocket_bonus': float(websocket_bonus[idx])
+            }
+            opp['overall_score'] = float(overall_scores[idx])
+            opp['websocket_only'] = True  # Mark as WebSocket-only processed
+            scored_opportunities.append(opp)
+        
+        # Sort by score (highest first) using NumPy for speed
+        sorted_indices = np.argsort(overall_scores)[::-1]
+        scored_opportunities = [scored_opportunities[i] for i in sorted_indices]
+        
+        logger.info(f"🚀 Processed {len(scored_opportunities)} WebSocket-only opportunities")
+        
+        return scored_opportunities
         
         # Get market data for technical scoring
         market_data_batch = [opp.get('market_data', {}) for opp in opportunities]
