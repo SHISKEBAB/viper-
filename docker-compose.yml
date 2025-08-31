@@ -701,6 +701,51 @@ services:
       - viper-network
     restart: unless-stopped
     healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.socket().connect(('localhost', 8015))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 🌐 Jordan Mainnet Node - Blockchain Node Service
+  jordan-mainnet-node:
+    build:
+      context: services/jordan-mainnet-node
+      dockerfile: Dockerfile
+    ports:
+      - "${JORDAN_MAINNET_NODE_PORT:-8022}:8000"
+    environment:
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=jordan-mainnet-node
+      # Jordan Mainnet Configuration
+      - JORDAN_MAINNET_KEY=${JORDAN_MAINNET_KEY}
+      - JORDAN_MAINNET_SECRET=${JORDAN_MAINNET_SECRET}
+      - JORDAN_MAINNET_PASSPHRASE=${JORDAN_MAINNET_PASSPHRASE}
+      - JORDAN_MAINNET_ENABLED=${JORDAN_MAINNET_ENABLED:-true}
+      - JORDAN_MAINNET_RPC_URL=${JORDAN_MAINNET_RPC_URL}
+      - JORDAN_MAINNET_CHAIN_ID=${JORDAN_MAINNET_CHAIN_ID}
+      - JORDAN_MAINNET_EXPLORER=${JORDAN_MAINNET_EXPLORER}
+      # GitHub Integration
+      - GITHUB_PAT=${GITHUB_PAT}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPO=${GITHUB_REPO}
+      # Service URLs
+      - VAULT_URL=http://credential-vault:8008
+      - VAULT_ACCESS_TOKEN=${VAULT_ACCESS_TOKEN_JORDAN_MAINNET_NODE}
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ./blockchain_data:/app/blockchain_data
+    depends_on:
+      redis:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    networks:
+      - viper-network
+    restart: unless-stopped
+    healthcheck:
       test: ["CMD", "python", "-c", "import socket; socket.socket().connect(('localhost', 8000))"]
       interval: 30s
       timeout: 10s

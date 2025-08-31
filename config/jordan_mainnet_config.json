@@ -1,0 +1,113 @@
+{
+  "jordan_mainnet": {
+    "network": {
+      "name": "Jordan Mainnet",
+      "chain_id": "12345",
+      "currency_symbol": "JRD",
+      "decimals": 18,
+      "block_time": 12,
+      "consensus": "PoS",
+      "rpc_url": "https://jordan-mainnet.example.com",
+      "explorer_url": "https://explorer.jordan-mainnet.example.com",
+      "faucet_url": "https://faucet.jordan-mainnet.example.com"
+    },
+    "node": {
+      "sync_mode": "fast",
+      "max_peers": 50,
+      "min_peers": 5,
+      "sync_interval": 300,
+      "health_check_interval": 30,
+      "log_level": "INFO",
+      "enable_metrics": true,
+      "enable_prometheus": true
+    },
+    "rpc": {
+      "enabled": true,
+      "port": 8545,
+      "host": "0.0.0.0",
+      "cors_domains": ["*"],
+      "max_requests_per_second": 100,
+      "timeout": 30,
+      "max_batch_size": 100
+    },
+    "websocket": {
+      "enabled": true,
+      "port": 8546,
+      "host": "0.0.0.0",
+      "max_connections": 1000,
+      "heartbeat_interval": 30
+    },
+    "p2p": {
+      "enabled": true,
+      "port": 30303,
+      "max_peers": 50,
+      "discovery_enabled": true,
+      "bootstrap_nodes": [
+        "enode://example1@jordan-mainnet.example.com:30303",
+        "enode://example2@jordan-mainnet.example.com:30303"
+      ]
+    },
+    "storage": {
+      "data_dir": "/app/blockchain_data",
+      "max_disk_usage": "100GB",
+      "pruning_enabled": true,
+      "pruning_retain": 1000,
+      "cache_size": "2GB"
+    },
+    "mining": {
+      "enabled": false,
+      "miner_address": "",
+      "gas_limit": 30000000,
+      "gas_price": "20000000000"
+    },
+    "api": {
+      "enabled": true,
+      "port": 8000,
+      "host": "0.0.0.0",
+      "rate_limit": 1000,
+      "cors_enabled": true,
+      "authentication": {
+        "enabled": true,
+        "type": "api_key",
+        "header_name": "X-API-Key"
+      }
+    },
+    "monitoring": {
+      "enabled": true,
+      "metrics_port": 9090,
+      "health_check_endpoint": "/health",
+      "status_endpoint": "/status",
+      "log_retention_days": 30,
+      "alerting": {
+        "enabled": true,
+        "webhook_url": "",
+        "email_notifications": false
+      }
+    },
+    "security": {
+      "ssl_enabled": false,
+      "ssl_cert_path": "",
+      "ssl_key_path": "",
+      "firewall_rules": [],
+      "rate_limiting": {
+        "enabled": true,
+        "requests_per_minute": 1000,
+        "burst_size": 100
+      }
+    },
+    "backup": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "retention_days": 7,
+      "compression": true,
+      "encryption": false
+    },
+    "integration": {
+      "mcp_enabled": true,
+      "github_integration": true,
+      "telegram_notifications": false,
+      "discord_webhook": "",
+      "slack_webhook": ""
+    }
+  }
+}
