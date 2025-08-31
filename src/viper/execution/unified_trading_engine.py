@@ -180,6 +180,7 @@ class UnifiedTradingEngine:
                     'defaultType': 'swap',
                     'adjustForTimeDifference': True,
                     'recvWindow': 10000,
+                    'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                 }
             }
 

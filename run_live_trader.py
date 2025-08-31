@@ -97,6 +97,7 @@ class MultiPairVIPERTrader:
                 'defaultType': 'swap',
                 'adjustForTimeDifference': True,
                 'hedgeMode': False,  # Use unilateral (one-way) position mode
+                'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                 },
                 'sandbox': False,
             })

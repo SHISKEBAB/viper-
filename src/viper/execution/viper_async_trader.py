@@ -376,6 +376,7 @@ class ViperAsyncTrader:
                         'defaultType': 'swap',
                         'adjustForTimeDifference': True,
                         'hedgeMode': True,
+                        'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                     },
                     'sandbox': False,
                     'timeout': 30000,  # 30 second timeout

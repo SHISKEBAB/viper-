@@ -74,6 +74,7 @@ class FixedVIPERTrader:
                     'adjustForTimeDifference': True,
                     'recvWindow': 5000,
                     'hedgeMode': False,  # Explicitly set unilateral mode
+                    'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                 },
                 'sandbox': False,
             })

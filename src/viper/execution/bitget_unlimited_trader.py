@@ -100,6 +100,7 @@ class BitgetUnlimitedTrader:
                     'defaultType': 'swap',  # Futures only
                     'adjustForTimeDifference': True,
                     'hedgeMode': True,  # Enable hedge mode for proper position management
+                    'createMarketBuyOrderRequiresPrice': False,  # Fix for market buy orders
                 },
                 'sandbox': False,  # LIVE TRADING ONLY
             })
