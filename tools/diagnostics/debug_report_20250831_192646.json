@@ -1,0 +1,202 @@
+{
+  "debug_timestamp": "2025-08-31T19:26:46.957565",
+  "total_issues_found": 24,
+  "issues_by_type": {
+    "dependency": [
+      {
+        "type": "dependency",
+        "component": "ccxt",
+        "issue": "Missing dependency",
+        "fix": "pip install ccxt"
+      },
+      {
+        "type": "dependency",
+        "component": "numpy",
+        "issue": "Missing dependency",
+        "fix": "pip install numpy"
+      },
+      {
+        "type": "dependency",
+        "component": "pandas",
+        "issue": "Missing dependency",
+        "fix": "pip install pandas"
+      },
+      {
+        "type": "dependency",
+        "component": "dotenv",
+        "issue": "Missing dependency",
+        "fix": "pip install dotenv"
+      }
+    ],
+    "environment": [
+      {
+        "type": "environment",
+        "component": "BITGET_API_KEY",
+        "issue": "Missing environment variable",
+        "fix": "Set BITGET_API_KEY in .env file"
+      },
+      {
+        "type": "environment",
+        "component": "BITGET_API_SECRET",
+        "issue": "Missing environment variable",
+        "fix": "Set BITGET_API_SECRET in .env file"
+      },
+      {
+        "type": "environment",
+        "component": "BITGET_API_PASSWORD",
+        "issue": "Missing environment variable",
+        "fix": "Set BITGET_API_PASSWORD in .env file"
+      }
+    ],
+    "configuration": [
+      {
+        "type": "configuration",
+        "component": ".env",
+        "issue": "Missing configuration file",
+        "fix": "Create .env"
+      },
+      {
+        "type": "configuration",
+        "component": "requirements.txt",
+        "issue": "Missing configuration file",
+        "fix": "Create requirements.txt"
+      },
+      {
+        "type": "configuration",
+        "component": "docker-compose.yml",
+        "issue": "Missing configuration file",
+        "fix": "Create docker-compose.yml"
+      },
+      {
+        "type": "configuration",
+        "component": "config/optimal_mcp_config.py",
+        "issue": "Missing configuration file",
+        "fix": "Create config/optimal_mcp_config.py"
+      }
+    ],
+    "component": [
+      {
+        "type": "component",
+        "component": "ViperAsyncTrader",
+        "issue": "Component file missing",
+        "fix": "Create viper_async_trader.py"
+      },
+      {
+        "type": "component",
+        "component": "V2RiskOptimizedTradingJob",
+        "issue": "Component file missing",
+        "fix": "Create v2_risk_optimized_trading_job.py"
+      },
+      {
+        "type": "component",
+        "component": "VIPERUnifiedTradingJob",
+        "issue": "Component file missing",
+        "fix": "Create viper_unified_trading_job.py"
+      },
+      {
+        "type": "component",
+        "component": "AdvancedTrendDetector",
+        "issue": "Component file missing",
+        "fix": "Create advanced_trend_detector.py"
+      },
+      {
+        "type": "component",
+        "component": "OptimalEntryPointManager",
+        "issue": "Component file missing",
+        "fix": "Create scripts/optimal_entry_point_manager.py"
+      },
+      {
+        "type": "component",
+        "component": "MasterDiagnosticScanner",
+        "issue": "Component file missing",
+        "fix": "Create scripts/master_diagnostic_scanner.py"
+      },
+      {
+        "type": "component",
+        "component": "MathematicalValidator",
+        "issue": "Component file missing",
+        "fix": "Create utils/mathematical_validator.py"
+      },
+      {
+        "type": "component",
+        "component": "get_optimal_mcp_config",
+        "issue": "Component file missing",
+        "fix": "Create config/optimal_mcp_config.py"
+      }
+    ],
+    "import_error": [
+      {
+        "type": "import_error",
+        "component": "ccxt",
+        "issue": "Cannot import CCXT library for exchange integration",
+        "fix": "pip install ccxt"
+      },
+      {
+        "type": "import_error",
+        "component": "numpy",
+        "issue": "Cannot import NumPy for mathematical operations",
+        "fix": "pip install numpy"
+      },
+      {
+        "type": "import_error",
+        "component": "pandas",
+        "issue": "Cannot import Pandas for data manipulation",
+        "fix": "pip install pandas"
+      },
+      {
+        "type": "import_error",
+        "component": "dotenv",
+        "issue": "Cannot import python-dotenv for environment loading",
+        "fix": "pip install dotenv"
+      }
+    ],
+    "api_error": [
+      {
+        "type": "api_error",
+        "component": "Bitget API",
+        "issue": "No module named 'ccxt'",
+        "fix": "Check API credentials and network connectivity"
+      }
+    ]
+  },
+  "fixes_applied": 0,
+  "system_status": "CRITICAL",
+  "critical_issues": [
+    {
+      "type": "dependency",
+      "component": "ccxt",
+      "issue": "Missing dependency",
+      "fix": "pip install ccxt"
+    },
+    {
+      "type": "dependency",
+      "component": "numpy",
+      "issue": "Missing dependency",
+      "fix": "pip install numpy"
+    },
+    {
+      "type": "dependency",
+      "component": "pandas",
+      "issue": "Missing dependency",
+      "fix": "pip install pandas"
+    },
+    {
+      "type": "dependency",
+      "component": "dotenv",
+      "issue": "Missing dependency",
+      "fix": "pip install dotenv"
+    },
+    {
+      "type": "api_error",
+      "component": "Bitget API",
+      "issue": "No module named 'ccxt'",
+      "fix": "Check API credentials and network connectivity"
+    }
+  ],
+  "recommendations": [
+    "\ud83d\udea8 CRITICAL: Fix all critical issues before trading",
+    "\ud83d\udccb Fix 24 identified issues",
+    "\ud83d\udce6 Install missing dependencies",
+    "\ud83d\udd11 Configure API credentials properly"
+  ]
+}
