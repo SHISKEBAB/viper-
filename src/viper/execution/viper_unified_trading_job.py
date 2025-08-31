@@ -909,12 +909,12 @@ class VIPERUnifiedTradingJob:
                 symbol = opportunity.get('symbol', '')
                 market_data = opportunity.get('market_data', {})
 
-                position_risk = self.risk_manager.calculate_dynamic_position_size()
+                position_risk = self.risk_manager.calculate_dynamic_position_size(
                     symbol=symbol,
                     entry_price=market_data.get('close', 0),
                     stop_loss=market_data.get('close', 0) * 0.98,  # 2% stop
                     portfolio_value=self.portfolio_value if hasattr(self, 'portfolio_value') else 10000
-(                )
+                )
 
                 if 'effective_risk_percent' in position_risk:
                     risk_score = max(0, 1 - position_risk['effective_risk_percent'] / 0.05)  # Invert: lower risk = higher score
@@ -1027,8 +1027,8 @@ class VIPERUnifiedTradingJob:
     async def _execute_trades(self, opportunities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Execute trades with position limits across all pairs"""
         executed_trades = []
-        current_positions = len(self.positions)"""
-:
+        current_positions = len(self.positions)
+        
         try:
             # Check total position limit
             available_slots = self.trading_config['max_positions_total'] - current_positions

@@ -27,11 +27,11 @@ import logging
 import traceback
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - MASTER_SCANNER - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class MasterDiagnosticScanner:
     """
@@ -97,14 +97,14 @@ class MasterDiagnosticScanner:
             'entry_point_analysis': {}
         }
     
-    def run_comprehensive_scan(self) -> Dict[str, Any]
+    def run_comprehensive_scan(self) -> Dict[str, Any]:
         """Run the complete comprehensive system scan"""
         print("#" + " # Rocket VIPER MASTER DIAGNOSTIC SCANNER - COMPREHENSIVE ANALYSIS ".center(78) + "#")
         print("#" + " # Search Full System Scan | 🧮 Math Validation | # Chart Workflow Analysis ".center(78) + "#")
         print("#" + " ⚡ Optimal MCP Config | # Target Entry Point Analysis | 📈 Performance ".center(78) + "#")
         
         start_time = time.time()
-        :
+        
         # Phase 1: System Services Diagnostic
         print("# Chart PHASE 1: COMPREHENSIVE SYSTEM SERVICES DIAGNOSTIC")
         self.scan_system_services()

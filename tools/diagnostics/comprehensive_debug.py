@@ -38,7 +38,7 @@ class ComprehensiveDebugger:
     """Comprehensive debugger for the entire VIPER trading system"""
 
     def __init__(self):
-        self.project_root = Path(__file__).parent
+        self.project_root = Path(__file__).parent.parent.parent  # Go up to repo root
         self.issues_found = []
         self.fixes_applied = []
         self.components_status = {}
@@ -151,13 +151,13 @@ class ComprehensiveDebugger:
         """Debug core trading components"""
 
         components = [
-            ('viper_async_trader.py', 'ViperAsyncTrader'),
-            ('v2_risk_optimized_trading_job.py', 'V2RiskOptimizedTradingJob'),
-            ('viper_unified_trading_job.py', 'VIPERUnifiedTradingJob'),
-            ('advanced_trend_detector.py', 'AdvancedTrendDetector'),
+            ('src/viper/execution/viper_async_trader.py', 'ViperAsyncTrader'),
+            ('src/viper/execution/v2_risk_optimized_trading_job.py', 'V2RiskOptimizedTradingJob'),
+            ('src/viper/execution/viper_unified_trading_job.py', 'VIPERUnifiedTradingJob'),
+            ('src/viper/core/advanced_trend_detector.py', 'AdvancedTrendDetector'),
             ('scripts/optimal_entry_point_manager.py', 'OptimalEntryPointManager'),
             ('scripts/master_diagnostic_scanner.py', 'MasterDiagnosticScanner'),
-            ('utils/mathematical_validator.py', 'MathematicalValidator'),
+            ('src/viper/utils/mathematical_validator.py', 'MathematicalValidator'),
             ('config/optimal_mcp_config.py', 'get_optimal_mcp_config')
         ]
 

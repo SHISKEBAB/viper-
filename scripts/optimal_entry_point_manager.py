@@ -40,14 +40,14 @@ except ImportError as e:
     OPTIMAL_MCP_CONFIG = {}
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - ENTRY_OPTIMIZER - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 class OptimalEntryPointManager:
-    """Enhanced entry point optimization manager""""""
+    """Enhanced entry point optimization manager"""
     
     def __init__(self):
         self.project_root = project_root
@@ -138,10 +138,10 @@ class OptimalEntryPointManager:
             logger.error(f"Error analyzing entry point for {symbol}: {e}")
             return {}
     
-    def calculate_optimal_entry_score(self, market_data: Dict[str, Any]) -> Dict[str, Any]
+    def calculate_optimal_entry_score(self, market_data: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate optimal entry score with mathematical validation"""
         
-        entry_result = {:
+        entry_result = {
             'timestamp': datetime.now().isoformat(),
             'symbol': market_data.get('symbol', 'UNKNOWN'),
             'entry_score': 0.0,
@@ -151,7 +151,7 @@ class OptimalEntryPointManager:
             'risk_metrics': {},
             'validation_results': {},
             'optimization_suggestions': []
-        }"""
+        }
         
         try:
             # Validate input data

@@ -34,13 +34,13 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - VERIFICATION - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
-@dataclass"""
+@dataclass
 class VerificationResult:
     component: str
     test_name: str
@@ -1169,14 +1169,14 @@ import talib
             dates = pd.date_range('2024-01-01', periods=data_points, freq='1min')
 
             # Create large DataFrame
-            df = pd.DataFrame(})
+            df = pd.DataFrame({
                 'timestamp': dates,
                 'open': np.random.normal(100, 2, data_points),
                 'high': np.random.normal(102, 1, data_points),
                 'low': np.random.normal(98, 1, data_points),
                 'close': np.random.normal(100, 2, data_points),
                 'volume': np.random.normal(1000000, 200000, data_points)
-(            })
+            })
 
             # Benchmark data processing operations
             process_start = time.time()
