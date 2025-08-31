@@ -1483,15 +1483,38 @@ class ViperAsyncTrader:
         if self.running_tasks:
             await asyncio.gather(*self.running_tasks, return_exceptions=True)
         
-        # Close exchange connection
-        if self.exchange:
-            await self.exchange.close()
-        
-        # Close HTTP session
-        if self.session:
-            await self.session.close()
+        # Clean up resources properly
+        await self.cleanup_resources()
         
         logger.info("# Check Async trading system shutdown complete")
+
+    async def cleanup_resources(self):
+        """Clean up resources properly to avoid warnings"""
+        try:
+            # Close exchange connection
+            if self.exchange and hasattr(self.exchange, 'close'):
+                await self.exchange.close()
+                logger.info("✅ Exchange connection closed")
+        except Exception as e:
+            logger.warning(f"# Warning Error closing exchange: {e}")
+        
+        try:
+            # Close HTTP session
+            if self.session and not self.session.closed:
+                await self.session.close()
+                logger.info("✅ HTTP session closed")
+        except Exception as e:
+            logger.warning(f"# Warning Error closing session: {e}")
+
+    def __del__(self):
+        """Destructor to ensure cleanup"""
+        try:
+            if hasattr(self, 'exchange') and self.exchange:
+                logger.warning("# Warning Trader object destroyed without proper cleanup")
+            if hasattr(self, 'session') and self.session and not self.session.closed:
+                logger.warning("# Warning Session not properly closed")
+        except:
+            pass  # Ignore errors in destructor
 
 async def main():
     """Main async function"""
