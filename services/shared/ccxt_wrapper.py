@@ -9,6 +9,10 @@ import asyncio
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +56,14 @@ class CCXTBitgetWrapper:
         logger.info("✅ CCXT Bitget wrapper initialized")
     
     async def get_account_balance(self) -> Dict[str, Any]:
-        """Get account balance"""
+        """Get account balance - specifically for swaps/futures account"""
         try:
-            balance = await self.exchange.fetch_balance()
-            
+            # Fetch futures/swaps account balance
+            balance = await self.exchange.fetch_balance({'type': 'swap'})
+
             if balance and 'USDT' in balance:
                 usdt_balance = balance['USDT']
+                logger.info(f"🔍 Swaps USDT Balance - Free: {usdt_balance.get('free', 0)}, Used: {usdt_balance.get('used', 0)}, Total: {usdt_balance.get('total', 0)}")
                 return {
                     'code': '00000',
                     'msg': 'success',
@@ -66,12 +72,29 @@ class CCXTBitgetWrapper:
                         'available': str(usdt_balance.get('free', 0)),
                         'locked': str(usdt_balance.get('used', 0)),
                         'total': str(usdt_balance.get('total', 0)),
-                        'unrealizedPL': '0'
+                        'unrealizedPL': str(usdt_balance.get('unrealizedPnl', 0))
                     }]
                 }
             else:
-                return {'code': '500', 'msg': 'No USDT balance found', 'data': []}
-                
+                logger.warning("⚠️ No USDT balance found in swaps account, trying spot account...")
+                # Fallback to spot account
+                balance = await self.exchange.fetch_balance({'type': 'spot'})
+                if balance and 'USDT' in balance:
+                    usdt_balance = balance['USDT']
+                    logger.info(f"🔍 Spot USDT Balance - Free: {usdt_balance.get('free', 0)}, Used: {usdt_balance.get('used', 0)}, Total: {usdt_balance.get('total', 0)}")
+                    return {
+                        'code': '00000',
+                        'msg': 'success (spot account)',
+                        'data': [{
+                            'marginCoin': 'USDT',
+                            'available': str(usdt_balance.get('free', 0)),
+                            'locked': str(usdt_balance.get('used', 0)),
+                            'total': str(usdt_balance.get('total', 0)),
+                            'unrealizedPL': str(usdt_balance.get('unrealizedPnl', 0))
+                        }]
+                    }
+                return {'code': '500', 'msg': 'No USDT balance found in spot or swaps account', 'data': []}
+
         except Exception as e:
             logger.error(f"Error fetching balance: {e}")
             return {'code': '500', 'msg': str(e), 'data': []}
@@ -152,7 +175,15 @@ class CCXTBitgetWrapper:
     async def get_open_orders(self, symbol: str = 'BTCUSDT') -> Dict[str, Any]:
         """Get open orders"""
         try:
-            orders = await self.exchange.fetch_open_orders()
+            # Convert symbol format for CCXT
+            if symbol == 'BTCUSDT':
+                ccxt_symbol = 'BTC/USDT'
+            elif symbol == 'ETHUSDT':
+                ccxt_symbol = 'ETH/USDT'
+            else:
+                ccxt_symbol = symbol
+
+            orders = await self.exchange.fetch_open_orders(ccxt_symbol)
             
             if orders:
                 order_data = []
@@ -184,8 +215,18 @@ class CCXTBitgetWrapper:
                          order_type: str = 'market', price: str = None) -> Dict[str, Any]:
         """Place an order"""
         try:
-            # Convert symbol format for CCXT
-            ccxt_symbol = f"{symbol}:USDT" if ':USDT' not in symbol else symbol
+            # Convert symbol format for CCXT - Bitget uses BTC/USDT format
+            if symbol == 'BTCUSDT':
+                ccxt_symbol = 'BTC/USDT'
+            elif symbol == 'ETHUSDT':
+                ccxt_symbol = 'ETH/USDT'
+            else:
+                # Handle other symbols like XCZNBTCUSDT -> XCZNBTC/USDT, or keep as-is if already formatted
+                if 'USDT' in symbol:
+                    base = symbol.replace('USDT', '')
+                    ccxt_symbol = f"{base}/USDT"
+                else:
+                    ccxt_symbol = symbol
             
             # Convert side format
             ccxt_side = 'buy' if side in ['buy', 'open_long'] else 'sell'
@@ -200,6 +241,9 @@ class CCXTBitgetWrapper:
             if order_type == 'limit' and price:
                 order_params['price'] = float(price)
             
+            # Note: Margin mode is set at exchange level, not per order
+            logger.info(f"🔧 Placing order: symbol={ccxt_symbol}, type={order_type}, side={ccxt_side}, amount={amount}")
+
             order = await self.exchange.create_order(
                 symbol=ccxt_symbol,
                 type=order_type,
