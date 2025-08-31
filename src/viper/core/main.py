@@ -416,21 +416,18 @@ class SimpleVIPERTrader:
                 continue
 
             try:
-                # Use real-time WebSocket data instead of REST API
+                # WEBSOCKET-ONLY MODE - NO REST API FALLBACKS
                 if symbol not in self.realtime_data:
-                    # Fallback to REST API only if WebSocket data unavailable
-                    ticker = self.exchange.fetch_ticker(symbol)
-                    price = ticker['last']
-                    change_24h = ticker.get('percentage', 0)
-                    volume = ticker.get('quoteVolume', 0)
-                    logger.warning(f"⚠️ Using REST fallback for {symbol} - WebSocket data unavailable")
-                else:
-                    # Use real-time WebSocket data
-                    realtime_info = self.realtime_data[symbol]
-                    price = realtime_info['price']
-                    change_24h = realtime_info.get('change_24h', 0)
-                    volume = realtime_info.get('volume', 0)
-                    logger.debug(f"🔗 Using real-time data for {symbol}: ${price}")
+                    # Skip symbol if WebSocket data not available - NO REST FALLBACK
+                    logger.debug(f"⚡ Skipping {symbol} - WebSocket data not ready (WebSocket-only mode)")
+                    continue
+                
+                # Use ONLY real-time WebSocket data for maximum speed
+                realtime_info = self.realtime_data[symbol]
+                price = realtime_info['price']
+                change_24h = realtime_info.get('change_24h', 0)
+                volume = realtime_info.get('volume', 0)
+                logger.debug(f"🔗 WebSocket-only data for {symbol}: ${price}")
 
                 # Enhanced scoring system with real-time data
                 score = self.calculate_signal_score_realtime(symbol, price, change_24h, volume)
