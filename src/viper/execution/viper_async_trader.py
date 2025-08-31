@@ -21,13 +21,23 @@ from datetime import datetime
 from typing import List, Dict, Optional, Set, Tuple
 from dataclasses import dataclass, asdict
 
-# Configure logging first
-import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Configure ADVANCED logging system
+try:
+    from infrastructure.shared.structured_logger import (
+        get_logger, log_advanced_error, monitor_performance, 
+        performance_trace_context, debug_var
+    )
+    logger = get_logger('viper-async-trader')
+    ADVANCED_LOGGING = True
+except ImportError:
+    # Fallback to basic logging
+    import logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    logger = logging.getLogger(__name__)
+    ADVANCED_LOGGING = False
 
 # Import enhanced components with fallbacks
 try:
@@ -173,7 +183,11 @@ class ViperAsyncTrader:
                     logger.warning("# Warning Enhanced system not initialized, using basic data fetching")
                     self.use_optimized_data = False
             except Exception as e:
-                logger.error(f"# X Error getting optimized data streamer: {e}")
+                if ADVANCED_LOGGING:
+                    log_advanced_error(e, "optimized_data_streamer_initialization", 
+                                     data={'component': 'OptimizedDataStreamer', 'fallback': 'basic_data_fetching'})
+                else:
+                    logger.error(f"# X Error getting optimized data streamer: {e}")
                 self.use_optimized_data = False
         else:
             self.use_optimized_data = False
@@ -199,7 +213,11 @@ class ViperAsyncTrader:
                     logger.warning("# Warning Enhanced system not initialized, performance monitoring disabled")
                     self.use_performance_monitoring = False
             except Exception as e:
-                logger.error(f"# X Error getting performance monitor: {e}")
+                if ADVANCED_LOGGING:
+                    log_advanced_error(e, "performance_monitor_initialization", 
+                                     data={'component': 'PerformanceMonitoringSystem', 'fallback': 'disabled'})
+                else:
+                    logger.error(f"# X Error getting performance monitor: {e}")
                 self.use_performance_monitoring = False
         else:
             self.use_performance_monitoring = False
