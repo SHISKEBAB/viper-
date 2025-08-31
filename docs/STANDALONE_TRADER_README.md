@@ -93,14 +93,14 @@ python test_standalone_trader.py
 ### 1. Market Scanning Phase
 ```
 🔍 Scanning 9 trading pairs...
-📊 BTC/USDT:USDT: VIPER Score 87.3 → LONG Signal
-📊 ETH/USDT:USDT: VIPER Score 82.1 → No Signal (below threshold)
+📊 BTC/USDT: VIPER Score 87.3 → LONG Signal
+📊 ETH/USDT: VIPER Score 82.1 → No Signal (below threshold)
 🎯 Found 1 trading opportunities
 ```
 
 ### 2. Signal Processing Phase
 ```
-🎯 Processing LONG signal for BTC/USDT:USDT
+🎯 Processing LONG signal for BTC/USDT
    VIPER Score: 87.3
    Confidence: 87.3%
    Entry Price: $50,234.56
@@ -110,19 +110,19 @@ python test_standalone_trader.py
 
 ### 3. Trade Execution Phase
 ```
-🎯 Executing LONG trade for BTC/USDT:USDT
+🎯 Executing LONG trade for BTC/USDT
    Size: 0.0398 BTC, Price: $50,234.56
    Stop Loss: $49,729.47, Take Profit: $52,244.34
-✅ Trade executed successfully for BTC/USDT:USDT
+✅ Trade executed successfully for BTC/USDT
    Order ID: 1234567890
 ```
 
 ### 4. Position Monitoring Phase
 ```
 📊 Monitoring 1 active positions...
-📈 BTC/USDT:USDT (BUY): $50,756.23 | P&L: 1.04%
-🎯 Take Profit triggered for BTC/USDT:USDT
-✅ Position closed for BTC/USDT:USDT
+📈 BTC/USDT (BUY): $50,756.23 | P&L: 1.04%
+🎯 Take Profit triggered for BTC/USDT
+✅ Position closed for BTC/USDT
    Final P&L: 4.12%
    Reason: take_profit
 ```
@@ -142,15 +142,15 @@ python test_standalone_trader.py
 
 ### Monitored Trading Pairs
 Default pairs (easily customizable in code):
-- BTC/USDT:USDT
-- ETH/USDT:USDT  
-- SOL/USDT:USDT
-- BNB/USDT:USDT
-- ADA/USDT:USDT
-- DOT/USDT:USDT
-- MATIC/USDT:USDT
-- AVAX/USDT:USDT
-- LINK/USDT:USDT
+- BTC/USDT
+- ETH/USDT  
+- SOL/USDT
+- BNB/USDT
+- ADA/USDT
+- DOT/USDT
+- MATIC/USDT
+- AVAX/USDT
+- LINK/USDT
 
 ## 📈 VIPER Scoring Methodology
 
@@ -211,8 +211,8 @@ The system creates detailed logs in `viper_trader.log`:
 2024-01-15 10:30:16 | INFO     | 📊 Monitoring 9 trading pairs
 2024-01-15 10:30:16 | INFO     | ⏰ Scan interval: 30s
 2024-01-15 10:30:17 | INFO     | 🔍 Scanning 9 trading pairs...
-2024-01-15 10:30:18 | INFO     | 📊 BTC/USDT:USDT: VIPER Score 87.3 → LONG Signal
-2024-01-15 10:30:19 | INFO     | ✅ Trade executed successfully for BTC/USDT:USDT
+2024-01-15 10:30:18 | INFO     | 📊 BTC/USDT: VIPER Score 87.3 → LONG Signal
+2024-01-15 10:30:19 | INFO     | ✅ Trade executed successfully for BTC/USDT
 ```
 
 ## 🚨 Important Warnings
@@ -241,8 +241,8 @@ The system creates detailed logs in `viper_trader.log`:
 Edit the `trading_pairs` list in the `StandaloneVIPERTrader.__init__()` method:
 ```python
 self.trading_pairs = [
-    'BTC/USDT:USDT', 'ETH/USDT:USDT', 'SOL/USDT:USDT',
-    'YOUR_PAIR/USDT:USDT'  # Add your pairs here
+    'BTC/USDT', 'ETH/USDT', 'SOL/USDT',
+    'YOUR_PAIR/USDT'  # Add your pairs here
 ]
 ```
 

@@ -107,8 +107,8 @@ class ComprehensiveVerificationSystem:
 
         # Generate test symbols
         self.test_data['symbols'] = [
-            'BTC/USDT:USDT', 'ETH/USDT:USDT', 'ADA/USDT:USDT',
-            'SOL/USDT:USDT', 'DOT/USDT:USDT', 'LINK/USDT:USDT'
+            'BTC/USDT', 'ETH/USDT', 'ADA/USDT',
+            'SOL/USDT', 'DOT/USDT', 'LINK/USDT'
         ]
 
         # Generate edge case data

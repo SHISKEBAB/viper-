@@ -43,10 +43,10 @@ class VIPERFixedTrader:
 
         # Symbol universe
         self.symbols = [
-            'BTC/USDT:USDT', 'ETH/USDT:USDT', 'BNB/USDT:USDT',
-            'SOL/USDT:USDT', 'ADA/USDT:USDT', 'DOT/USDT:USDT',
-            'LINK/USDT:USDT', 'UNI/USDT:USDT', 'AVAX/USDT:USDT',
-            'MATIC/USDT:USDT', 'DOGE/USDT:USDT', 'TRX/USDT:USDT'
+            'BTC/USDT', 'ETH/USDT', 'BNB/USDT',
+            'SOL/USDT', 'ADA/USDT', 'DOT/USDT',
+            'LINK/USDT', 'UNI/USDT', 'AVAX/USDT',
+            'MATIC/USDT', 'DOGE/USDT', 'TRX/USDT'
         ]
 
         # Price history for signal generation

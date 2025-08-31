@@ -107,7 +107,7 @@ class LiveTradingEngine:
             raise Exception("🚫 REAL DATA ONLY: Invalid API credentials. Please use real API credentials, not placeholder values")
 
         # Trading parameters
-        self.symbol = 'BTC/USDT:USDT'  # BTC perpetual contract
+        self.symbol = 'BTC/USDT'  # BTC perpetual contract
         self.position_size = 0
         self.active_trades = []
 

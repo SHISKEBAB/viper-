@@ -114,13 +114,18 @@ class CCXTBitgetWrapper:
     async def get_ticker(self, symbol: str) -> Dict[str, Any]:
         """Get market ticker"""
         try:
-            # Convert symbol format for CCXT - Bitget uses BTC/USDT:USDT format
+            # Convert symbol format for CCXT - Bitget uses BTC/USDT format
             if symbol == 'BTCUSDT':
-                ccxt_symbol = 'BTC/USDT:USDT'
+                ccxt_symbol = 'BTC/USDT'
             elif symbol == 'ETHUSDT':
-                ccxt_symbol = 'ETH/USDT:USDT'
+                ccxt_symbol = 'ETH/USDT'
             else:
-                ccxt_symbol = f"{symbol.replace('USDT', '')}/USDT:USDT"
+                # Handle other symbols like XCZNBTCUSDT -> XCZNBTC/USDT, or keep as-is if already formatted
+                if 'USDT' in symbol:
+                    base = symbol.replace('USDT', '')
+                    ccxt_symbol = f"{base}/USDT"
+                else:
+                    ccxt_symbol = symbol
             
             ticker = await self.exchange.fetch_ticker(ccxt_symbol)
             

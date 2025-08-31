@@ -100,7 +100,7 @@ class MCPServer:
             return await self.handle_backtest_operation(data)
 
         @self.app.get("/market/data")
-        async def get_market_data(symbol: str = "BTC/USDT:USDT"):
+        async def get_market_data(symbol: str = "BTC/USDT"):
             """Get real-time market data via MCP"""
             return await self.handle_market_data_request(symbol)
 

@@ -144,9 +144,9 @@ order_type = "LIMIT" if execution_cost >= 1.5 else "MARKET"
 
 ```
 🎯 Active Positions: 3
-   📈 BTC/USDT:USDT LONG - VIPER Score: 76.6, Cost: $0.26
-   📈 ETH/USDT:USDT SHORT - VIPER Score: 67.1, Cost: $0.27  
-   📈 ADA/USDT:USDT SHORT - VIPER Score: 78.0, Cost: $0.27
+   📈 BTC/USDT LONG - VIPER Score: 76.6, Cost: $0.26
+   📈 ETH/USDT SHORT - VIPER Score: 67.1, Cost: $0.27  
+   📈 ADA/USDT SHORT - VIPER Score: 78.0, Cost: $0.27
 
 💸 Total Execution Cost: $0.80
 📊 Average Cost per Trade: $0.27

@@ -514,7 +514,7 @@ async def start_backtest(request: Request, background_tasks: BackgroundTasks):
         data = await request.json()
         
         # Map completion test parameters to expected format
-        symbol = data.get('symbol', 'BTC/USDT:USDT')
+        symbol = data.get('symbol', 'BTC/USDT')
         timeframe = data.get('timeframe', '1h')
         initial_balance = data.get('initial_balance', 10000.0)
         

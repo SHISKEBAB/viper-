@@ -21,7 +21,7 @@ class SimpleVIPERTrader:
         self.api_password = os.getenv('BITGET_API_PASSWORD', '')
         
         # Trading config
-        self.symbol = "BTC/USDT:USDT"
+        self.symbol = "BTC/USDT"
         self.position_size_usdt = float(os.getenv('POSITION_SIZE_USDT', '10'))
         self.max_leverage = int(os.getenv('MAX_LEVERAGE', '50'))
         self.take_profit_pct = float(os.getenv('TAKE_PROFIT_PCT', '3.0'))

@@ -342,7 +342,7 @@ class VIPERScoringDiagnostic:
                 result['market_count'] = len(markets)
 
                 # Test ticker data
-                symbol = 'BTC/USDT:USDT'
+                symbol = 'BTC/USDT'
                 if symbol in markets:
                     ticker = self.exchange.fetch_ticker(symbol)
                     result['market_data_fetching'] = 'SUCCESS'
@@ -378,7 +378,7 @@ class VIPERScoringDiagnostic:
             try:
                 # Test signal generation endpoint if available
                 response = requests.post('http://localhost:8006/generate-signal',
-                                       json={'symbol': 'BTC/USDT:USDT'},
+                                       json={'symbol': 'BTC/USDT'},
                                        timeout=10)
                 if response.status_code == 200:
                     result['signal_generation_test'] = response.json()
@@ -404,7 +404,7 @@ class VIPERScoringDiagnostic:
             scores = []
 
             for i in range(10):  # Test 10 calculations
-                symbol = 'BTC/USDT:USDT'
+                symbol = 'BTC/USDT'
                 try:
                     ticker = self.exchange.fetch_ticker(symbol)
                     order_book = self.exchange.fetch_order_book(symbol, limit=5)

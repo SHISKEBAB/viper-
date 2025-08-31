@@ -443,7 +443,7 @@ async def main():
     """Main execution function"""
     
     # Test symbols
-    test_symbols = ['BTC/USDT:USDT', 'ETH/USDT:USDT', 'ADA/USDT:USDT']
+    test_symbols = ['BTC/USDT', 'ETH/USDT', 'ADA/USDT']
     
     # Create and run enhanced trader
     trader = EnhancedTradeExecutionEngine()

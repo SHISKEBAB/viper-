@@ -350,9 +350,9 @@ class WebSocketOnlyTrader:
 async def demo_websocket_trader():
     """Demonstrate the WebSocket-only trader"""
     symbols = [
-        "BTC/USDT:USDT", "ETH/USDT:USDT", "ADA/USDT:USDT", "DOT/USDT:USDT",
-        "LINK/USDT:USDT", "UNI/USDT:USDT", "AAVE/USDT:USDT", "SUSHI/USDT:USDT",
-        "ATOM/USDT:USDT", "AVAX/USDT:USDT"
+        "BTC/USDT", "ETH/USDT", "ADA/USDT", "DOT/USDT",
+        "LINK/USDT", "UNI/USDT", "AAVE/USDT", "SUSHI/USDT",
+        "ATOM/USDT", "AVAX/USDT"
     ]
     
     config = WebSocketTraderConfig(

@@ -7288,7 +7288,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "WorkflowStep('fetch_ticker', 'Fetch market ticker data', 'market-data-manager', '/api/market/BTC/USDT:USDT', 2.0),",
+      "code_snippet": "WorkflowStep('fetch_ticker', 'Fetch market ticker data', 'market-data-manager', '/api/market/BTC/USDT', 2.0),",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -7300,7 +7300,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "WorkflowStep('fetch_orderbook', 'Fetch orderbook data', 'market-data-manager', '/api/market/BTC/USDT:USDT', 3.0),",
+      "code_snippet": "WorkflowStep('fetch_orderbook', 'Fetch orderbook data', 'market-data-manager', '/api/market/BTC/USDT', 3.0),",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -7312,7 +7312,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "WorkflowStep('get_market_data', 'Get market data for scoring', 'market-data-manager', '/api/market/BTC/USDT:USDT', 2.0),",
+      "code_snippet": "WorkflowStep('get_market_data', 'Get market data for scoring', 'market-data-manager', '/api/market/BTC/USDT', 2.0),",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57268,7 +57268,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('start_live_trading', {strategy: 'viper', symbol: 'BTC/USDT:USDT', risk_per_trade: 0.02, max_positions: 15})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('start_live_trading', {strategy: 'viper', symbol: 'BTC/USDT', risk_per_trade: 0.02, max_positions: 15})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57280,7 +57280,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('execute_trade', {symbol: 'BTC/USDT:USDT', side: 'buy', order_type: 'market', amount: 0.001})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('execute_trade', {symbol: 'BTC/USDT', side: 'buy', order_type: 'market', amount: 0.001})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57292,7 +57292,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('get_market_data', {symbol: 'BTC/USDT:USDT', timeframe: '1h', limit: 100})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('get_market_data', {symbol: 'BTC/USDT', timeframe: '1h', limit: 100})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57304,7 +57304,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('analyze_pair', {symbol: 'BTC/USDT:USDT', indicators: ['rsi', 'macd', 'bollinger']})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('analyze_pair', {symbol: 'BTC/USDT', indicators: ['rsi', 'macd', 'bollinger']})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57316,7 +57316,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('start_market_scan', {symbols: ['BTC/USDT:USDT', 'ETH/USDT:USDT'], scan_interval: 30})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('start_market_scan', {symbols: ['BTC/USDT', 'ETH/USDT'], scan_interval: 30})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },
@@ -57352,7 +57352,7 @@
       "category": "QUALITY",
       "rule_id": "LINE_TOO_LONG",
       "message": "Line exceeds 120 characters",
-      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('cursor_command', {command: 'analyze_market', symbol: 'BTC/USDT:USDT'})\">",
+      "code_snippet": "<button class=\"command-btn\" onclick=\"executeCommand('cursor_command', {command: 'analyze_market', symbol: 'BTC/USDT'})\">",
       "suggestion": "Break the line into multiple lines for better readability",
       "confidence": 1.0
     },

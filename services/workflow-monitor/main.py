@@ -236,12 +236,12 @@ class WorkflowMonitor:
         """Initialize workflow definitions"""
         self.workflows = {
             'market_data_flow': [
-                WorkflowStep('fetch_ticker', 'Fetch market ticker data', 'market-data-manager', '/api/market/BTC/USDT:USDT', 2.0),
-                WorkflowStep('fetch_orderbook', 'Fetch orderbook data', 'market-data-manager', '/api/market/BTC/USDT:USDT', 3.0),
-                WorkflowStep('fetch_ohlcv', 'Fetch OHLCV data', 'market-data-manager', '/api/market/BTC/USDT:USDT', 3.0)
+                WorkflowStep('fetch_ticker', 'Fetch market ticker data', 'market-data-manager', '/api/market/BTC/USDT', 2.0),
+                WorkflowStep('fetch_orderbook', 'Fetch orderbook data', 'market-data-manager', '/api/market/BTC/USDT', 3.0),
+                WorkflowStep('fetch_ohlcv', 'Fetch OHLCV data', 'market-data-manager', '/api/market/BTC/USDT', 3.0)
             ],
             'signal_generation_flow': [
-                WorkflowStep('get_market_data', 'Get market data for scoring', 'market-data-manager', '/api/market/BTC/USDT:USDT', 2.0),
+                WorkflowStep('get_market_data', 'Get market data for scoring', 'market-data-manager', '/api/market/BTC/USDT', 2.0),
                 WorkflowStep('calculate_score', 'Calculate VIPER score', 'viper-scoring-service', '/api/config', 5.0),
                 WorkflowStep('generate_signal', 'Generate trading signal', 'viper-scoring-service', '/api/config', 3.0)
             ],

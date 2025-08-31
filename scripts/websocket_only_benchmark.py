@@ -44,10 +44,10 @@ class PerformanceBenchmark:
     
     def __init__(self):
         self.test_symbols = [
-            "BTC/USDT:USDT", "ETH/USDT:USDT", "ADA/USDT:USDT", "DOT/USDT:USDT",
-            "LINK/USDT:USDT", "UNI/USDT:USDT", "AAVE/USDT:USDT", "SUSHI/USDT:USDT",
-            "ATOM/USDT:USDT", "AVAX/USDT:USDT", "SOL/USDT:USDT", "MATIC/USDT:USDT",
-            "FTM/USDT:USDT", "ALGO/USDT:USDT", "XTZ/USDT:USDT", "COMP/USDT:USDT"
+            "BTC/USDT", "ETH/USDT", "ADA/USDT", "DOT/USDT",
+            "LINK/USDT", "UNI/USDT", "AAVE/USDT", "SUSHI/USDT",
+            "ATOM/USDT", "AVAX/USDT", "SOL/USDT", "MATIC/USDT",
+            "FTM/USDT", "ALGO/USDT", "XTZ/USDT", "COMP/USDT"
         ]
         
         self.benchmark_results = {}

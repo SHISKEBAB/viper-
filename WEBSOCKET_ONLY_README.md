@@ -61,7 +61,7 @@ from src.viper.core.websocket_only_trader import WebSocketOnlyTrader, WebSocketT
 
 # Configure the trader
 config = WebSocketTraderConfig(
-    symbols=["BTC/USDT:USDT", "ETH/USDT:USDT"],
+    symbols=["BTC/USDT", "ETH/USDT"],
     max_positions=5,
     position_size_usd=100.0,
     min_score_threshold=70.0,

@@ -191,7 +191,7 @@ class WebSocketOnlyStreamer:
 
     def _build_websocket_url(self, symbol: str) -> str:
         """Build WebSocket URL for symbol (Bitget format)"""
-        # Convert symbol format (e.g., BTC/USDT:USDT -> BTCUSDT)
+        # Convert symbol format (e.g., BTC/USDT -> BTCUSDT)
         clean_symbol = symbol.replace('/', '').replace(':USDT', '').upper()
         return f"wss://ws.bitget.com/mix/v1/stream"
 
@@ -406,7 +406,7 @@ class VectorizedBatchProcessor:
 # Example usage and test function
 async def test_websocket_streamer():
     """Test the WebSocket-only streamer"""
-    symbols = ["BTC/USDT:USDT", "ETH/USDT:USDT", "ADA/USDT:USDT"]
+    symbols = ["BTC/USDT", "ETH/USDT", "ADA/USDT"]
     
     config = WebSocketConfig(
         url="wss://ws.bitget.com/mix/v1/stream",

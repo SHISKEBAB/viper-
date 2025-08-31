@@ -307,10 +307,10 @@ class V2RiskOptimizedTradingJob:
 
             # Scan top symbols (you can expand this list)
             symbols_to_scan = [
-                'BTC/USDT:USDT', 'ETH/USDT:USDT', 'BNB/USDT:USDT',
-                'SOL/USDT:USDT', 'ADA/USDT:USDT', 'AVAX/USDT:USDT',
-                'DOT/USDT:USDT', 'LINK/USDT:USDT', 'UNI/USDT:USDT',
-                'MATIC/USDT:USDT', 'LTC/USDT:USDT', 'BCH/USDT:USDT'
+                'BTC/USDT', 'ETH/USDT', 'BNB/USDT',
+                'SOL/USDT', 'ADA/USDT', 'AVAX/USDT',
+                'DOT/USDT', 'LINK/USDT', 'UNI/USDT',
+                'MATIC/USDT', 'LTC/USDT', 'BCH/USDT'
             ]
 
             for symbol in symbols_to_scan:

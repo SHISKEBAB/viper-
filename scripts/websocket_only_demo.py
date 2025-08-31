@@ -25,8 +25,8 @@ class WebSocketOnlyDemo:
     
     def __init__(self):
         self.symbols = [
-            "BTC/USDT:USDT", "ETH/USDT:USDT", "ADA/USDT:USDT", "DOT/USDT:USDT",
-            "LINK/USDT:USDT", "UNI/USDT:USDT", "AAVE/USDT:USDT", "SUSHI/USDT:USDT"
+            "BTC/USDT", "ETH/USDT", "ADA/USDT", "DOT/USDT",
+            "LINK/USDT", "UNI/USDT", "AAVE/USDT", "SUSHI/USDT"
         ]
         
         # Simulated WebSocket data

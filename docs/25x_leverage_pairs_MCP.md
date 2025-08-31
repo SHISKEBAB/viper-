@@ -16,9 +16,9 @@
 ```python
 # Add these pairs to your trading universe
 VIPER_50X_PAIRS = [
-    'BTC/USDT:USDT',
-    'ETH/USDT:USDT',
-    'BNB/USDT:USDT',
+    'BTC/USDT',
+    'ETH/USDT',
+    'BNB/USDT',
     # ... add from scan results
 ]
 
@@ -31,8 +31,8 @@ def get_50x_pairs():
 ```python
 # Configure position limits per pair
 PAIR_POSITION_LIMITS = {
-    'BTC/USDT:USDT': 0.001,  # 0.001 BTC max per trade
-    'ETH/USDT:USDT': 0.01,   # 0.01 ETH max per trade
+    'BTC/USDT': 0.001,  # 0.001 BTC max per trade
+    'ETH/USDT': 0.01,   # 0.01 ETH max per trade
     # ... configure based on scan results
 }
 ```

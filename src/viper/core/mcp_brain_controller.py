@@ -435,7 +435,7 @@ class MCPBrainController:
         menu_html += """
         <div style="margin-bottom: 20px;">
             <h4>💰 Trading Operations</h4>
-            <button class="command-btn" onclick="executeCommand('start_live_trading', {strategy: 'viper', symbol: 'BTC/USDT:USDT', risk_per_trade: 0.02, max_positions: 15})">
+            <button class="command-btn" onclick="executeCommand('start_live_trading', {strategy: 'viper', symbol: 'BTC/USDT', risk_per_trade: 0.02, max_positions: 15})">
                 Start VIPER Trading
             </button>
             <button class="command-btn" onclick="executeCommand('stop_live_trading', {emergency_stop: false})">
@@ -444,7 +444,7 @@ class MCPBrainController:
             <button class="command-btn" onclick="executeCommand('get_portfolio', {include_pnl: true})">
                 Get Portfolio
             </button>
-            <button class="command-btn" onclick="executeCommand('execute_trade', {symbol: 'BTC/USDT:USDT', side: 'buy', order_type: 'market', amount: 0.001})">
+            <button class="command-btn" onclick="executeCommand('execute_trade', {symbol: 'BTC/USDT', side: 'buy', order_type: 'market', amount: 0.001})">
                 Execute Trade
             </button>
         </div>
@@ -454,13 +454,13 @@ class MCPBrainController:
         menu_html += """
         <div style="margin-bottom: 20px;">
             <h4># Chart Market Data</h4>
-            <button class="command-btn" onclick="executeCommand('get_market_data', {symbol: 'BTC/USDT:USDT', timeframe: '1h', limit: 100})">
+            <button class="command-btn" onclick="executeCommand('get_market_data', {symbol: 'BTC/USDT', timeframe: '1h', limit: 100})">
                 Get Market Data
             </button>
-            <button class="command-btn" onclick="executeCommand('analyze_pair', {symbol: 'BTC/USDT:USDT', indicators: ['rsi', 'macd', 'bollinger']})">
+            <button class="command-btn" onclick="executeCommand('analyze_pair', {symbol: 'BTC/USDT', indicators: ['rsi', 'macd', 'bollinger']})">
                 Analyze Pair
             </button>
-            <button class="command-btn" onclick="executeCommand('start_market_scan', {symbols: ['BTC/USDT:USDT', 'ETH/USDT:USDT'], scan_interval: 30})">
+            <button class="command-btn" onclick="executeCommand('start_market_scan', {symbols: ['BTC/USDT', 'ETH/USDT'], scan_interval: 30})">
                 Start Market Scan
             </button>
             <button class="command-btn" onclick="executeCommand('stop_market_scan')">
@@ -489,7 +489,7 @@ class MCPBrainController:
         menu_html += """
         <div style="margin-bottom: 20px;">
             <h4>🤖 AI Control</h4>
-            <button class="command-btn" onclick="executeCommand('cursor_command', {command: 'analyze_market', symbol: 'BTC/USDT:USDT'})">
+            <button class="command-btn" onclick="executeCommand('cursor_command', {command: 'analyze_market', symbol: 'BTC/USDT'})">
                 AI Market Analysis
             </button>
             <button class="command-btn" onclick="executeCommand('cursor_command', {command: 'suggest_trade', confidence_threshold: 85})">

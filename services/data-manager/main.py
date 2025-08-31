@@ -104,7 +104,7 @@ class DataManager:
 
         except Exception as e:
             logger.warning(f"# X Error fetching trading pairs: {e}, using fallback")
-            return ['BTC/USDT:USDT', 'ETH/USDT:USDT', 'BNB/USDT:USDT']  # Fallback
+            return ['BTC/USDT', 'ETH/USDT', 'BNB/USDT']  # Fallback
 
         logger.info("# Construction Initializing Data Manager...")
 

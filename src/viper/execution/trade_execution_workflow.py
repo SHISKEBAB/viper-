@@ -38,7 +38,7 @@ class TradingWorkflow:
         self.position_synchronizer_url = "http://localhost:8014"
 
         # Trading parameters
-        self.symbol = "BTC/USDT:USDT"
+        self.symbol = "BTC/USDT"
         self.risk_per_trade = 0.02  # 2% per trade
         self.max_position_size_percent = 0.1  # 10% of capital
 

@@ -88,9 +88,9 @@ class StandaloneVIPERTrader:
         
         # Trading pairs to monitor
         self.trading_pairs = [
-            'BTC/USDT:USDT', 'ETH/USDT:USDT', 'SOL/USDT:USDT', 
-            'BNB/USDT:USDT', 'ADA/USDT:USDT', 'DOT/USDT:USDT',
-            'MATIC/USDT:USDT', 'AVAX/USDT:USDT', 'LINK/USDT:USDT'
+            'BTC/USDT', 'ETH/USDT', 'SOL/USDT', 
+            'BNB/USDT', 'ADA/USDT', 'DOT/USDT',
+            'MATIC/USDT', 'AVAX/USDT', 'LINK/USDT'
         ]
         
         # Initialize exchange connection

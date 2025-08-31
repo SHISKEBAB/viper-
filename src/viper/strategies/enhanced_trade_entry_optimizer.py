@@ -818,11 +818,11 @@ async def main():
 
     # Test symbols
     test_symbols = [
-        'BTC/USDT:USDT',
-        'ETH/USDT:USDT',
-        'ADA/USDT:USDT',
-        'SOL/USDT:USDT',
-        'DOT/USDT:USDT'
+        'BTC/USDT',
+        'ETH/USDT',
+        'ADA/USDT',
+        'SOL/USDT',
+        'DOT/USDT'
     ]
 
 

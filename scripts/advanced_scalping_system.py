@@ -669,16 +669,16 @@ def main():
 
         # Define symbols to scalp (high-volume pairs)
         symbols = [
-            'BTC/USDT:USDT',
-            'ETH/USDT:USDT',
-            'BNB/USDT:USDT',
-            'ADA/USDT:USDT',
-            'SOL/USDT:USDT',
-            'DOGE/USDT:USDT',
-            'LTC/USDT:USDT',
-            'LINK/USDT:USDT',
-            'UNI/USDT:USDT',
-            'AAVE/USDT:USDT'
+            'BTC/USDT',
+            'ETH/USDT',
+            'BNB/USDT',
+            'ADA/USDT',
+            'SOL/USDT',
+            'DOGE/USDT',
+            'LTC/USDT',
+            'LINK/USDT',
+            'UNI/USDT',
+            'AAVE/USDT'
         ]
 
         # Run scalping session

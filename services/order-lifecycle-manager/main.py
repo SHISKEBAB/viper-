@@ -205,11 +205,11 @@ class OrderLifecycleManager:
                 return symbols
 
             # Fallback to common symbols
-            return ['BTC/USDT:USDT', 'ETH/USDT:USDT', 'ADA/USDT:USDT']
+            return ['BTC/USDT', 'ETH/USDT', 'ADA/USDT']
 
         except Exception as e:
             logger.error(f"# X Error getting supported symbols: {e}")
-            return ['BTC/USDT:USDT', 'ETH/USDT:USDT', 'ADA/USDT:USDT']
+            return ['BTC/USDT', 'ETH/USDT', 'ADA/USDT']
 
     def calculate_position_size(self, signal: Dict) -> float:
         """Calculate position size based on signal and risk management"""

@@ -263,24 +263,24 @@ class SimpleVIPERTrader:
         # ALL AVAILABLE TRADING PAIRS (will be filtered by leverage)
         # CLEAN BITGET SYMBOLS ONLY (removed all undefined symbols)
         self.all_symbols = [
-            'BTC/USDT:USDT', 'ETH/USDT:USDT', 'BNB/USDT:USDT',
-            'SOL/USDT:USDT', 'ADA/USDT:USDT', 'DOT/USDT:USDT',
-            'LINK/USDT:USDT', 'UNI/USDT:USDT', 'AVAX/USDT:USDT',
-            'DOGE/USDT:USDT', 'TRX/USDT:USDT', 'ETC/USDT:USDT',
-            'ICP/USDT:USDT', 'FIL/USDT:USDT', 'XRP/USDT:USDT',
-            'LTC/USDT:USDT', 'BCH/USDT:USDT', 'THETA/USDT:USDT',
-            'SUSHI/USDT:USDT', 'AAVE/USDT:USDT', 'COMP/USDT:USDT',
-            'CRV/USDT:USDT', 'ZRX/USDT:USDT', 'BAT/USDT:USDT',
-            'MANA/USDT:USDT', 'ENJ/USDT:USDT', 'STORJ/USDT:USDT',
-            'GRT/USDT:USDT', 'CHZ/USDT:USDT', 'SAND/USDT:USDT',
-            'AXS/USDT:USDT', 'SLP/USDT:USDT', 'ALICE/USDT:USDT',
-            'TLM/USDT:USDT', 'WAVES/USDT:USDT', 'NEAR/USDT:USDT',
-            'ALGO/USDT:USDT', 'HBAR/USDT:USDT', 'EGLD/USDT:USDT',
-            'FLOW/USDT:USDT', 'VET/USDT:USDT', 'IOTX/USDT:USDT',
-            'RVN/USDT:USDT', 'OP/USDT:USDT', 'ARB/USDT:USDT',
-            'PEPE/USDT:USDT', 'SHIB/USDT:USDT', 'TIA/USDT:USDT',
-            'ORDI/USDT:USDT', 'SUI/USDT:USDT', 'INJ/USDT:USDT',
-            'SEI/USDT:USDT', 'JTO/USDT:USDT'
+            'BTC/USDT', 'ETH/USDT', 'BNB/USDT',
+            'SOL/USDT', 'ADA/USDT', 'DOT/USDT',
+            'LINK/USDT', 'UNI/USDT', 'AVAX/USDT',
+            'DOGE/USDT', 'TRX/USDT', 'ETC/USDT',
+            'ICP/USDT', 'FIL/USDT', 'XRP/USDT',
+            'LTC/USDT', 'BCH/USDT', 'THETA/USDT',
+            'SUSHI/USDT', 'AAVE/USDT', 'COMP/USDT',
+            'CRV/USDT', 'ZRX/USDT', 'BAT/USDT',
+            'MANA/USDT', 'ENJ/USDT', 'STORJ/USDT',
+            'GRT/USDT', 'CHZ/USDT', 'SAND/USDT',
+            'AXS/USDT', 'SLP/USDT', 'ALICE/USDT',
+            'TLM/USDT', 'WAVES/USDT', 'NEAR/USDT',
+            'ALGO/USDT', 'HBAR/USDT', 'EGLD/USDT',
+            'FLOW/USDT', 'VET/USDT', 'IOTX/USDT',
+            'RVN/USDT', 'OP/USDT', 'ARB/USDT',
+            'PEPE/USDT', 'SHIB/USDT', 'TIA/USDT',
+            'ORDI/USDT', 'SUI/USDT', 'INJ/USDT',
+            'SEI/USDT', 'JTO/USDT'
         ]
 
         # Filtered symbols (only those supporting min leverage)
