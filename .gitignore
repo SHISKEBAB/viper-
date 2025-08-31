@@ -147,34 +147,37 @@ backtest_results/
 __pycache__/
 *.pyc
 
-# Repository Organization Rules
-# Prevent files in root directory (except allowed ones)
+# Repository Organization Rules - Updated
+# Files that should NOT be in root directory
 /*.py
 !setup.py
-!start_trading.py
-!launch_viper.py
-!system_launch_status.py
+
+# Config files (should be in config/)  
 /*.json
 !pyproject.toml
-/*.txt
-!requirements.txt
+
+# Documentation (should be in docs/)
 /*.md
 !README.md
+
+# Backup files (should be in deployments/backups/)
 /backup_*
 /*_backup*
+/*.backup
+/*.bak
+
+# Temporary files (should not be committed)
 /temp_*
 /tmp_*
 
-# Demo, test, and development files (removed from live system)
-demo_*.py
-test_*.py
-*_demo.py
-*_test.py
-validate_*.py
-!validate_launch_system.py
-!system_launch_status.py
-scan_*.py
-show_*.py
+# Reports (should be in reports/)
+/*.html
+/*.pdf
+/*_report.*
+/*_results/
+/optimization_*/
+/demo_results/
+/test_results/
 
 # Node.js dependencies
 node_modules/
@@ -209,7 +212,5 @@ tmp/
 .env.backup*
 
 # Generated reports (should be in reports/ directory)
-/*.html
-/*.pdf
-/*_report.*
+# Empty line - reports handled above
 viper_env/
