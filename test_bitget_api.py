@@ -210,11 +210,11 @@ async def test_bitget_api():
     timestamp = str(int(time.time() * 1000))
     body_json = json.dumps(order_params, separators=(',', ':'))
     message = timestamp + 'POST' + '/api/v2/mix/order/place-order' + body_json
-        signature = hmac.new(
+    signature = hmac.new(
         auth.api_secret.encode('utf-8'),
-            message.encode('utf-8'),
-            hashlib.sha256
-        ).digest()
+        message.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
     manual_sig = base64.b64encode(signature).decode('utf-8')
 
     manual_headers = {
