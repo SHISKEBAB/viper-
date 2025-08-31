@@ -16,6 +16,9 @@ import time
 import logging
 import sys
 import ccxt
+import requests
+import json
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -26,16 +29,23 @@ from typing import Optional, Dict, List, Any
 # Import from shared services module
 try:
     from shared import get_credential_client
+    from shared.bitget_auth import get_bitget_authenticator, BitgetAuthenticator
     CREDENTIAL_CLIENT_AVAILABLE = True
+    BITGET_AUTH_AVAILABLE = True
 except ImportError:
     # Fallback to direct import if shared module not available
     try:
         sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'shared'))
         from credential_client import get_credential_client
+        from bitget_auth import get_bitget_authenticator, BitgetAuthenticator
         CREDENTIAL_CLIENT_AVAILABLE = True
+        BITGET_AUTH_AVAILABLE = True
     except ImportError:
         get_credential_client = None
+        get_bitget_authenticator = None
+        BitgetAuthenticator = None
         CREDENTIAL_CLIENT_AVAILABLE = False
+        BITGET_AUTH_AVAILABLE = False
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
@@ -86,13 +96,14 @@ class RateLimiter:
         self.request_count += 1
 
 class ExchangeConnector:
-    """Exchange connector for Bitget API interactions"""
+    """Exchange connector for Bitget USDT swap API interactions with HMAC authentication"""
 
     def __init__(self):
         self.exchange = None
         self.redis_client = None
         self.rate_limiter = RateLimiter(requests_per_second=2.0)
         self.is_running = False
+        self.authenticator = None
 
         # Load configuration
         self.api_key = ''
@@ -106,11 +117,70 @@ class ExchangeConnector:
         if CREDENTIAL_CLIENT_AVAILABLE:
             self.credential_client = get_credential_client()
 
-        # Trading parameters
-        self.supported_symbols = ['BTC/USDT:USDT', 'ETH/USDT:USDT', 'BNB/USDT:USDT']
+        # Trading parameters - Updated for USDT swap focus
+        self.supported_symbols = [
+            'BTCUSDT_UMCBL', 'ETHUSDT_UMCBL', 'BNBUSDT_UMCBL', 
+            'ADAUSDT_UMCBL', 'SOLUSDT_UMCBL', 'MATICUSDT_UMCBL'
+        ]
         self.active_orders = {}
 
-        logger.info("# Construction Initializing Exchange Connector...")
+        logger.info("# Construction Initializing Exchange Connector for USDT Swaps...")
+
+    def initialize_bitget_auth(self) -> bool:
+        """Initialize Bitget HMAC authenticator"""
+        try:
+            if BITGET_AUTH_AVAILABLE and all([self.api_key, self.api_secret, self.api_password]):
+                self.authenticator = BitgetAuthenticator(
+                    api_key=self.api_key,
+                    api_secret=self.api_secret, 
+                    api_password=self.api_password
+                )
+                logger.info("# Check Bitget HMAC authenticator initialized")
+                return True
+            else:
+                logger.warning("# Warning Bitget authentication not available or credentials missing")
+                return False
+        except Exception as e:
+            logger.error(f"# X Failed to initialize Bitget authenticator: {e}")
+            return False
+
+    def make_authenticated_request(self, method: str, endpoint_type: str, 
+                                 params: Dict = None, body: Dict = None) -> Optional[Dict]:
+        """Make authenticated request to Bitget USDT swap API"""
+        if not self.authenticator:
+            logger.error("# X Authenticator not initialized")
+            return None
+
+        try:
+            self.rate_limiter.wait_if_needed()
+
+            # Get endpoint and build URL
+            endpoint = self.authenticator.get_swap_endpoint(endpoint_type)
+            url = self.authenticator.build_swap_url(endpoint_type)
+
+            # Get authentication headers
+            headers = self.authenticator.get_auth_headers(method, endpoint, params, body)
+
+            # Make request
+            if method.upper() == 'GET':
+                response = requests.get(url, headers=headers, params=params, timeout=10)
+            elif method.upper() == 'POST':
+                response = requests.post(url, headers=headers, json=body, timeout=10)
+            else:
+                raise ValueError(f"Unsupported method: {method}")
+
+            response.raise_for_status()
+            result = response.json()
+
+            if result.get('code') != '00000':
+                logger.error(f"# X API error: {result.get('msg', 'Unknown error')}")
+                return None
+
+            return result.get('data')
+
+        except Exception as e:
+            logger.error(f"# X Authenticated request failed: {e}")
+            return None
 
     async def load_credentials(self) -> bool:
         """Load API credentials from the credential vault"""
@@ -179,7 +249,7 @@ class ExchangeConnector:
             return True
 
     def initialize_exchange(self) -> bool:
-        """Initialize Bitget exchange connection"""
+        """Initialize Bitget exchange connection with USDT swap focus"""
         try:
             if not all([self.api_key, self.api_secret, self.api_password]):
                 logger.warning("# Warning API credentials not provided - running in read-only mode")
@@ -203,7 +273,11 @@ class ExchangeConnector:
                 })
 
             self.exchange.load_markets()
-            logger.info("# Check Exchange connection established")
+            
+            # Initialize Bitget HMAC authenticator for direct API calls
+            auth_success = self.initialize_bitget_auth()
+            
+            logger.info(f"# Check Exchange connection established (HMAC auth: {auth_success})")
             return True
 
         except Exception as e:
@@ -222,12 +296,31 @@ class ExchangeConnector:
             return False
 
     def validate_symbol(self, symbol: str) -> bool:
-        """Validate if symbol is supported"""
+        """Validate if symbol is supported USDT swap"""
+        # Convert to swap format if needed
+        if self.authenticator:
+            swap_symbol = self.authenticator.get_usdt_swap_symbol(symbol)
+            return swap_symbol in self.supported_symbols or symbol in self.supported_symbols
         return symbol in self.supported_symbols
 
     def get_account_balance(self) -> Optional[Dict]:
-        """Get account balance"""
+        """Get USDT account balance using direct API"""
         try:
+            # Use direct API call with HMAC authentication
+            if self.authenticator:
+                params = {'productType': 'UMCBL', 'marginCoin': 'USDT'}
+                balance_data = self.make_authenticated_request('GET', 'account', params=params)
+                
+                if balance_data:
+                    return {
+                        'total': float(balance_data.get('usdtEquity', 0)),
+                        'free': float(balance_data.get('available', 0)),
+                        'used': float(balance_data.get('locked', 0)),
+                        'unrealized_pnl': float(balance_data.get('unrealizedPL', 0)),
+                        'timestamp': datetime.now().isoformat()
+                    }
+            
+            # Fallback to CCXT
             self.rate_limiter.wait_if_needed()
             balance = self.exchange.fetch_balance()
 
@@ -244,8 +337,31 @@ class ExchangeConnector:
             return None
 
     def get_positions(self) -> Optional[List]:
-        """Get current positions"""
+        """Get current USDT swap positions using direct API"""
         try:
+            # Use direct API call with HMAC authentication
+            if self.authenticator:
+                params = self.authenticator.prepare_position_params()
+                positions_data = self.make_authenticated_request('GET', 'positions', params=params)
+                
+                if positions_data:
+                    formatted_positions = []
+                    for position in positions_data:
+                        if float(position.get('total', 0)) != 0:  # Only include open positions
+                            formatted_positions.append({
+                                'symbol': position['symbol'],
+                                'side': position['holdSide'],
+                                'size': float(position['total']),
+                                'entry_price': float(position['averageOpenPrice'] or 0),
+                                'mark_price': float(position['markPrice'] or 0),
+                                'unrealized_pnl': float(position['unrealizedPL'] or 0),
+                                'leverage': float(position['leverage'] or 1),
+                                'margin_mode': position.get('marginMode', 'isolated'),
+                                'timestamp': datetime.now().isoformat()
+                            })
+                    return formatted_positions
+            
+            # Fallback to CCXT
             self.rate_limiter.wait_if_needed()
             positions = self.exchange.fetch_positions()
 
@@ -269,11 +385,33 @@ class ExchangeConnector:
             return None
 
     def get_ticker(self, symbol: str) -> Optional[Dict]:
-        """Get ticker data for symbol"""
+        """Get ticker data for USDT swap symbol using direct API"""
         if not self.validate_symbol(symbol):
             return None
 
         try:
+            # Use direct API call with HMAC authentication
+            if self.authenticator:
+                params = self.authenticator.prepare_market_data_params(symbol)
+                ticker_data = self.make_authenticated_request('GET', 'ticker', params=params)
+                
+                if ticker_data:
+                    return {
+                        'symbol': symbol,
+                        'price': float(ticker_data.get('last', 0)),
+                        'bid': float(ticker_data.get('bidPr', 0)),
+                        'ask': float(ticker_data.get('askPr', 0)),
+                        'volume': float(ticker_data.get('baseVolume', 0)),
+                        'quote_volume': float(ticker_data.get('quoteVolume', 0)),
+                        'high': float(ticker_data.get('high24h', 0)),
+                        'low': float(ticker_data.get('low24h', 0)),
+                        'open': float(ticker_data.get('open24h', 0)),
+                        'change': float(ticker_data.get('change24h', 0)),
+                        'change_percent': float(ticker_data.get('changePercent24h', 0)),
+                        'timestamp': datetime.now().isoformat()
+                    }
+            
+            # Fallback to CCXT
             self.rate_limiter.wait_if_needed()
             ticker = self.exchange.fetch_ticker(symbol)
 
@@ -293,11 +431,25 @@ class ExchangeConnector:
             return None
 
     def get_order_book(self, symbol: str, limit: int = 20) -> Optional[Dict]:
-        """Get order book for symbol"""
+        """Get order book for USDT swap symbol using direct API"""
         if not self.validate_symbol(symbol):
             return None
 
         try:
+            # Use direct API call with HMAC authentication
+            if self.authenticator:
+                params = self.authenticator.prepare_market_data_params(symbol, limit=str(limit))
+                orderbook_data = self.make_authenticated_request('GET', 'orderbook', params=params)
+                
+                if orderbook_data:
+                    return {
+                        'symbol': symbol,
+                        'bids': [[float(bid[0]), float(bid[1])] for bid in orderbook_data.get('bids', [])],
+                        'asks': [[float(ask[0]), float(ask[1])] for ask in orderbook_data.get('asks', [])],
+                        'timestamp': datetime.now().isoformat()
+                    }
+            
+            # Fallback to CCXT
             self.rate_limiter.wait_if_needed()
             order_book = self.exchange.fetch_order_book(symbol, limit)
 
@@ -312,8 +464,8 @@ class ExchangeConnector:
             return None
 
     def create_order(self, symbol: str, side: str, order_type: str,
-                    amount: float, price: Optional[float] = None) -> Optional[Dict]:
-        """Create a new order"""
+                    amount: float, price: Optional[float] = None, leverage: int = 20) -> Optional[Dict]:
+        """Create a new USDT swap order using direct API"""
         if not self.validate_symbol(symbol):
             return None
 
@@ -322,6 +474,50 @@ class ExchangeConnector:
             return None
 
         try:
+            # Use direct API call with HMAC authentication
+            if self.authenticator:
+                # Prepare order parameters for USDT swap
+                order_params = self.authenticator.prepare_swap_order_params(
+                    symbol=symbol,
+                    side=f"open_{side.lower()}",  # open_long or open_short
+                    size=str(amount),
+                    order_type=order_type.lower(),
+                    price=str(price) if price else None,
+                    leverage=leverage
+                )
+                
+                order_result = self.make_authenticated_request('POST', 'place_order', body=order_params)
+                
+                if order_result:
+                    order_id = order_result.get('orderId')
+                    
+                    # Store order in active orders
+                    self.active_orders[order_id] = {
+                        'symbol': symbol,
+                        'side': side,
+                        'type': order_type,
+                        'amount': amount,
+                        'price': price,
+                        'leverage': leverage,
+                        'status': 'open',
+                        'timestamp': datetime.now().isoformat()
+                    }
+
+                    logger.info(f"# Check USDT Swap Order created: {order_id} - {side.upper()} {amount} {symbol}")
+
+                    return {
+                        'order_id': order_id,
+                        'symbol': symbol,
+                        'side': side,
+                        'type': order_type,
+                        'amount': amount,
+                        'price': price,
+                        'leverage': leverage,
+                        'status': 'open',
+                        'timestamp': datetime.now().isoformat()
+                    }
+            
+            # Fallback to CCXT
             self.rate_limiter.wait_if_needed()
 
             # Create order
@@ -502,9 +698,12 @@ async def health_check():
             "service": "exchange-connector",
             "exchange_connected": connector.exchange is not None,
             "redis_connected": connector.redis_client is not None,
+            "hmac_authenticator": connector.authenticator is not None,
             "api_credentials": bool(all([connector.api_key, connector.api_secret, connector.api_password])),
+            "supported_symbols": connector.supported_symbols,
             "active_orders": len(connector.active_orders),
-            "monitoring_running": connector.is_running
+            "monitoring_running": connector.is_running,
+            "usdt_swap_mode": True
         }
     except Exception as e:
         return JSONResponse(
@@ -559,7 +758,7 @@ async def get_order_book(
 
 @app.post("/api/orders")
 async def create_order(request: Request):
-    """Create a new order"""
+    """Create a new USDT swap order with leverage support"""
     try:
         data = await request.json()
 
@@ -573,26 +772,36 @@ async def create_order(request: Request):
         order_type = data['type']
         amount = float(data['amount'])
         price = data.get('price')
+        leverage = int(data.get('leverage', 20))  # Default 20x leverage
 
-        if side.lower() not in ['buy', 'sell']:
-            raise HTTPException(status_code=400, detail="Side must be 'buy' or 'sell'")
+        if side.lower() not in ['buy', 'sell', 'long', 'short']:
+            raise HTTPException(status_code=400, detail="Side must be 'buy', 'sell', 'long', or 'short'")
 
         if order_type.lower() not in ['market', 'limit']:
             raise HTTPException(status_code=400, detail="Type must be 'market' or 'limit'")
 
         if order_type.lower() == 'limit' and price is None:
             raise HTTPException(status_code=400, detail="Price required for limit orders")
+        
+        if leverage < 1 or leverage > 125:
+            raise HTTPException(status_code=400, detail="Leverage must be between 1 and 125")
 
-        result = connector.create_order(symbol, side, order_type, amount, price)
+        # Convert side for swap trading
+        if side.lower() in ['buy', 'long']:
+            swap_side = 'long'
+        else:
+            swap_side = 'short'
+
+        result = connector.create_order(symbol, swap_side, order_type, amount, price, leverage)
         if result is None:
-            raise HTTPException(status_code=503, detail="Failed to create order")
+            raise HTTPException(status_code=503, detail="Failed to create USDT swap order")
 
         return result
 
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"# X Error creating order: {e}")
+        logger.error(f"# X Error creating USDT swap order: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.delete("/api/orders/{order_id}")

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 # Rocket VIPER Trading Bot - Unified Market Data Manager
-Centralized market data collection, caching, and distribution service
+Centralized market data collection, caching, and distribution service with USDT swap focus
 
 Features:
-- Unified Bitget API integration
+- Unified Bitget API integration with HMAC authentication
+- USDT swap endpoints for enhanced data accuracy
 - Intelligent rate limiting and batching
 - Real-time data streaming
 - Redis caching and pub/sub
@@ -17,10 +18,25 @@ import json
 import time
 import logging
 import threading
+import sys
+import requests
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
 import redis
 import ccxt
+from typing import Dict, List, Optional, Any
+
+# Add shared modules to path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'shared'))
+
+try:
+    from bitget_auth import BitgetAuthenticator
+    BITGET_AUTH_AVAILABLE = True
+except ImportError:
+    BitgetAuthenticator = None
+    BITGET_AUTH_AVAILABLE = False
+    logger.warning("Bitget authenticator not available")
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
@@ -39,15 +55,40 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class UnifiedMarketDataManager:
-    """Unified market data manager for all trading operations"""
+    """Unified market data manager for USDT swap trading operations"""
 
     def __init__(self):
         self.exchange = None
         self.redis_client = None
+        self.authenticator = None
         self.is_running = False
         self.symbols_cache = []
         self.market_data_cache = {}
         self.last_update = {}
+        
+        # API configuration
+        self.api_key = os.getenv('BITGET_API_KEY', '')
+        self.api_secret = os.getenv('BITGET_API_SECRET', '')
+        self.api_password = os.getenv('BITGET_API_PASSWORD', '')
+        self.base_url = 'https://api.bitget.com'
+        
+        # USDT swap symbols priority list
+        self.priority_symbols = [
+            'BTCUSDT_UMCBL', 'ETHUSDT_UMCBL', 'BNBUSDT_UMCBL',
+            'ADAUSDT_UMCBL', 'SOLUSDT_UMCBL', 'MATICUSDT_UMCBL',
+            'AVAXUSDT_UMCBL', 'DOTUSDT_UMCBL', 'LINKUSDT_UMCBL'
+        ]
+        
+        # Initialize HMAC authenticator
+        if BITGET_AUTH_AVAILABLE and all([self.api_key, self.api_secret, self.api_password]):
+            self.authenticator = BitgetAuthenticator(
+                api_key=self.api_key,
+                api_secret=self.api_secret,
+                api_password=self.api_password
+            )
+            logger.info("# Check HMAC authenticator initialized for market data")
+        else:
+            logger.warning("# Warning HMAC authenticator not available - using CCXT only")
 
         # Load API credentials
         self.api_key = os.getenv('BITGET_API_KEY', '')

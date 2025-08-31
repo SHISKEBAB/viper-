@@ -79,6 +79,13 @@ class VIPERScoringService:
         self.price_period = int(os.getenv('PRICE_PERIOD', '4'))     # hours
         self.range_period = int(os.getenv('RANGE_PERIOD', '24'))    # hours
 
+        # USDT swap symbols for enhanced scoring
+        self.supported_usdt_swaps = [
+            'BTCUSDT_UMCBL', 'ETHUSDT_UMCBL', 'BNBUSDT_UMCBL', 
+            'ADAUSDT_UMCBL', 'SOLUSDT_UMCBL', 'MATICUSDT_UMCBL',
+            'AVAXUSDT_UMCBL', 'DOTUSDT_UMCBL', 'LINKUSDT_UMCBL'
+        ]
+
         logger.info("# Target VIPER Scoring Service initialized")
 
     def initialize_redis(self) -> bool:
@@ -166,7 +173,7 @@ class VIPERScoringService:
             return 50.0
 
     def calculate_execution_cost(self, market_data: Dict, position_size_usd: float = 5000) -> float:
-        """Calculate enhanced execution cost including spread cost and market impact"""
+        """Calculate enhanced execution cost for USDT swap trading including spread cost and market impact"""
         try:
             ticker = market_data.get('ticker', {})
             orderbook = market_data.get('orderbook', {})
@@ -179,34 +186,41 @@ class VIPERScoringService:
             if price <= 0:
                 return 5.0
                 
-            # REALISTIC spread cost estimation for crypto futures (calibrated to $0.27 average)
+            # REALISTIC spread cost estimation for USDT swap futures (optimized for $0.20-0.30 average)
             if 'BTC' in symbol:
-                base_spread_cost = 0.15  # ~$0.15 for BTC (very tight)
+                base_spread_cost = 0.12  # ~$0.12 for BTC (very tight for futures)
             elif 'ETH' in symbol:
-                base_spread_cost = 0.20  # ~$0.20 for ETH (tight)
-            elif any(coin in symbol for coin in ['BNB', 'SOL', 'ADA', 'MATIC']):
-                base_spread_cost = 0.30  # ~$0.30 for major alts
+                base_spread_cost = 0.16  # ~$0.16 for ETH (tight for futures)
+            elif any(coin in symbol for coin in ['BNB', 'SOL', 'ADA', 'MATIC', 'AVAX', 'DOT', 'LINK']):
+                base_spread_cost = 0.25  # ~$0.25 for major alts on futures
             else:
-                base_spread_cost = 0.80  # ~$0.80 for other coins
+                base_spread_cost = 0.50  # ~$0.50 for other USDT swap pairs
             
-            # Volume-based cost adjustment
-            if volume > 10000000:  # $10M+ (very liquid)
-                cost_multiplier = 0.8   # 20% discount
-            elif volume > 5000000:  # $5M+ (liquid)
+            # Volume-based cost adjustment for USDT swaps (generally more liquid)
+            if volume > 50000000:   # $50M+ (very liquid futures)
+                cost_multiplier = 0.7   # 30% discount for high liquidity
+            elif volume > 20000000: # $20M+ (liquid futures)
+                cost_multiplier = 0.9   # 10% discount
+            elif volume > 10000000: # $10M+ (decent futures)
                 cost_multiplier = 1.0   # Normal cost
-            elif volume > 1000000:  # $1M+ (decent)
-                cost_multiplier = 1.5   # 50% increase
-            elif volume > 500000:   # $500k+ (low)
-                cost_multiplier = 3.0   # 3x cost
-            else:                   # <$500k (very low)
-                cost_multiplier = 8.0   # 8x cost (should be rejected)
+            elif volume > 5000000:  # $5M+ (moderate)
+                cost_multiplier = 1.3   # 30% increase
+            elif volume > 1000000:  # $1M+ (low)
+                cost_multiplier = 2.0   # 2x cost
+            else:                   # <$1M (very low)
+                cost_multiplier = 5.0   # 5x cost (should be rejected)
+            
+            # USDT swap specific adjustments
+            if symbol.endswith('_UMCBL') or 'USDT' in symbol:
+                # Futures markets typically have tighter spreads
+                base_spread_cost *= 0.8
             
             # Final execution cost
             final_cost = base_spread_cost * cost_multiplier
             
             # Add small variance for realism
             import random
-            final_cost *= random.uniform(0.9, 1.1)
+            final_cost *= random.uniform(0.95, 1.05)
             
             return max(0.01, final_cost)
             
