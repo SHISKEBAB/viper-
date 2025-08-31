@@ -29,7 +29,7 @@ import ccxt
 # Load environment variables
 BITGET_API_KEY = os.getenv('BITGET_API_KEY', '')
 BITGET_API_SECRET = os.getenv('BITGET_API_SECRET', '')
-BITGET_API_PASSWORD = os.getenv('BITGET_API_PASSWORD', '')"""
+BITGET_API_PASSWORD = os.getenv('BITGET_API_PASSWORD', '')
 
 class ScoringSystemStatus(Enum):
     HEALTHY = "HEALTHY"
@@ -40,7 +40,7 @@ class ScoringSystemStatus(Enum):
 class VIPERScoringDiagnostic:
     """
     Comprehensive diagnostic tool for VIPER scoring system
-    """"""
+    """
 
     def __init__(self):
         # Use current working directory or environment variable for better portability
@@ -60,9 +60,9 @@ class VIPERScoringDiagnostic:
         self.initialize_exchange()
 
     def initialize_exchange(self):
-        """Initialize Bitget exchange connection""""""
+        """Initialize Bitget exchange connection"""
         try:
-            self.exchange = ccxt.bitget({)
+            self.exchange = ccxt.bitget({
                 'apiKey': BITGET_API_KEY,
                 'secret': BITGET_API_SECRET,
                 'password': BITGET_API_PASSWORD,
@@ -71,21 +71,22 @@ class VIPERScoringDiagnostic:
                     'adjustForTimeDifference': True,
                 },
                 'sandbox': False,
-(            })
+            })
             self.exchange.loadMarkets()
         except Exception as e:
             self.diagnostic_report['issues'].append(f"Exchange initialization failed: {e}")
 
     def print_header(self):
         """Print diagnostic header"""
+        print("""
 #==============================================================================#
-# # Search VIPER SCORING SYSTEM DIAGNOSTIC - COMPLETE ANALYSIS                        #
-# Comprehensive diagnosis of VIPER scoring algorithm and components             #
+# VIPER SCORING SYSTEM DIAGNOSTIC - COMPLETE ANALYSIS                         #
+# Comprehensive diagnosis of VIPER scoring algorithm and components            #
 #==============================================================================#
-(""")"""
+""")
 
     def check_service_health(self, service_name: str, port: int) -> Dict:
-        """Check if a service is healthy""""""
+        """Check if a service is healthy"""
         try:
             response = requests.get(f"http://localhost:{port}/health", timeout=5)
             if response.status_code == 200:
@@ -117,10 +118,10 @@ class VIPERScoringDiagnostic:
             'recommendations': []
         }
 
-        # Check if service is running via Docker"""
+        # Check if service is running via Docker
         try:
-            ps_result = subprocess.run(['docker', 'ps', '--filter', 'name=signal-processor', '--format', 'json'],)
-(                                     capture_output=True, text=True, timeout=10)
+            ps_result = subprocess.run(['docker', 'ps', '--filter', 'name=signal-processor', '--format', 'json'],
+                                     capture_output=True, text=True, timeout=10)
 
             if ps_result.returncode == 0 and ps_result.stdout.strip():
                 result['docker_status'] = 'RUNNING'
@@ -146,7 +147,7 @@ class VIPERScoringDiagnostic:
             'thresholds': {},
             'issues': [],
             'performance': {}
-        }"""
+        }
 
         try:
             # Read signal processor code
@@ -196,7 +197,7 @@ class VIPERScoringDiagnostic:
             'average_score': 0,
             'performance_metrics': {},
             'issues': []
-        }"""
+        }
 
         if not self.exchange:
             result['issues'].append("Exchange connection not available")
@@ -254,7 +255,7 @@ class VIPERScoringDiagnostic:
         return result
 
     def calculate_viper_score(self, symbol: str, market_data: Dict) -> float:
-        """Calculate VIPER score (replicated from signal processor)""""""
+        """Calculate VIPER score (replicated from signal processor)"""
         try:
             ticker = market_data.get('ticker', {})
             orderbook = market_data.get('orderbook', {})
@@ -285,12 +286,12 @@ class VIPERScoringDiagnostic:
                 range_score = 50
 
             # Calculate weighted score
-            viper_score = ()
+            viper_score = (
                 volume_score * 0.3 +
                 price_score * 0.3 +
                 spread_score * 0.2 +
                 range_score * 0.2
-(            )
+            )
 
             return min(100, max(0, viper_score))
 
@@ -331,7 +332,7 @@ class VIPERScoringDiagnostic:
             'market_data_fetching': 'UNKNOWN',
             'data_quality': {},
             'issues': []
-        }"""
+        }
 
         if self.exchange:
             result['exchange_connection'] = 'SUCCESS'
@@ -371,14 +372,14 @@ class VIPERScoringDiagnostic:
 
         # Check signal processor status
         sp_status = self.check_service_health('signal-processor', 8006)
-        result['signal_processor_status'] = sp_status['status']"""
+        result['signal_processor_status'] = sp_status['status']
 
         if sp_status['status'] == 'HEALTHY':
             try:
                 # Test signal generation endpoint if available
-                response = requests.post('http://localhost:8006/generate-signal',)
+                response = requests.post('http://localhost:8006/generate-signal',
                                        json={'symbol': 'BTC/USDT:USDT'},
-(                                       timeout=10)
+                                       timeout=10)
                 if response.status_code == 200:
                     result['signal_generation_test'] = response.json()
                 else:
@@ -395,7 +396,7 @@ class VIPERScoringDiagnostic:
             'memory_usage': {},
             'accuracy_metrics': {},
             'issues': []
-        }"""
+        }
 
         try:
             # Test calculation speed
@@ -428,11 +429,11 @@ class VIPERScoringDiagnostic:
 
         return result
 
-    def generate_recommendations(self) -> List[str]
+    def generate_recommendations(self) -> List[str]:
         """Generate recommendations based on diagnostic findings"""
         recommendations = []
 
-        # Check component status:"""
+        # Check component status
         if self.diagnostic_report['components'].get('signal_processor', {}).get('service_status', {}).get('status') != 'HEALTHY':
             recommendations.append("# Tool Restart signal processor service")
             recommendations.append("# Tool Check signal processor logs for errors")
@@ -519,37 +520,44 @@ class VIPERScoringDiagnostic:
         if algo_analysis:
             print(f"  📈 Implementation Status: {algo_analysis.get('implementation_status', 'UNKNOWN')}")
             for comp, present in algo_analysis.get('components', {}).items():
-                icon = '# Check' if present else '# X'
+                icon = '✅' if present else '❌'
+                print(f"    {icon} {comp}: {present}")
 
             for factor, weight in algo_analysis.get('weights', {}).items():
+                print(f"    ⚖️ {factor}: {weight}")
+                
         # Performance Metrics
         perf = report.get('performance_metrics', {})
         if perf.get('calculation_speed'):
             speed = perf['calculation_speed']
+            print(f"  ⚡ Calculations/sec: {speed.get('calculations_per_second', 0):.2f}")
+            
         # Scoring Pipeline
         pipeline = report.get('scoring_pipeline', {})
         if pipeline.get('score_calculation'):
             calc = pipeline['score_calculation']
-            print(f"  # Target Scores Generated: {calc.get('scores_generated', 0)}")
+            print(f"  🎯 Scores Generated: {calc.get('scores_generated', 0)}")
             print(f"  🔴 High Confidence Signals: {calc.get('high_confidence_signals', 0)}")
 
         # Issues Found
         issues = report.get('issues', [])
         if issues:
+            print("\n🚨 ISSUES FOUND:")
             for issue in issues:
-                pass
+                print(f"   ❌ {issue}")
 
         # Recommendations
         recommendations = report.get('recommendations', [])
         if recommendations:
+            print("\n💡 RECOMMENDATIONS:")
             for rec in recommendations:
-                pass
+                print(f"   → {rec}")
 
 
 def main():
     """Main diagnostic function"""
     diagnostic = VIPERScoringDiagnostic()
-    diagnostic.print_header()"""
+    diagnostic.print_header()
 
     try:
         # Run complete diagnostic
@@ -582,6 +590,7 @@ def main():
                 print(f"# X Fallback save also failed: {fallback_e}")
 
     except Exception as e:
+        print(f"Diagnostic failed: {e}")
         import traceback
         traceback.print_exc()
 

@@ -1,0 +1,90 @@
+{
+  "timestamp": "2025-08-31T02:42:09.280780",
+  "system_status": "CRITICAL",
+  "components": {
+    "signal_processor": {
+      "service_status": {
+        "status": "DOWN",
+        "error": "HTTPConnectionPool(host='localhost', port=8006): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f0bdd9c7c80>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+      },
+      "algorithm_analysis": {
+        "components": {
+          "volume_score": true,
+          "price_score": true,
+          "spread_score": true,
+          "range_score": true
+        },
+        "weights": {
+          "volume": 0.3,
+          "price": 0.3,
+          "spread": 0.2,
+          "range": 0.2
+        },
+        "thresholds": {
+          "signal_threshold": "Found in environment variables"
+        },
+        "issues": [],
+        "performance": {},
+        "implementation_status": "COMPLETE"
+      },
+      "performance_metrics": {},
+      "issues": [
+        "Signal processor container not running"
+      ],
+      "recommendations": [],
+      "docker_status": "NOT_RUNNING"
+    }
+  },
+  "scoring_algorithm": {},
+  "performance_metrics": {
+    "calculation_speed": {},
+    "memory_usage": {},
+    "accuracy_metrics": {},
+    "issues": []
+  },
+  "issues": [
+    "Exchange initialization failed: bitget GET https://api.bitget.com/api/v2/spot/public/coins"
+  ],
+  "recommendations": [
+    "# Tool Restart signal processor service",
+    "# Tool Check signal processor logs for errors",
+    "# Tool Complete VIPER algorithm implementation",
+    "# Tool Add missing scoring components",
+    "\u26a1 Optimize scoring calculation performance",
+    "\u26a1 Consider caching market data"
+  ],
+  "scoring_pipeline": {
+    "data_ingestion": {
+      "exchange_connection": "SUCCESS",
+      "market_data_fetching": "UNKNOWN",
+      "data_quality": {},
+      "issues": [
+        "Data ingestion test failed: bitget GET https://api.bitget.com/api/v2/spot/public/coins"
+      ]
+    },
+    "score_calculation": {
+      "test_pairs": [],
+      "scores_generated": 0,
+      "high_confidence_signals": 0,
+      "average_score": 0,
+      "performance_metrics": {},
+      "issues": [
+        "Score calculation test failed: 'NoneType' object has no attribute 'values'"
+      ]
+    },
+    "signal_generation": {
+      "signal_processor_status": "DOWN",
+      "signal_generation_test": {},
+      "threshold_testing": {},
+      "issues": []
+    },
+    "performance_monitoring": {
+      "calculation_speed": {},
+      "memory_usage": {},
+      "accuracy_metrics": {},
+      "issues": []
+    },
+    "issues": [],
+    "recommendations": []
+  }
+}
