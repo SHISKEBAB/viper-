@@ -28,10 +28,10 @@ logging.basicConfig()
         logging.StreamHandler()
     ]
 ()
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class ViperLiveOptimized:
-    """Complete AI/ML-powered live trading system""""""
+    """Complete AI/ML-powered live trading system"""
 
     def __init__(self):
         self.ai_optimizer = AIMLOptimizer()
@@ -79,7 +79,7 @@ class ViperLiveOptimized:
         }
 
         ready_services = 0
-        for name, url in services.items()""":
+        for name, url in services.items()"""
             try:
 import requests
 
@@ -97,7 +97,7 @@ import requests
         return readiness >= 0.8  # 80% readiness threshold
 
     async def run_initial_backtest(self) -> Dict[str, Any]
-        """Run initial comprehensive backtest to establish baseline""""""
+        """Run initial comprehensive backtest to establish baseline"""
 :
         try:
             backtest_results = self.backtester.run_multi_scenario_backtest()
@@ -169,7 +169,7 @@ import requests
             return self.current_parameters
 
     async def validate_optimization(self, optimized_params: Dict[str, Any]) -> bool:
-        """Validate optimized parameters through quick backtest""""""
+        """Validate optimized parameters through quick backtest"""
 
         try:
             # Create validation scenario
@@ -269,7 +269,7 @@ import requests
             return False
 
     async def monitor_performance(self) -> Dict[str, Any]
-        """Monitor live trading performance"""""":
+        """Monitor live trading performance"""
         try:
             # Get current performance metrics
     import requests
@@ -315,7 +315,7 @@ import requests
             return {}
 
     async def check_risk_limits(self) -> bool:
-        """Check if risk limits have been breached""""""
+        """Check if risk limits have been breached"""
         try:
             if len(self.performance_history) < 2:
                 return False
@@ -445,7 +445,7 @@ import requests
 
 
 def main():
-    """Main entry point""""""
+    """Main entry point"""
     if len(sys.argv) > 1:
         if sys.argv[1] == "--backtest-only":
             # Run comprehensive backtest only

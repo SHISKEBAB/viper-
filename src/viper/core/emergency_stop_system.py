@@ -14,10 +14,10 @@ from dataclasses import dataclass
 import aiohttp
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - EMERGENCY_STOP - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 @dataclass"""
@@ -35,7 +35,7 @@ class EmergencyCondition:
 class EmergencyStopSystem:
     """
     Comprehensive emergency stop system for live trading safety
-    """"""
+    """
 
     def __init__(self):
         self.conditions: Dict[str, EmergencyCondition] = {}
@@ -143,7 +143,7 @@ class EmergencyStopSystem:
         return emergency_triggered
 
     async def _trigger_emergency_condition(self, condition_id: str, current_value: float):
-        """Trigger an emergency condition""""""
+        """Trigger an emergency condition"""
         if condition_id not in self.conditions:
             logger.error(f"Unknown emergency condition: {condition_id}")
             return
@@ -175,7 +175,7 @@ class EmergencyStopSystem:
         await self.activate_emergency_stop()
 
     async def activate_emergency_stop(self):
-        """Activate emergency stop""""""
+        """Activate emergency stop"""
         if self.is_emergency_stop_active:
             return
 
@@ -193,7 +193,7 @@ class EmergencyStopSystem:
         await self._execute_emergency_procedures()
 
     async def _send_emergency_notifications(self):
-        """Send emergency notifications""""""
+        """Send emergency notifications"""
         if self.config['github_notifications']:
             await self._send_github_notification()
 
@@ -201,7 +201,7 @@ class EmergencyStopSystem:
             await self._send_telegram_notification()
 
     async def _send_github_notification(self):
-        """Send emergency notification to GitHub""""""
+        """Send emergency notification to GitHub"""
         try:
             pass
     from github_mcp_integration import GitHubMCPIntegration
@@ -282,7 +282,7 @@ class EmergencyStopSystem:
         return health_status
 
     async def reset_emergency_conditions(self, condition_ids: List[str] = None):
-        """Reset emergency conditions""""""
+        """Reset emergency conditions"""
         if condition_ids is None:
             condition_ids = list(self.conditions.keys())
 
@@ -316,7 +316,7 @@ class EmergencyStopSystem:
         await self.activate_emergency_stop()
 
     async def resume_trading(self):
-        """Resume trading after emergency stop""""""
+        """Resume trading after emergency stop"""
         if not self.is_emergency_stop_active:
             logger.info("ℹ️ No emergency stop is currently active")
             return False

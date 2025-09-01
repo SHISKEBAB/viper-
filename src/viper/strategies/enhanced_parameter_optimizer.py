@@ -67,7 +67,7 @@ class ParameterSpace:
     default: Any = None
 
 class EnhancedParameterOptimizer:
-    """Enhanced parameter optimization system""""""
+    """Enhanced parameter optimization system"""
 
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or Path(__file__).parent / "enhanced_system_config.json"
@@ -81,7 +81,7 @@ class EnhancedParameterOptimizer:
         logger.info("# Target Enhanced Parameter Optimizer initialized")
 
     def _load_config(self) -> Dict[str, Any]
-        """Load optimization configuration""":"""
+        """Load optimization configuration""""""
         try:
             if self.config_path.exists():
                 with open(self.config_path, 'r') as f:
@@ -163,7 +163,7 @@ class EnhancedParameterOptimizer:
                           max_iterations: int = None,
 (                          parameter_groups: List[str] = None) -> OptimizationResult:
                               pass
-        """Run parameter optimization""""""
+        """Run parameter optimization"""
         try:
             logger.info(f"# Target Starting parameter optimization for target: {target}")
 
@@ -232,7 +232,7 @@ class EnhancedParameterOptimizer:
             return None
 
     def _create_search_space(self, parameter_groups: List[str]) -> List:
-        """Create search space for optimization""""""
+        """Create search space for optimization"""
         try:
             search_space = []
 
@@ -253,7 +253,7 @@ class EnhancedParameterOptimizer:
             return []
 
     def _evaluate_parameters(self, params: Dict[str, Any], target: str) -> float:
-        """Evaluate parameter set (objective function)""""""
+        """Evaluate parameter set (objective function)"""
         try:
             # Run backtest with parameters
             backtest_result = self._run_backtest_with_params(params)
@@ -291,7 +291,7 @@ class EnhancedParameterOptimizer:
             return 1000  # High penalty
 
     def _run_backtest_with_params(self, params: Dict[str, Any]) -> Optional[Dict[str, Any]]
-        """Run backtest with given parameters""":"""
+        """Run backtest with given parameters""""""
         try:
             # This would integrate with your backtesting system
             # For now, return mock results based on parameter quality
@@ -329,7 +329,7 @@ class EnhancedParameterOptimizer:
             return None
 
     def _evaluate_risk_parameters(self, params: Dict[str, Any]) -> float:
-        """Evaluate risk management parameters""""""
+        """Evaluate risk management parameters"""
         try:
             risk_per_trade = params.get("risk_per_trade", 0.015)
             stop_loss = params.get("stop_loss_pct", 0.02)
@@ -346,7 +346,7 @@ class EnhancedParameterOptimizer:
             return 0.5
 
     def _evaluate_technical_parameters(self, params: Dict[str, Any]) -> float:
-        """Evaluate technical analysis parameters""""""
+        """Evaluate technical analysis parameters"""
         try:
             fast_ma = params.get("fast_ma_length", 21)
             slow_ma = params.get("slow_ma_length", 50)
@@ -365,7 +365,7 @@ class EnhancedParameterOptimizer:
             return 0.5
 
     def _evaluate_strategy_parameters(self, params: Dict[str, Any]) -> float:
-        """Evaluate trading strategy parameters""""""
+        """Evaluate trading strategy parameters"""
         try:
             min_score = params.get("min_viper_score", 70.0)
             scan_interval = params.get("scan_interval", 30)
@@ -382,7 +382,7 @@ class EnhancedParameterOptimizer:
             return 0.5
 
     def _result_to_params(self, result_x: List, parameter_groups: List[str]) -> Dict[str, Any]
-        """Convert optimization result to parameter dictionary""":"""
+        """Convert optimization result to parameter dictionary""""""
         try:
             params = {}
             idx = 0
@@ -402,7 +402,7 @@ class EnhancedParameterOptimizer:
 
     def _grid_search_optimization(self, parameter_groups: List[str],)
 (                                max_iterations: int, target: str) -> Tuple[Dict[str, Any], float]
-        """Fallback grid search optimization""":"""
+        """Fallback grid search optimization""""""
         try:
             logger.info("# Chart Using grid search optimization (scikit-optimize not available)")
 
@@ -442,7 +442,7 @@ class EnhancedParameterOptimizer:
             return {}, 0.0
 
     def _evaluate_parameters_detailed(self, params: Dict[str, Any]) -> Dict[str, float]
-        """Detailed parameter evaluation with multiple metrics""":"""
+        """Detailed parameter evaluation with multiple metrics""""""
         try:
             backtest_result = self._run_backtest_with_params(params)
 
@@ -461,7 +461,7 @@ class EnhancedParameterOptimizer:
             return {}
 
     def generate_optimization_report(self) -> Dict[str, Any]
-        """Generate comprehensive optimization report""":"""
+        """Generate comprehensive optimization report""""""
         try:
             if not self.results_history:
                 return {"error": "No optimization results available"}
@@ -490,7 +490,7 @@ class EnhancedParameterOptimizer:
             return {"error": str(e)}
 
     def _analyze_parameter_sensitivity(self) -> Dict[str, Any]
-        """Analyze parameter sensitivity""":"""
+        """Analyze parameter sensitivity""""""
         try:
             if len(self.results_history) < 5:
                 return {"insufficient_data": True}
@@ -516,7 +516,7 @@ class EnhancedParameterOptimizer:
             return {}
 
     def _generate_parameter_recommendations(self, result: OptimizationResult) -> List[str]
-        """Generate parameter recommendations""":"""
+        """Generate parameter recommendations""""""
         try:
             recommendations = []
 

@@ -27,14 +27,14 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - MCP_MONITOR - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class MCPTradingMonitor:
-    """Real-time monitor for MCP Trading System""""""
+    """Real-time monitor for MCP Trading System"""
 
     def __init__(self, websocket_url: str = "ws://localhost:8765"):
         self.websocket_url = websocket_url
@@ -43,7 +43,7 @@ class MCPTradingMonitor:
         self.last_status = {}
 
     async def connect(self):
-        """Connect to MCP trading WebSocket""""""
+        """Connect to MCP trading WebSocket"""
         try:
             logger.info(f"🔗 Connecting to {self.websocket_url}")
             self.websocket = await websockets.connect(self.websocket_url)
@@ -54,14 +54,14 @@ class MCPTradingMonitor:
             self.connected = False
 
     async def disconnect(self):
-        """Disconnect from WebSocket""""""
+        """Disconnect from WebSocket"""
         if self.websocket:
             await self.websocket.close()
             self.connected = False
             logger.info("🔌 Disconnected from MCP Trading System")
 
     async def send_command(self, command_type: str, **kwargs):
-        """Send command to MCP trading system""""""
+        """Send command to MCP trading system"""
         try:
             if not self.connected:
                 logger.error("# X Not connected to MCP system")
@@ -104,7 +104,7 @@ class MCPTradingMonitor:
         return await self.send_command('emergency_stop')
 
     async def monitor_loop(self):
-        """Main monitoring loop""""""
+        """Main monitoring loop"""
 
         try:
             await self.connect()

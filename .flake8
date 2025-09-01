@@ -1,0 +1,88 @@
+# Flake8 Configuration for VIPER Trading System
+# This configuration balances code quality with practicality for a large trading system
+
+[flake8]
+# Line length - slightly more permissive for complex trading logic
+max-line-length = 110
+
+# Complexity limits  
+max-complexity = 12
+
+# Ignore specific error codes that are common in trading systems
+ignore = 
+    # Line length (handled separately)
+    E501,
+    # Whitespace before ':'
+    E203,
+    # Line break before binary operator (conflicts with black)
+    W503,
+    # Line break after binary operator (conflicts with black)
+    W504,
+    # Missing docstring in public module
+    D100,
+    # Missing docstring in public class
+    D101,
+    # Missing docstring in public method
+    D103,
+    # Missing docstring in public function
+    D103
+
+# Include common trading/financial patterns
+extend-ignore = 
+    # Allow longer lines for URLs and long strings
+    E501
+
+# Directories to exclude from linting
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    node_modules,
+    .tox,
+    build,
+    dist,
+    migrations,
+    .pytest_cache,
+    # Exclude data and cache directories  
+    data,
+    cache,
+    logs,
+    reports
+
+# File patterns to include
+filename = 
+    *.py
+
+# Per-file ignores for specific cases
+per-file-ignores =
+    # Allow unused imports in __init__.py files
+    __init__.py:F401
+    # Allow long lines in configuration files
+    config/*.py:E501
+    # Allow complexity in trading strategy files
+    *strategy*.py:C901
+    # Allow complexity in trading execution files
+    *trading*.py:C901
+    # Allow unused imports in test files
+    test_*.py:F401,F811
+    *_test.py:F401,F811
+    
+# Select specific error codes to check
+select = 
+    # Pyflakes errors
+    F,
+    # Pycodestyle errors
+    E,
+    # Pycodestyle warnings
+    W,
+    # McCabe complexity
+    C90
+
+# Statistics
+statistics = True
+count = True
+
+# Show source code for each error
+show-source = True

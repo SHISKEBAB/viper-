@@ -27,14 +27,14 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - DEPLOYMENT_CHECKLIST - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class DeploymentChecklist:
-    """Comprehensive deployment checklist and rollback system""""""
+    """Comprehensive deployment checklist and rollback system"""
 
     def __init__(self):
         self.checklist_items = []
@@ -165,7 +165,7 @@ class DeploymentChecklist:
         }
 
     def _get_system_memory_gb(self) -> float:
-        """Get system memory in GB""""""
+        """Get system memory in GB"""
         try:
             pass
     import psutil
@@ -174,7 +174,7 @@ class DeploymentChecklist:
             return 0.0
 
     def _get_available_disk_space_gb(self) -> float:
-        """Get available disk space in GB""""""
+        """Get available disk space in GB"""
         try:
             pass
     import shutil
@@ -291,7 +291,7 @@ import redis
         }
 
     def _check_resource_availability(self) -> Dict[str, Any]
-        """Check resource availability""":"""
+        """Check resource availability""""""
         try:
             pass
     import psutil
@@ -331,7 +331,7 @@ import redis
             }
 
     def _create_system_backup(self) -> Dict[str, Any]
-        """Create system backup""":"""
+        """Create system backup""""""
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             backup_dir = self.deployment_dir / f"backup_{timestamp}"
@@ -501,7 +501,7 @@ import stat
         return security_checks
 
     def _assess_deployment_readiness(self, checklist_results: Dict[str, Any]) -> Dict[str, Any]
-        """Assess overall deployment readiness""":"""
+        """Assess overall deployment readiness""""""
         try:
             readiness_score = 0
             max_score = 5
@@ -658,7 +658,7 @@ import stat
         return rollback_plan
 
     def _calculate_overall_status(self, checklist_results: Dict[str, Any]) -> str:
-        """Calculate overall deployment status""""""
+        """Calculate overall deployment status"""
         try:
             readiness = checklist_results.get("deployment_readiness", {})
             readiness_score = readiness.get("readiness_score", 0)
@@ -678,7 +678,7 @@ import stat
 
     def _save_checklist_results(self, results: Dict[str, Any],)
 (                              report_path: Optional[str] = None):
-        """Save checklist results to file""""""
+        """Save checklist results to file"""
         try:
             if report_path is None:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -693,7 +693,7 @@ import stat
             logger.error(f"# X Error saving checklist results: {e}")
 
     def generate_deployment_report(self, checklist_results: Dict[str, Any]) -> str:
-        """Generate human-readable deployment report""""""
+        """Generate human-readable deployment report"""
         try:
             report_lines = [
                 "=" * 80,

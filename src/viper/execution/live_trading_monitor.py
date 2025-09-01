@@ -19,14 +19,14 @@ import logging
 load_dotenv()
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class LiveTradingMonitor:
-    """Real-time monitoring dashboard for live trading""""""
+    """Real-time monitoring dashboard for live trading"""
 
     def __init__(self):
         self.api_server_url = "http://localhost:8000"
@@ -44,7 +44,7 @@ class LiveTradingMonitor:
         self.peak_balance = 0.0
 
     def get_system_status(self) -> Dict[str, Any]
-        """Get comprehensive system status""":"""
+        """Get comprehensive system status""""""
         try:
             status = {
                 'timestamp': datetime.now().isoformat(),
@@ -234,7 +234,7 @@ class LiveTradingMonitor:
                 time.sleep(1)
 
     def start_monitoring(self):
-        """Start the monitoring dashboard""""""
+        """Start the monitoring dashboard"""
 
         try:
             curses.wrapper(self.monitor_loop)
@@ -269,7 +269,7 @@ def print_system_summary():
     print(f"Current Balance: ${summary['current_balance']:.2f}")
 
 def main():
-    """Main entry point""""""
+    """Main entry point"""
     if len(os.sys.argv) > 1 and os.sys.argv[1] == "--summary":
         print_system_summary()
     else:

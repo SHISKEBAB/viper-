@@ -28,11 +28,11 @@ import importlib
 project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - ENHANCED_INTEGRATOR - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class ModuleStatus(Enum):
     """Module status enumeration"""
@@ -70,7 +70,7 @@ class ModuleInfo:
     start_time: Optional[datetime] = None
     stop_time: Optional[datetime] = None
 
-@dataclass"""
+@dataclass
 class IntegrationEventData:
     """Data structure for integration events"""
     event_type: IntegrationEvent
@@ -80,7 +80,7 @@ class IntegrationEventData:
     severity: str = "INFO"
 
 class EnhancedSystemIntegrator:
-    """Central integration framework for optimized trading modules""""""
+    """Central integration framework for optimized trading modules"""
 
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or project_root / "enhanced_system_config.json"
@@ -100,8 +100,8 @@ class EnhancedSystemIntegrator:
 
         logger.info("# Rocket Enhanced System Integrator initialized")
 
-    def _load_system_config(self) -> Dict[str, Any]
-        """Load system configuration from file""":"""
+    def _load_system_config(self) -> Dict[str, Any]:
+        """Load system configuration from file""""""
         try:
             if self.config_path.exists():
                 with open(self.config_path, 'r') as f:
@@ -193,7 +193,7 @@ class EnhancedSystemIntegrator:
         }
 
     def _save_system_config(self, config: Dict[str, Any]):
-        """Save system configuration to file""""""
+        """Save system configuration to file"""
         try:
             with open(self.config_path, 'w') as f:
                 json.dump(config, f, indent=2, default=str)
@@ -205,7 +205,7 @@ class EnhancedSystemIntegrator:
                        config: Dict[str, Any] = None,
 (                       dependencies: List[str] = None) -> bool:
                            pass
-        """Register a module with the integrator""""""
+        """Register a module with the integrator"""
         try:
             if name in self.modules:
                 logger.warning(f"# Warning Module {name} already registered")
@@ -227,7 +227,7 @@ class EnhancedSystemIntegrator:
             return False
 
     def register_event_handler(self, event_type: IntegrationEvent, handler: Callable):
-        """Register an event handler""""""
+        """Register an event handler"""
         try:
             if event_type not in self.event_handlers:
                 self.event_handlers[event_type] = []
@@ -240,7 +240,7 @@ class EnhancedSystemIntegrator:
 
     def emit_event(self, event_type: IntegrationEvent, module_name: str,)
 (                  data: Dict[str, Any], severity: str = "INFO"):
-        """Emit an integration event""""""
+        """Emit an integration event"""
         try:
             event = IntegrationEventData()
                 event_type=event_type,
@@ -280,7 +280,7 @@ class EnhancedSystemIntegrator:
                 logger.error(f"# X Error processing events: {e}")
 
     def get_module(self, name: str) -> Optional[Any]
-        """Get a module instance by name""":"""
+        """Get a module instance by name""""""
         try:
             if name in self.modules:
                 module_info = self.modules[name]
@@ -295,7 +295,7 @@ class EnhancedSystemIntegrator:
             return None
 
     def share_data(self, key: str, data: Any, source_module: str):
-        """Share data between modules""""""
+        """Share data between modules"""
         try:
             self.shared_data[key] = {
                 'data': data,
@@ -317,7 +317,7 @@ class EnhancedSystemIntegrator:
             logger.error(f"# X Error sharing data: {e}")
 
     def get_shared_data(self, key: str, requesting_module: str) -> Optional[Any]
-        """Get shared data""":"""
+        """Get shared data""""""
         try:
             if key in self.shared_data:
                 data_entry = self.shared_data[key]
@@ -335,7 +335,7 @@ class EnhancedSystemIntegrator:
             return None
 
     async def initialize_modules(self) -> bool:
-        """Initialize all registered modules""""""
+        """Initialize all registered modules"""
         try:
             logger.info("# Construction Initializing enhanced system modules...")
 
@@ -411,7 +411,7 @@ class EnhancedSystemIntegrator:
             return False
 
     def _sort_modules_by_dependencies(self) -> List[str]
-        """Sort modules by dependency order""":"""
+        """Sort modules by dependency order""""""
         try:
             # Simple topological sort
             visited = set()
@@ -446,7 +446,7 @@ class EnhancedSystemIntegrator:
             return list(self.modules.keys())
 
     def _check_dependencies(self, module_info: ModuleInfo) -> bool:
-        """Check if module dependencies are satisfied""""""
+        """Check if module dependencies are satisfied"""
         try:
             for dependency in module_info.dependencies:
                 if dependency not in self.modules:
@@ -465,7 +465,7 @@ class EnhancedSystemIntegrator:
             return False
 
     def _import_module_class(self, module_path: str) -> Optional[Any]
-        """Import a module class from string path""":"""
+        """Import a module class from string path""""""
         try:
             # Parse module path (e.g., "enhanced_ai_ml_optimizer.EnhancedAIMLOptimizer")
             module_name, class_name = module_path.rsplit('.', 1)
@@ -483,7 +483,7 @@ class EnhancedSystemIntegrator:
             return None
 
     def _get_constructor_params(self, module_class: type) -> List[str]
-        """Get the parameter names accepted by a class constructor""":"""
+        """Get the parameter names accepted by a class constructor""""""
         try:
             # Get the constructor signature
             sig = inspect.signature(module_class.__init__)
@@ -503,7 +503,7 @@ class EnhancedSystemIntegrator:
             return []
 
     async def start_system(self) -> bool:
-        """Start the integrated system""""""
+        """Start the integrated system"""
         try:
             logger.info("# Rocket Starting Enhanced VIPER Trading System...")
 
@@ -559,7 +559,7 @@ class EnhancedSystemIntegrator:
             return False
 
     async def _start_health_monitoring(self):
-        """Start system health monitoring""""""
+        """Start system health monitoring"""
         try:
             # Initialize performance monitoring if available
             if 'performance_monitoring_system' in self.modules:
@@ -601,7 +601,7 @@ class EnhancedSystemIntegrator:
         """Perform health checks on all modules"""
         health_status = {}
 
-        for module_name, module_info in self.modules.items()""":
+        for module_name, module_info in self.modules.items()"""
             if module_info.status != ModuleStatus.RUNNING:
                 health_status[module_name] = {
                     'healthy': False,
@@ -638,7 +638,7 @@ class EnhancedSystemIntegrator:
         return health_status
 
     async def _verify_system_health(self) -> bool:
-        """Verify overall system health""""""
+        """Verify overall system health"""
         try:
             # Check if critical modules are running
             critical_modules = ['enhanced_risk_manager', 'optimized_market_data_streamer']
@@ -668,7 +668,7 @@ class EnhancedSystemIntegrator:
             return False
 
     def get_system_status(self) -> Dict[str, Any]
-        """Get comprehensive system status""":"""
+        """Get comprehensive system status""""""
         try:
             module_statuses = {}
             for name, module_info in self.modules.items():
@@ -694,7 +694,7 @@ class EnhancedSystemIntegrator:
             return {'error': str(e)}
 
     def _get_performance_metrics(self) -> Dict[str, Any]
-        """Get system performance metrics""":"""
+        """Get system performance metrics""""""
         try:
             # Get metrics from performance monitoring if available
             perf_monitor = self.get_module('performance_monitoring_system')
@@ -716,7 +716,7 @@ class EnhancedSystemIntegrator:
             return {}
 
     async def shutdown_system(self):
-        """Shutdown the integrated system gracefully""""""
+        """Shutdown the integrated system gracefully"""
         try:
             logger.info("🛑 Shutting down Enhanced VIPER Trading System...")
 
@@ -773,7 +773,7 @@ def get_integrator(config_path: Optional[str] = None) -> EnhancedSystemIntegrato
     return _integrator_instance
 
 async def initialize_enhanced_system(config_path: Optional[str] = None) -> bool:
-    """Initialize the complete enhanced trading system""""""
+    """Initialize the complete enhanced trading system"""
     try:
         integrator = get_integrator(config_path)
 
@@ -835,7 +835,7 @@ from performance_monitoring_system import PerformanceMonitoringSystem
         return False
 
 async def start_enhanced_system() -> bool:
-    """Start the complete enhanced trading system""""""
+    """Start the complete enhanced trading system"""
     try:
         integrator = get_integrator()
 

@@ -54,7 +54,7 @@ class ValidationReport:
     generated_at: str"""
 
 class FixValidator:
-    """Comprehensive fix validation system""""""
+    """Comprehensive fix validation system"""
 
     def __init__(self):
         self.results_dir = Path("reports") / "validation"
@@ -80,7 +80,7 @@ class FixValidator:
 
 
         # Run all validation checks
-        for check_name, check_func in self.validation_checks.items()""":
+        for check_name, check_func in self.validation_checks.items()"""
             try:
                 result = check_func(file_path)
                 results.append(result)
@@ -121,7 +121,7 @@ class FixValidator:
         return report
 
     def _validate_syntax(self, file_path: Path) -> ValidationResult:
-        """Validate Python syntax""""""
+        """Validate Python syntax"""
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
@@ -173,7 +173,7 @@ class FixValidator:
 (            )
 
     def _validate_imports(self, file_path: Path) -> ValidationResult:
-        """Validate import statements""""""
+        """Validate import statements"""
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
@@ -223,7 +223,7 @@ class FixValidator:
 (            )
 
     def _validate_security(self, file_path: Path) -> ValidationResult:
-        """Validate security aspects""""""
+        """Validate security aspects"""
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
@@ -275,7 +275,7 @@ class FixValidator:
 (            )
 
     def _validate_functionality(self, file_path: Path) -> ValidationResult:
-        """Validate basic functionality""""""
+        """Validate basic functionality"""
         try:
             # Try to import the module
             module_name = file_path.stem
@@ -322,7 +322,7 @@ class FixValidator:
 (            )
 
     def _validate_performance(self, file_path: Path) -> ValidationResult:
-        """Validate performance aspects""""""
+        """Validate performance aspects"""
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
@@ -370,7 +370,7 @@ class FixValidator:
 (            )
 
     def _is_module_available(self, module_name: str) -> bool:
-        """Check if a Python module is available""""""
+        """Check if a Python module is available"""
         try:
             importlib.import_module(module_name)
             return True
@@ -451,7 +451,7 @@ class FixValidator:
         return str(backup_path)
 
     def rollback_file(self, file_path: str, backup_path: str) -> bool:
-        """Rollback a file to a previous backup""""""
+        """Rollback a file to a previous backup"""
         try:
             shutil.copy2(backup_path, file_path)
             return True
@@ -463,7 +463,7 @@ class FixValidator:
         validation_results = []
 
         # Validate each fixed file
-        for job in fix_results.get('jobs', [])""":
+        for job in fix_results.get('jobs', [])"""
             if 'result' in job and job['result']:
                 file_path = job['result'].get('file_path')
                 if file_path and Path(file_path).exists():

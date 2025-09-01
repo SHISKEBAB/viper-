@@ -33,7 +33,7 @@ except ImportError:
     def display_repo_structure(path): print(f"Repository at: {path}")
 
 class ViperSetupValidator:
-    """Comprehensive setup validation for VIPER trading system""""""
+    """Comprehensive setup validation for VIPER trading system"""
     
     def __init__(self):
         self.project_root = project_root
@@ -199,7 +199,7 @@ class ViperSetupValidator:
         return all_valid
     
     def validate_docker_setup(self) -> bool:
-        """Check Docker configuration""""""
+        """Check Docker configuration"""
         
         try:
             # Check if Docker is available
@@ -255,7 +255,7 @@ class ViperSetupValidator:
         return report
     
     def run_full_validation(self):
-        """Run complete system validation""""""
+        """Run complete system validation"""
         if ENHANCED_DISPLAY:
             print_banner()
             terminal.console.rule("[bold blue]# Tool System Validation Starting[/]")
@@ -286,7 +286,7 @@ class ViperSetupValidator:
         return report['overall_status'] == 'PASS'
     
     def display_final_report(self, report: Dict[str, Any]):
-        """Display final validation report""""""
+        """Display final validation report"""
         
         if ENHANCED_DISPLAY:
             status_color = "green" if report['overall_status'] == 'PASS' else "yellow"

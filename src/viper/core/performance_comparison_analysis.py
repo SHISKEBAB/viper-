@@ -30,14 +30,14 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - PERFORMANCE_ANALYSIS - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class PerformanceComparisonAnalysis:
-    """Comprehensive performance comparison and analysis system""""""
+    """Comprehensive performance comparison and analysis system"""
 
     def __init__(self):
         self.baseline_results = []
@@ -57,7 +57,7 @@ class PerformanceComparisonAnalysis:
     def load_performance_data(self, baseline_path: Optional[str] = None,)
 (                            enhanced_path: Optional[str] = None) -> bool:
                                 pass
-        """Load performance data from backtesting results""""""
+        """Load performance data from backtesting results"""
         try:
             logger.info("📂 Loading performance data...")
 
@@ -126,7 +126,7 @@ class PerformanceComparisonAnalysis:
         return analysis_results
 
     def _calculate_system_summary(self, results: List[Dict], system_name: str) -> Dict[str, Any]
-        """Calculate summary statistics for a system""":"""
+        """Calculate summary statistics for a system""""""
         try:
             if not results:
                 return {"error": "No results available"}
@@ -169,7 +169,7 @@ class PerformanceComparisonAnalysis:
             return {"error": str(e)}
 
     def _compare_performance_metrics(self) -> Dict[str, Any]
-        """Compare performance metrics between systems""":"""
+        """Compare performance metrics between systems""""""
         try:
             logger.info("   📈 Comparing performance metrics...")
 
@@ -222,7 +222,7 @@ class PerformanceComparisonAnalysis:
             return {}
 
     def _perform_statistical_analysis(self) -> Dict[str, Any]
-        """Perform statistical analysis of performance differences""":"""
+        """Perform statistical analysis of performance differences""""""
         try:
             logger.info("   # Chart Performing statistical analysis...")
 
@@ -258,7 +258,7 @@ class PerformanceComparisonAnalysis:
             return {}
 
     def _analyze_market_conditions(self) -> Dict[str, Any]
-        """Analyze performance across different market conditions""":"""
+        """Analyze performance across different market conditions""""""
         try:
             logger.info("   # Chart Analyzing market condition performance...")
 
@@ -298,7 +298,7 @@ class PerformanceComparisonAnalysis:
             return {}
 
     def _analyze_risk_adjusted_performance(self) -> Dict[str, Any]
-        """Analyze risk-adjusted performance metrics""":"""
+        """Analyze risk-adjusted performance metrics""""""
         try:
             logger.info("   🛡️ Analyzing risk-adjusted performance...")
 
@@ -341,7 +341,7 @@ class PerformanceComparisonAnalysis:
             return {}
 
     def _generate_performance_visualizations(self) -> List[str]
-        """Generate comprehensive performance visualizations""":"""
+        """Generate comprehensive performance visualizations""""""
         try:
             logger.info("   # Chart Generating performance visualizations...")
 
@@ -492,7 +492,7 @@ class PerformanceComparisonAnalysis:
             return []
 
     def _generate_performance_recommendations(self, analysis_results: Dict[str, Any]) -> List[str]
-        """Generate performance-based recommendations""":"""
+        """Generate performance-based recommendations""""""
         try:
             recommendations = []
 
@@ -561,7 +561,7 @@ class PerformanceComparisonAnalysis:
 
     def _save_analysis_report(self, analysis_results: Dict[str, Any],)
 (                            report_path: Optional[str] = None):
-        """Save comprehensive analysis report""""""
+        """Save comprehensive analysis report"""
         try:
             if report_path is None:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -576,7 +576,7 @@ class PerformanceComparisonAnalysis:
             logger.error(f"# X Error saving analysis report: {e}")
 
     def generate_executive_summary(self, analysis_results: Dict[str, Any]) -> str:
-        """Generate executive summary of analysis results""""""
+        """Generate executive summary of analysis results"""
         try:
             summary_lines = [
                 "=" * 80,

@@ -26,7 +26,7 @@ import ccxt
 import ta
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class EnhancedTrendDirection(Enum):
     STRONG_BULLISH = "STRONG_BULLISH"
@@ -93,7 +93,7 @@ class EnhancedConfig:
             }
 
 class EnhancedTechnicalOptimizer:
-    """Enhanced technical analysis with optimized calculations and advanced features""""""
+    """Enhanced technical analysis with optimized calculations and advanced features"""
 
     def __init__(self, config: EnhancedConfig = None):
         self.config = config or EnhancedConfig()
@@ -106,7 +106,7 @@ class EnhancedTechnicalOptimizer:
         logger.info(f"# Chart Config optimized for performance and accuracy")
 
     async def initialize_exchange(self) -> bool:
-        """Initialize exchange with optimized settings""""""
+        """Initialize exchange with optimized settings"""
         try:
             self.exchange = ccxt.bitget({)
                 'apiKey': os.getenv('BITGET_API_KEY'),
@@ -126,7 +126,7 @@ class EnhancedTechnicalOptimizer:
             return False
 
     async def get_multi_timeframe_data(self, symbol: str, timeframes: List[str] = None) -> Dict[str, pd.DataFrame]
-        """Optimized multi-timeframe data fetching with caching"""""":
+        """Optimized multi-timeframe data fetching with caching"""
         if timeframes is None:
             timeframes = list(self.config.timeframe_weights.keys())
 
@@ -156,7 +156,7 @@ class EnhancedTechnicalOptimizer:
         return data_frames
 
     async def _fetch_optimized_ohlcv(self, symbol: str, timeframe: str, limit: int = 300) -> Optional[pd.DataFrame]
-        """Optimized OHLCV fetching with error handling"""""":
+        """Optimized OHLCV fetching with error handling"""
         try:
             if not self.exchange:
                 return None
@@ -183,7 +183,7 @@ class EnhancedTechnicalOptimizer:
             return None
 
     def calculate_optimized_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Calculate optimized technical indicators with performance improvements""""""
+        """Calculate optimized technical indicators with performance improvements"""
         try:
             # Vectorized calculations for better performance
             df = df.copy()
@@ -342,7 +342,7 @@ class EnhancedTechnicalOptimizer:
         return peaks + valleys
 
     def calculate_volume_profile(self, df: pd.DataFrame) -> Dict[str, float]
-        """Calculate volume profile for key levels""":"""
+        """Calculate volume profile for key levels""""""
         try:
             if len(df) < self.config.volume_profile_lookback:
                 return {}
@@ -377,7 +377,7 @@ class EnhancedTechnicalOptimizer:
             return {}
 
     def calculate_fibonacci_levels_advanced(self, df: pd.DataFrame) -> Dict[str, float]
-        """Advanced Fibonacci level calculation with extensions""":"""
+        """Advanced Fibonacci level calculation with extensions""""""
         try:
             if len(df) < self.config.fib_lookback:
                 return {}
@@ -443,7 +443,7 @@ class EnhancedTechnicalOptimizer:
         nearest_level = None
         min_distance = float('inf')
 
-        for level_name, level_price in fib_levels.items()""":
+        for level_name, level_price in fib_levels.items()"""
             if isinstance(level_price, (int, float)):
                 distance = abs(price - level_price) / price:
                 if distance < tolerance and distance < min_distance:
@@ -455,7 +455,7 @@ class EnhancedTechnicalOptimizer:
     def calculate_confluence_score(self, df: pd.DataFrame, fib_levels: Dict[str, float],)
 (                                 volume_profile: Dict[str, float]) -> float:
                                      pass
-        """Calculate confluence score from multiple indicators""""""
+        """Calculate confluence score from multiple indicators"""
         try:
             confluence_factors = []
 
@@ -507,7 +507,7 @@ class EnhancedTechnicalOptimizer:
             return 0.5
 
     async def analyze_enhanced_trend(self, symbol: str, primary_timeframe: str = '1h') -> Optional[EnhancedTrendSignal]
-        """Enhanced trend analysis with multi-timeframe confluence"""""":
+        """Enhanced trend analysis with multi-timeframe confluence"""
         try:
             # Get multi-timeframe data
             timeframe_data = await self.get_multi_timeframe_data(symbol, ['15m', '1h', '4h'])
@@ -593,7 +593,7 @@ class EnhancedTechnicalOptimizer:
             return None
 
     def _analyze_single_timeframe_trend(self, df: pd.DataFrame) -> Tuple[EnhancedTrendDirection, float]
-        """Analyze trend for a single timeframe""":"""
+        """Analyze trend for a single timeframe""""""
         try:
             latest = df.iloc[-1]
 
@@ -642,7 +642,7 @@ class EnhancedTechnicalOptimizer:
     def _calculate_timeframe_consensus(self, directions: Dict[str, EnhancedTrendDirection],)
 (                                     confidences: Dict[str, float]) -> EnhancedTrendDirection:
                                          pass
-        """Calculate consensus direction from multiple timeframes""""""
+        """Calculate consensus direction from multiple timeframes"""
         try:
             direction_scores = {
                 EnhancedTrendDirection.STRONG_BULLISH: 0,
@@ -680,7 +680,7 @@ class EnhancedTechnicalOptimizer:
     def _calculate_enhanced_trend_strength(self, df: pd.DataFrame,)
 (                                         timeframe_directions: Dict[str, EnhancedTrendDirection]) -> EnhancedTrendStrength:
                                              pass
-        """Calculate enhanced trend strength across multiple factors""""""
+        """Calculate enhanced trend strength across multiple factors"""
         try:
             latest = df.iloc[-1]
 

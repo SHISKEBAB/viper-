@@ -44,7 +44,7 @@ class SystemStatus:
     last_update: str = ""
 
 class CompleteLiveTradingSystem:
-    """Complete live trading system with all components integrated""""""
+    """Complete live trading system with all components integrated"""
 
     def __init__(self):
         self.status = SystemStatus()
@@ -79,7 +79,7 @@ class CompleteLiveTradingSystem:
         self.stop_system()
 
     def initialize_system(self) -> bool:
-        """Initialize all system components""""""
+        """Initialize all system components"""
         try:
             pass
 
@@ -103,7 +103,7 @@ class CompleteLiveTradingSystem:
             return False
 
     def start_live_trading(self) -> bool:
-        """Start the complete live trading system""""""
+        """Start the complete live trading system"""
         if not self.initialize_system():
             return False
 
@@ -139,7 +139,7 @@ class CompleteLiveTradingSystem:
             return False
 
     def stop_system(self) -> bool:
-        """Stop the complete trading system""""""
+        """Stop the complete trading system"""
         try:
             print("\n⏹️  Stopping VIPER Live Trading System...")
 
@@ -163,7 +163,7 @@ class CompleteLiveTradingSystem:
             return False
 
     def _create_startup_tasks(self):
-        """Create initial GitHub tasks for system startup""""""
+        """Create initial GitHub tasks for system startup"""
         try:
             # Daily performance report
             dashboard_data = {
@@ -198,7 +198,7 @@ class CompleteLiveTradingSystem:
 
     def _create_shutdown_tasks(self):
         pass
-        """Create GitHub tasks for system shutdown""""""
+        """Create GitHub tasks for system shutdown"""
         try:
             # Get final trading status
             trading_status = self.trading_manager.get_trading_status() if self.trading_manager else {}
@@ -285,7 +285,7 @@ class CompleteLiveTradingSystem:
         self.stop_system()
 
     def run_automated_mode(self, duration_hours: int = None):
-        """Run in automated mode for specified duration""""""
+        """Run in automated mode for specified duration"""
         if duration_hours:
             end_time = datetime.now() + timedelta(hours=duration_hours)
             print(f"Will stop at: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")

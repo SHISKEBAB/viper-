@@ -286,7 +286,7 @@ class OptimalEntryPointManager:
         return validation
     
     def calculate_technical_analysis_score(self, market_data: Dict[str, Any]) -> float:
-        """Calculate technical analysis component score""""""
+        """Calculate technical analysis component score"""
         try:
             rsi = market_data.get('rsi', 50)
             macd = market_data.get('macd', 0)
@@ -334,7 +334,7 @@ class OptimalEntryPointManager:
             return 0.5  # Neutral score on error
     
     def calculate_bb_position(self, market_data: Dict[str, Any]) -> float:
-        """Calculate position within Bollinger Bands (0 = lower band, 1 = upper band)""""""
+        """Calculate position within Bollinger Bands (0 = lower band, 1 = upper band)"""
         try:
             close = market_data.get('close', 0)
             bb_lower = market_data.get('bb_lower', close)
@@ -350,7 +350,7 @@ class OptimalEntryPointManager:
             return 0.5
     
     def calculate_trend_strength_score(self, market_data: Dict[str, Any]) -> float:
-        """Calculate trend strength component score""""""
+        """Calculate trend strength component score"""
         try:
             close = market_data.get('close', 0)
             sma_20 = market_data.get('sma_20', close)
@@ -386,7 +386,7 @@ class OptimalEntryPointManager:
             return 0.5
     
     def calculate_volume_confirmation_score(self, market_data: Dict[str, Any]) -> float:
-        """Calculate volume confirmation component score""""""
+        """Calculate volume confirmation component score"""
         try:
             volume = market_data.get('volume', 0)
             volume_sma = market_data.get('volume_sma', volume)
@@ -410,7 +410,7 @@ class OptimalEntryPointManager:
             return 0.5
     
     def calculate_execution_cost_score(self, market_data: Dict[str, Any]) -> float:
-        """Calculate execution cost component score with position-size awareness""""""
+        """Calculate execution cost component score with position-size awareness"""
         try:
             spread = market_data.get('spread', 0.001)  # Default 10bps if not provided
             volume = market_data.get('volume', 0)
@@ -444,7 +444,7 @@ class OptimalEntryPointManager:
             return 0.5  # Neutral score on error
     
     def calculate_market_regime_score(self, market_data: Dict[str, Any]) -> float:
-        """Calculate market regime component score""""""
+        """Calculate market regime component score"""
         try:
             # This is a simplified market regime detection
             # In practice, this would use more sophisticated regime detection
@@ -471,7 +471,7 @@ class OptimalEntryPointManager:
     def calculate_entry_confidence(self, component_scores: Dict[str, float], )
 (                                 validation_results: Dict[str, Any]) -> float:
                                      pass
-        """Calculate overall confidence in entry signal""""""
+        """Calculate overall confidence in entry signal"""
         try:
             # Base confidence from component score consistency
             scores = list(component_scores.values())
@@ -616,7 +616,7 @@ class OptimalEntryPointManager:
         return suggestions
     
     def update_performance_metrics(self, entry_result: Dict[str, Any]):
-        """Update performance tracking metrics""""""
+        """Update performance tracking metrics"""
         try:
             self.performance_metrics['total_signals_generated'] += 1
             self.performance_metrics['last_optimization_time'] = datetime.now()
@@ -634,7 +634,7 @@ class OptimalEntryPointManager:
             logger.warning(f"# Warning Error updating performance metrics: {e}")
     
     def save_performance_report(self):
-        """Save performance metrics to file""""""
+        """Save performance metrics to file"""
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_file = self.project_root / "reports" / f"entry_point_performance_{timestamp}.json"

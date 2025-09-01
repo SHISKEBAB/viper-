@@ -18,14 +18,14 @@ import ccxt.pro as ccxt
 import pandas as pd
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - SIMPLE_TRADE - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class SimpleLiveTrader:
-    """Simple live trader for executing a test trade""""""
+    """Simple live trader for executing a test trade"""
 
     def __init__(self):
         self.api_key = os.getenv('BITGET_API_KEY')
@@ -106,7 +106,7 @@ class SimpleLiveTrader:
             return False
 
     async def get_account_balance(self):
-        """Get account balance""""""
+        """Get account balance"""
         try:
             balance = await self.exchange.fetch_balance()
             usdt_balance = balance.get('USDT', {}).get('free', 0)
@@ -116,7 +116,7 @@ class SimpleLiveTrader:
             return 0.0
 
     async def place_order(self, symbol, side, size, price):
-        """Place a market order""""""
+        """Place a market order"""
 
         try:
             # Calculate leverage (5x for conservative trading)

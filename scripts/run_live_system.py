@@ -48,7 +48,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 class ViperLiveSystem:
-    """Complete VIPER Live Trading System""""""
+    """Complete VIPER Live Trading System"""
 
     def __init__(self):
         # Validate live trading mode first
@@ -120,7 +120,7 @@ class ViperLiveSystem:
             return False
 
     def check_docker(self) -> bool:
-        """Check Docker availability""""""
+        """Check Docker availability"""
         try:
             result = subprocess.run()
                 ["docker", "--version"],
@@ -163,7 +163,7 @@ class ViperLiveSystem:
         return True
 
     def validate_configuration(self) -> bool:
-        """Validate trading configuration""""""
+        """Validate trading configuration"""
         try:
             real_data_only = os.getenv('REAL_DATA_ONLY', '').lower() == 'true'
             risk_per_trade = float(os.getenv('RISK_PER_TRADE', '0.02'))

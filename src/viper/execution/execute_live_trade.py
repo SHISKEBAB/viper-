@@ -21,14 +21,14 @@ from emergency_stop_system import get_emergency_system
 from github_mcp_integration import GitHubMCPIntegration
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - LIVE_TRADE - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class LiveTradeExecutor:
-    """Complete live trade execution system""""""
+    """Complete live trade execution system"""
 
     def __init__(self):
         self.trader = ViperAsyncTrader()
@@ -40,7 +40,7 @@ class LiveTradeExecutor:
         logger.info("# Rocket Live Trade Executor initialized")
 
     async def execute_complete_trade_cycle(self):
-        """Execute complete trade cycle from signal to order""""""
+        """Execute complete trade cycle from signal to order"""
 
 
         try:
@@ -132,7 +132,7 @@ class LiveTradeExecutor:
         return signals
 
     async def get_market_data(self, symbol):
-        """Get comprehensive market data""""""
+        """Get comprehensive market data"""
 
         try:
             # Use trader's market data fetching
@@ -234,7 +234,7 @@ class LiveTradeExecutor:
             return None
 
     async def monitor_position(self, trade_result):
-        """Monitor and manage the executed position""""""
+        """Monitor and manage the executed position"""
 
         if not trade_result:
             return

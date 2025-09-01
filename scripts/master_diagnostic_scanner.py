@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class MasterDiagnosticScanner:
     """
     Master diagnostic scanner with optimal configurations
-    """"""
+    """
     
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
@@ -236,7 +236,7 @@ class MasterDiagnosticScanner:
         return result
     
     def diagnose_redis_service(self, result: Dict[str, Any]) -> Dict[str, Any]
-        """Special diagnostics for Redis service""":"""
+        """Special diagnostics for Redis service""""""
         try:
             # Try Redis connection using redis-py if available
     import redis
@@ -827,7 +827,7 @@ class MasterDiagnosticScanner:
 
 
 def main():
-    """Run the master diagnostic scanner""""""
+    """Run the master diagnostic scanner"""
     try:
         scanner = MasterDiagnosticScanner()
         results = scanner.run_comprehensive_scan()

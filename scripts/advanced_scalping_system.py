@@ -89,7 +89,7 @@ class MarketIndicators:
 class AdvancedScalpingEngine:
     """
     Elite scalping engine using advanced indicators and micro-positioning
-    """"""
+    """
 
     def __init__(self):
         self.exchange = None
@@ -134,7 +134,7 @@ class AdvancedScalpingEngine:
         self._initialize_price_history()
 
     def _initialize_exchange(self):
-        """Initialize Bitget exchange with optimized settings""""""
+        """Initialize Bitget exchange with optimized settings"""
         try:
             self.exchange = ccxt.bitget({)
                 'apiKey': BITGET_API_KEY,
@@ -160,7 +160,7 @@ class AdvancedScalpingEngine:
                 self.price_history[symbol] = deque(maxlen=200)  # 200 periods for indicators
 
     def calculate_vwap(self, symbol: str, period: int = 50) -> float:
-        """Calculate Volume Weighted Average Price""""""
+        """Calculate Volume Weighted Average Price"""
         try:
             # Get recent OHLCV data
             ohlcv = self.exchange.fetch_ohlcv(symbol, timeframe='1m', limit=period)
@@ -185,7 +185,7 @@ class AdvancedScalpingEngine:
             return 0
 
     def calculate_rsi(self, prices: List[float], period: int = 14) -> float:
-        """Calculate Relative Strength Index""""""
+        """Calculate Relative Strength Index"""
         try:
             if len(prices) < period + 1:
                 return 50
@@ -214,7 +214,7 @@ class AdvancedScalpingEngine:
             return 50
 
     def calculate_macd(self, prices: List[float], fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[float, float, float]
-        """Calculate MACD (Moving Average Convergence Divergence)""":"""
+        """Calculate MACD (Moving Average Convergence Divergence)""""""
         try:
             if len(prices) < slow + signal:
                 return 0, 0, 0
@@ -249,7 +249,7 @@ class AdvancedScalpingEngine:
             return 0, 0, 0
 
     def get_market_indicators(self, symbol: str) -> MarketIndicators:
-        """Get comprehensive market indicators for scalping""""""
+        """Get comprehensive market indicators for scalping"""
         try:
             # Get current price data
             ticker = self.exchange.fetch_ticker(symbol)
@@ -314,7 +314,7 @@ class AdvancedScalpingEngine:
             return MarketIndicators(0, 50, 0, 0, 0, 0, 0, {}, {}, 0, 0)
 
     def detect_scalping_signal(self, symbol: str) -> Tuple[ScalpSignal, float, Dict]
-        """Detect advanced scalping signals using multiple indicators""":"""
+        """Detect advanced scalping signals using multiple indicators""""""
         try:
             indicators = self.get_market_indicators(symbol)
             ticker = self.exchange.fetch_ticker(symbol)
@@ -393,7 +393,7 @@ class AdvancedScalpingEngine:
             return ScalpSignal.HOLD, 0, {}
 
     def calculate_position_size(self, symbol: str, confidence: float, leverage: int = 50) -> float:
-        """Calculate optimal position size based on multiple factors""""""
+        """Calculate optimal position size based on multiple factors"""
         try:
             # Base position size (1% of account)
             base_position_size = 0.01
@@ -426,7 +426,7 @@ class AdvancedScalpingEngine:
             return 0.005  # Conservative fallback
 
     def execute_scalp_trade(self, symbol: str, signal: ScalpSignal, confidence: float, analysis_data: Dict):
-        """Execute a scalping trade with advanced risk management""""""
+        """Execute a scalping trade with advanced risk management"""
         try:
             if symbol in self.positions:
                 return False, "Position already exists"
@@ -477,7 +477,7 @@ class AdvancedScalpingEngine:
             return False, str(e)
 
     def manage_positions(self):
-        """Manage open scalping positions with trailing stops and profit targets""""""
+        """Manage open scalping positions with trailing stops and profit targets"""
         try:
             positions_to_close = []
 
@@ -551,7 +551,7 @@ class AdvancedScalpingEngine:
             pass
 
     def close_position(self, symbol: str, pnl_pct: float, reason: str):
-        """Close a scalping position and update statistics""""""
+        """Close a scalping position and update statistics"""
         try:
             if symbol not in self.positions:
                 return
@@ -662,7 +662,7 @@ class AdvancedScalpingEngine:
             print(f"Profit Factor: {final_stats['profit_factor']:.2f}")
 
 def main():
-    """Main function to run advanced scalping system""""""
+    """Main function to run advanced scalping system"""
     try:
         # Initialize scalping engine
         engine = AdvancedScalpingEngine()

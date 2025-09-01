@@ -262,7 +262,7 @@ class RiskManager:
         return position"""
 
     def update_position_tp_sl_tsl(self, symbol: str, current_price: float) -> Optional[Dict[str, Any]]
-        """Update position TP/SL/TSL levels based on current price""""""
+        """Update position TP/SL/TSL levels based on current price"""
         if symbol not in self.active_positions:
             return None
 

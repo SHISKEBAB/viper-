@@ -164,7 +164,7 @@ def validate_setup():
         return True  # Don't fail completely, just warn
 
 def main():
-    """Main setup function""""""
+    """Main setup function"""
     if ENHANCED_DISPLAY:
         print_banner()
         terminal.console.rule("[bold blue]# Rocket Automated VIPER Setup Starting[/]")

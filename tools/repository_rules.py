@@ -208,7 +208,7 @@ class RepositoryRules:
         return ""
 
     def _matches_pattern(self, filename: str, pattern: str) -> bool:
-        """Simple wildcard pattern matching""""""
+        """Simple wildcard pattern matching"""
         if '*' not in pattern:
             return filename == pattern
         
@@ -241,7 +241,7 @@ Generated: {datetime.now().isoformat()}
 
 """
         
-        for category, issues in violations.items()""":
+        for category, issues in violations.items()"""
             if issues:
                 report += f"## {category.replace('_', ' ').title()}\n\n"
                 for issue in issues:

@@ -37,7 +37,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class PerformanceMetric(Enum):
     SHARPE_RATIO = "sharpe_ratio"
@@ -82,7 +82,7 @@ class OptimizationResult:
     confidence: float"""
 
 class PerformanceMonitoringSystem:
-    """Comprehensive performance monitoring and optimization system""""""
+    """Comprehensive performance monitoring and optimization system"""
 
     def __init__(self, history_size: int = 10000, optimization_interval: int = 3600):
         self.history_size = history_size
@@ -133,7 +133,7 @@ class PerformanceMonitoringSystem:
         logger.info("# Chart Performance Monitoring System initialized")
 
     def start_monitoring(self):
-        """Start real-time performance monitoring""""""
+        """Start real-time performance monitoring"""
         try:
             self.is_monitoring = True
             self.monitoring_thread = threading.Thread(target=self._monitoring_loop)
@@ -146,7 +146,7 @@ class PerformanceMonitoringSystem:
             logger.error(f"# X Error starting monitoring: {e}")
 
     def stop_monitoring(self):
-        """Stop performance monitoring""""""
+        """Stop performance monitoring"""
         try:
             self.is_monitoring = False
             if self.monitoring_thread:
@@ -181,7 +181,7 @@ class PerformanceMonitoringSystem:
                 time.sleep(60)
 
     def _collect_performance_snapshot(self) -> Optional[PerformanceSnapshot]
-        """Collect current performance snapshot""":"""
+        """Collect current performance snapshot""""""
         try:
             # This would integrate with your trading system
             # For now, we'll create a mock snapshot
@@ -208,7 +208,7 @@ class PerformanceMonitoringSystem:
             return None
 
     def _collect_system_metrics(self) -> Dict[str, Any]
-        """Collect system performance metrics""":"""
+        """Collect system performance metrics""""""
         try:
             return {
                 'cpu_percent': psutil.cpu_percent(interval=1),
@@ -225,7 +225,7 @@ class PerformanceMonitoringSystem:
             return {}
 
     def _check_performance_alerts(self, snapshot: PerformanceSnapshot):
-        """Check for performance alerts""""""
+        """Check for performance alerts"""
         try:
             alerts = []
 
@@ -277,7 +277,7 @@ class PerformanceMonitoringSystem:
             logger.error(f"# X Error checking performance alerts: {e}")
 
     def calculate_advanced_metrics(self, returns: pd.Series) -> Dict[str, float]
-        """Calculate advanced performance metrics""":"""
+        """Calculate advanced performance metrics""""""
         try:
             if len(returns) < 10:
                 return {}
@@ -340,7 +340,7 @@ class PerformanceMonitoringSystem:
             return {}
 
     def optimize_strategy_parameters(self, target: OptimizationTarget = OptimizationTarget.BALANCED_OPTIMIZATION) -> Optional[OptimizationResult]
-        """Optimize strategy parameters using historical performance""":"""
+        """Optimize strategy parameters using historical performance""""""
         try:
             logger.info(f"# Target Starting parameter optimization for target: {target.value}")
 
@@ -383,7 +383,7 @@ class PerformanceMonitoringSystem:
             return None
 
     def _prepare_optimization_data(self) -> Optional[Dict[str, Any]]
-        """Prepare data for optimization""":"""
+        """Prepare data for optimization""""""
         try:
             if len(self.performance_history) < 20:
                 return None
@@ -411,7 +411,7 @@ class PerformanceMonitoringSystem:
             return None
 
     def _optimize_for_sharpe(self, data: Dict[str, Any]) -> Optional[OptimizationResult]
-        """Optimize parameters to maximize Sharpe ratio""":"""
+        """Optimize parameters to maximize Sharpe ratio""""""
         try:
             # Simple parameter grid search (in production, use more sophisticated optimization)
             best_params = {}
@@ -450,7 +450,7 @@ class PerformanceMonitoringSystem:
             return None
 
     def _optimize_for_drawdown(self, data: Dict[str, Any]) -> Optional[OptimizationResult]
-        """Optimize parameters to minimize drawdown""":"""
+        """Optimize parameters to minimize drawdown""""""
         try:
             # Focus on reducing volatility and position sizes
             best_params = {}
@@ -486,7 +486,7 @@ class PerformanceMonitoringSystem:
             return None
 
     def _optimize_balanced(self, data: Dict[str, Any]) -> Optional[OptimizationResult]
-        """Balanced optimization across multiple metrics""":"""
+        """Balanced optimization across multiple metrics""""""
         try:
             # Create composite score
             best_params = {}
@@ -552,7 +552,7 @@ class PerformanceMonitoringSystem:
     def _simulate_drawdown_with_params(self, data: Dict[str, Any], risk_per_trade: float,)
 (                                     max_positions: int) -> float:
                                          pass
-        """Simulate drawdown with given parameters""""""
+        """Simulate drawdown with given parameters"""
         try:
             # Lower risk and fewer positions should reduce drawdown
             base_drawdown = np.mean([p['max_drawdown'] for p in data['performance_data'][-10:]])
@@ -575,7 +575,7 @@ class PerformanceMonitoringSystem:
     def _calculate_composite_score(self, data: Dict[str, Any], risk_per_trade: float,)
 (                                 take_profit_pct: float, min_score: float) -> float:
                                      pass
-        """Calculate composite performance score""""""
+        """Calculate composite performance score"""
         try:
             # Normalize parameters to 0-1 scale
             risk_score = 1.0 - abs(risk_per_trade - 0.012) / 0.01
@@ -598,7 +598,7 @@ class PerformanceMonitoringSystem:
             return 0.5
 
     def _calculate_current_composite_score(self, data: Dict[str, Any]) -> float:
-        """Calculate current composite score""""""
+        """Calculate current composite score"""
         try:
             recent_perf = data['performance_data'][-5:]
             current_params = data.get('current_parameters', {})
@@ -614,7 +614,7 @@ class PerformanceMonitoringSystem:
             return 0.5
 
     def _update_predictive_models(self):
-        """Update predictive models for performance forecasting""""""
+        """Update predictive models for performance forecasting"""
         try:
             if len(self.performance_history) < 20:
                 return
@@ -649,7 +649,7 @@ class PerformanceMonitoringSystem:
             logger.warning(f"# Warning Error updating predictive models: {e}")
 
     def generate_performance_report(self) -> Dict[str, Any]
-        """Generate comprehensive performance report""":"""
+        """Generate comprehensive performance report""""""
         try:
             if not self.performance_history:
                 return {'error': 'No performance data available'}
@@ -690,7 +690,7 @@ class PerformanceMonitoringSystem:
             return {'error': str(e)}
 
     def _analyze_system_health(self) -> Dict[str, Any]
-        """Analyze system health metrics""":"""
+        """Analyze system health metrics""""""
         try:
             if not self.performance_history:
                 return {}
@@ -728,7 +728,7 @@ class PerformanceMonitoringSystem:
             return {}
 
     def _summarize_optimizations(self) -> Dict[str, Any]
-        """Summarize optimization results""":"""
+        """Summarize optimization results""""""
         try:
             if not self.optimization_results:
                 return {'total_optimizations': 0, 'avg_improvement': 0.0}

@@ -78,7 +78,7 @@ class TradingSession:
     status: str = "active"  # active, paused, stopped
 
 class LiveTradingManager:
-    """Main live trading orchestration system""""""
+    """Main live trading orchestration system"""
 
     def __init__(self, config: Dict[str, Any] = None):
         self.config = config or self._load_default_config()
@@ -154,7 +154,7 @@ class LiveTradingManager:
         self.logger.addHandler(handler)
 
     def start_live_trading(self) -> bool:
-        """Start live trading operations""""""
+        """Start live trading operations"""
         if self.is_trading:
             self.logger.warning("Live trading already running")
             return False
@@ -204,7 +204,7 @@ class LiveTradingManager:
             return False
 
     def stop_live_trading(self, reason: str = "Manual stop") -> bool:
-        """Stop live trading operations""""""
+        """Stop live trading operations"""
         if not self.is_trading:
             self.logger.warning("Live trading not running")
             return False
@@ -320,7 +320,7 @@ import secrets
 
     def _update_positions_pnl(self):
         """Update P&L for all active positions using live market data"""
-        for position in self.active_positions.values()""":
+        for position in self.active_positions.values()"""
             if position.status == 'active':
                 try:
                     # Get current market price from live feed
@@ -384,7 +384,7 @@ import secrets
         """Check strategy performance and create alerts"""
         alerts = []
 
-        for strategy in self.strategy_dashboard.strategies.values()""":
+        for strategy in self.strategy_dashboard.strategies.values()"""
             if strategy.status == 'active':
                 # Check win rate
                 if strategy.win_rate < self.config['alert_thresholds']['low_win_rate']:
@@ -415,7 +415,7 @@ import secrets
             asyncio.run(self.alerts_queue.put(alert))
 
     def _process_alerts(self):
-        """Process alerts from queue""""""
+        """Process alerts from queue"""
         try:
             while not self.alerts_queue.empty():
                 alert = self.alerts_queue.get_nowait()
@@ -537,7 +537,7 @@ import secrets
 
 📋 Active Positions
 {'='*30}
-""""""
+"""
 
         if self.active_positions:
             for position in self.active_positions.values():
@@ -574,7 +574,7 @@ import secrets
         return report.strip()"""
 
     def export_trading_data(self, filename: str = None) -> str:
-        """Export trading data for analysis""""""
+        """Export trading data for analysis"""
         if filename is None:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"trading_session_{timestamp}.json"

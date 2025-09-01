@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime"""
 
 class MCPTradingOrchestrator:
-    """Orchestrator for MCP server startup and automated trading""""""
+    """Orchestrator for MCP server startup and automated trading"""
 
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
@@ -37,7 +37,7 @@ class MCPTradingOrchestrator:
 (        """)"""
 
     def check_environment(self) -> bool:
-        """Check if environment is properly configured""""""
+        """Check if environment is properly configured"""
 
         if not self.env_file.exists():
             return False
@@ -57,7 +57,7 @@ class MCPTradingOrchestrator:
         return True
 
     def start_mcp_server(self) -> bool:
-        """Start the MCP trading server""""""
+        """Start the MCP trading server"""
 
         try:
             # Change to MCP server directory
@@ -88,7 +88,7 @@ class MCPTradingOrchestrator:
     def wait_for_mcp_health(self) -> bool:
         """Wait for MCP server to become healthy"""
 
-        for attempt in range(self.max_retries)""":
+        for attempt in range(self.max_retries)"""
             try:
                 response = requests.get(f"{self.mcp_server_url}/health", timeout=5)
                 if response.status_code == 200:
@@ -138,7 +138,7 @@ class MCPTradingOrchestrator:
             pass
 
     def cleanup(self):
-        """Clean up resources""""""
+        """Clean up resources"""
         if self.mcp_process:
             try:
                 self.mcp_process.terminate()

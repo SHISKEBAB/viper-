@@ -17,14 +17,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class LiveTradingLauncher:
-    """Complete live trading system launcher with mandatory enforcement""""""
+    """Complete live trading system launcher with mandatory enforcement"""
 
     def __init__(self):
         # Validate live trading mode first
@@ -53,7 +53,7 @@ class LiveTradingLauncher:
         logger.info("# Check Live trading launcher initialized with enforcement")
 
     def check_docker(self) -> bool:
-        """Check if Docker is available and running""""""
+        """Check if Docker is available and running"""
         try:
             result = subprocess.run()
                 ["docker", "--version"],

@@ -28,16 +28,16 @@ import numpy as np
 import pandas as pd
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - UNIFIED_ENGINE - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class UnifiedTradingEngine:
     """
     Unified trading engine with complete feature integration
-    """"""
+    """
 
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or Path(__file__).parent / ".env"
@@ -64,7 +64,7 @@ class UnifiedTradingEngine:
         logger.info("# Check All system components initialized")
 
     def _load_mathematical_validator(self):
-        """Load mathematical validation system""""""
+        """Load mathematical validation system"""
         try:
             pass
     from utils.mathematical_validator import MathematicalValidator
@@ -74,7 +74,7 @@ class UnifiedTradingEngine:
             logger.error(f"# X Failed to load Mathematical Validator: {e}")
 
     def _load_optimal_configurations(self):
-        """Load optimal MCP and system configurations""""""
+        """Load optimal MCP and system configurations"""
         try:
             pass
     from config.optimal_mcp_config import get_optimal_mcp_config
@@ -95,7 +95,7 @@ class UnifiedTradingEngine:
             logger.error(f"# X Failed to load optimal configurations: {e}")
 
     def _load_entry_point_optimizer(self):
-        """Load entry point optimization system""""""
+        """Load entry point optimization system"""
         try:
             pass
     from scripts.optimal_entry_point_manager import OptimalEntryPointManager
@@ -105,7 +105,7 @@ class UnifiedTradingEngine:
             logger.error(f"# X Failed to load Entry Point Optimizer: {e}")
 
     def _load_ai_optimizer(self):
-        """Load AI/ML optimization system""""""
+        """Load AI/ML optimization system"""
         try:
             # Import AI optimizer
             spec = importlib.util.spec_from_file_location()
@@ -125,7 +125,7 @@ class UnifiedTradingEngine:
             logger.error(f"# X Failed to load AI Optimizer: {e}")
 
     def _load_diagnostic_system(self):
-        """Load diagnostic and monitoring system""""""
+        """Load diagnostic and monitoring system"""
         try:
             pass
     from scripts.scoring_system_diagnostic import ScoringSystemDiagnostic
@@ -135,7 +135,7 @@ class UnifiedTradingEngine:
             logger.error(f"# X Failed to load Diagnostic System: {e}")
 
     def _load_configurations(self):
-        """Load environment configurations""""""
+        """Load environment configurations"""
         try:
             # Load .env file if it exists
             if self.config_path.exists():
@@ -158,7 +158,7 @@ class UnifiedTradingEngine:
             logger.warning(f"# Warning Could not load .env file: {e}")
 
     def _setup_exchange_connection(self):
-        """Setup exchange connection with optimal settings""""""
+        """Setup exchange connection with optimal settings"""
         try:
             # Get exchange credentials
             api_key = os.getenv('BITGET_API_KEY')
@@ -192,7 +192,7 @@ class UnifiedTradingEngine:
             self.exchange = None
 
     async def start_trading_engine(self):
-        """Start the unified trading engine""""""
+        """Start the unified trading engine"""
         if self.trading_active:
             logger.warning("Trading engine already active")
             return
@@ -250,7 +250,7 @@ class UnifiedTradingEngine:
                 await asyncio.sleep(60)  # Wait 1 minute on error
 
     async def _scan_with_optimization(self) -> List[Dict[str, Any]]
-        """Scan markets with entry point optimization"""""":
+        """Scan markets with entry point optimization"""
         try:
             optimizer = self.components['entry_optimizer']
 
@@ -288,7 +288,7 @@ class UnifiedTradingEngine:
         return []
 :
     def _validate_signals_mathematically(self, signals: List[Dict[str, Any]]) -> List[Dict[str, Any]]
-        """Validate signals using mathematical validator""":"""
+        """Validate signals using mathematical validator""""""
         try:
             validator = self.components['math_validator']
             validated_signals = []
@@ -328,7 +328,7 @@ class UnifiedTradingEngine:
             return signals
 
     def _apply_ai_optimization(self, signals: List[Dict[str, Any]]) -> List[Dict[str, Any]]
-        """Apply AI optimization to trading signals""":"""
+        """Apply AI optimization to trading signals""""""
         try:
             ai_optimizer = self.components['ai_optimizer']
 
@@ -358,7 +358,7 @@ class UnifiedTradingEngine:
             return signals
 
     async def _execute_trades_with_risk_management(self, signals: List[Dict[str, Any]]):
-        """Execute trades with comprehensive risk management""""""
+        """Execute trades with comprehensive risk management"""
         try:
             # Check current positions
             current_positions = len(await self._get_current_positions())
@@ -424,7 +424,7 @@ class UnifiedTradingEngine:
             raise
 
     def _calculate_position_size(self, symbol: str, entry_price: float) -> float:
-        """Calculate position size based on risk management""""""
+        """Calculate position size based on risk management"""
         try:
             # Get account balance
             balance = self.exchange.fetch_balance()
@@ -447,7 +447,7 @@ class UnifiedTradingEngine:
             return 0.001  # Minimum position size
 
     async def _setup_risk_management(self, symbol: str, entry_price: float, order_id: str):
-        """Setup stop loss and take profit orders""""""
+        """Setup stop loss and take profit orders"""
         try:
             stop_loss_price = entry_price * (1 - self.trading_config['stop_loss_pct'] / 100)
             take_profit_price = entry_price * (1 + self.trading_config['take_profit_pct'] / 100)
@@ -477,7 +477,7 @@ class UnifiedTradingEngine:
             logger.error(f"Risk management setup failed for {symbol}: {e}")
 
     async def _get_current_positions(self) -> List[Dict[str, Any]]
-        """Get current open positions"""""":
+        """Get current open positions"""
         try:
             if not self.exchange:
                 return []
@@ -490,7 +490,7 @@ class UnifiedTradingEngine:
             return []
 
     async def _monitor_and_adjust_positions(self):
-        """Monitor and adjust existing positions""""""
+        """Monitor and adjust existing positions"""
         try:
             positions = await self._get_current_positions()
 
@@ -515,7 +515,7 @@ class UnifiedTradingEngine:
             logger.error(f"Position monitoring system failed: {e}")
 
     async def _close_position(self, symbol: str, position_id: str):
-        """Close a position""""""
+        """Close a position"""
         try:
             # Get current position details
             positions = await self._get_current_positions()
@@ -536,7 +536,7 @@ class UnifiedTradingEngine:
             logger.error(f"Failed to close position {position_id}: {e}")
 
     async def _adjust_tp_sl(self, symbol: str, adjustment: Dict[str, Any]):
-        """Adjust stop loss and take profit levels""""""
+        """Adjust stop loss and take profit levels"""
         try:
             # Cancel existing TP/SL orders
             # Implementation would depend on exchange API

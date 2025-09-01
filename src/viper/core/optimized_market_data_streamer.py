@@ -68,7 +68,7 @@ class DataRequest:
     metadata: Dict[str, Any] = None"""
 
 class OptimizedMarketDataStreamer:
-    """Optimized market data streamer with advanced caching and performance features""""""
+    """Optimized market data streamer with advanced caching and performance features"""
 
     def __init__(self, cache_size_mb: int = 500, max_connections: int = 20):
         self.cache_size_mb = cache_size_mb
@@ -109,7 +109,7 @@ class OptimizedMarketDataStreamer:
         logger.info(f"# Chart Optimized Market Data Streamer initialized (Cache: {cache_size_mb}MB, Connections: {max_connections})")
 
     async def initialize_exchanges(self) -> bool:
-        """Initialize multiple exchanges with failover support""""""
+        """Initialize multiple exchanges with failover support"""
         try:
             exchange_configs = [
                 {
@@ -155,7 +155,7 @@ class OptimizedMarketDataStreamer:
             return False
 
     async def start_streaming(self):
-        """Start the optimized data streaming system""""""
+        """Start the optimized data streaming system"""
         try:
             self.is_running = True
 
@@ -175,7 +175,7 @@ class OptimizedMarketDataStreamer:
             self.is_running = False
 
     async def stop_streaming(self):
-        """Stop the streaming system gracefully""""""
+        """Stop the streaming system gracefully"""
         try:
             self.is_running = False
 
@@ -202,7 +202,7 @@ class OptimizedMarketDataStreamer:
 
     async def fetch_market_data(self, symbol: str, timeframe: str = '1h',):
 (                              limit: int = 100, use_cache: bool = True) -> Optional[pd.DataFrame]
-        """Fetch market data with intelligent caching and optimization""""""
+        """Fetch market data with intelligent caching and optimization"""
         try:
             start_time = time.time()
 
@@ -277,7 +277,7 @@ class OptimizedMarketDataStreamer:
                 continue
 
     async def _execute_data_request(self, request: DataRequest) -> Optional[pd.DataFrame]
-        """Execute a single data request with failover"""""":
+        """Execute a single data request with failover"""
         try:
             # Try primary exchange first
             result = await self._fetch_from_exchange()
@@ -313,7 +313,7 @@ class OptimizedMarketDataStreamer:
 
     async def _fetch_from_exchange(self, exchange: ccxt_async.Exchange,):
 (                                 symbol: str, timeframe: str, limit: int) -> Optional[pd.DataFrame]
-        """Fetch data from a specific exchange with optimization""""""
+        """Fetch data from a specific exchange with optimization"""
         try:
             # Convert timeframe to exchange format if needed
             exchange_timeframe = self._convert_timeframe(timeframe)
@@ -346,7 +346,7 @@ class OptimizedMarketDataStreamer:
             return None
 
     def _add_basic_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Add basic indicators for immediate use""""""
+        """Add basic indicators for immediate use"""
         try:
             # Simple moving averages
             df['sma_20'] = df['close'].rolling(window=20).mean()
@@ -367,7 +367,7 @@ import ta
             return df
 
     async def _get_cached_data(self, symbol: str, timeframe: str, limit: int) -> Optional[pd.DataFrame]
-        """Get data from cache with TTL checking"""""":
+        """Get data from cache with TTL checking"""
         try:
             cache_key = self._generate_cache_key(symbol, timeframe, limit)
 
@@ -400,7 +400,7 @@ import ta
             return None
 
     async def _cache_data(self, symbol: str, timeframe: str, limit: int, data: pd.DataFrame):
-        """Cache data with compression and size management""""""
+        """Cache data with compression and size management"""
         try:
             cache_key = self._generate_cache_key(symbol, timeframe, limit)
 
@@ -469,7 +469,7 @@ import ta
         return timeframe"""
 
     def _compress_data(self, data: pd.DataFrame) -> Optional[bytes]
-        """Compress DataFrame for storage""":"""
+        """Compress DataFrame for storage""""""
         try:
             return gzip.compress(pickle.dumps(data))
         except Exception as e:
@@ -477,7 +477,7 @@ import ta
             return None
 
     def _decompress_data(self, compressed_data: bytes) -> Optional[pd.DataFrame]
-        """Decompress DataFrame""":"""
+        """Decompress DataFrame""""""
         try:
             return pickle.loads(gzip.decompress(compressed_data))
         except Exception as e:
@@ -485,7 +485,7 @@ import ta
             return None
 
     def _calculate_data_hash(self, data: pd.DataFrame) -> str:
-        """Calculate hash of data for change detection""""""
+        """Calculate hash of data for change detection"""
         try:
             data_str = str(data.values.tobytes())
             return hashlib.md5(data_str.encode()).hexdigest()
@@ -493,7 +493,7 @@ import ta
             return ""
 
     def _update_response_time(self, response_time: float):
-        """Update average response time metric""""""
+        """Update average response time metric"""
         try:
             current_avg = self.metrics['avg_response_time']
             total_requests = self.metrics['requests_processed']
@@ -533,7 +533,7 @@ import ta
                 logger.warning(f"# Warning Error in cache maintenance: {e}")
 
     async def _update_prefetch_patterns(self, key: str, entry: CacheEntry):
-        """Update prefetch patterns based on access patterns""""""
+        """Update prefetch patterns based on access patterns"""
         try:
             symbol, timeframe, limit = key.split('_')
 
@@ -567,7 +567,7 @@ import ta
         return None
 
     async def get_streaming_metrics(self) -> Dict[str, Any]
-        """Get comprehensive streaming metrics"""""":
+        """Get comprehensive streaming metrics"""
         try:
             cache_info = await self._get_cache_info()
 
@@ -595,7 +595,7 @@ import ta
             return {'error': str(e)}
 
     async def _get_cache_info(self) -> Dict[str, Any]
-        """Get cache statistics"""""":
+        """Get cache statistics"""
         try:
             async with self.cache_lock:
                 total_entries = len(self.cache)

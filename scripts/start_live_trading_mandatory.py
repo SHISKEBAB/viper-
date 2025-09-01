@@ -41,10 +41,10 @@ except ImportError:
         if details: print(f"   {details}")
     def print_banner():
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - MANDATORY_LAUNCHER - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 def validate_environment():

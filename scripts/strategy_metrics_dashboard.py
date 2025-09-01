@@ -85,7 +85,7 @@ class PortfolioMetrics:
     last_updated: str"""
 
 class StrategyMetricsDashboard:
-    """Comprehensive strategy metrics dashboard""""""
+    """Comprehensive strategy metrics dashboard"""
 
     def __init__(self):
         self.strategies: Dict[str, StrategyMetrics] = {}
@@ -241,7 +241,7 @@ class StrategyMetricsDashboard:
         self._calculate_portfolio_metrics()"""
 
     def _calculate_portfolio_metrics(self):
-        """Calculate overall portfolio performance metrics""""""
+        """Calculate overall portfolio performance metrics"""
         if not self.strategies:
             return
 
@@ -332,7 +332,7 @@ class StrategyMetricsDashboard:
         return table
 
     def display_portfolio_summary(self) -> str:
-        """Display portfolio-level summary""""""
+        """Display portfolio-level summary"""
         if not self.portfolio_metrics:
             return "Portfolio metrics not available"
 
@@ -388,7 +388,7 @@ class StrategyMetricsDashboard:
         return summary.strip()"""
 
     def display_strategy_details(self, strategy_name: str) -> str:
-        """Display detailed information for a specific strategy""""""
+        """Display detailed information for a specific strategy"""
         if strategy_name not in self.strategies:
             return f"Strategy '{strategy_name}' not found"
 
@@ -433,7 +433,7 @@ class StrategyMetricsDashboard:
         return details.strip()"""
 
     def _format_table_simple(self, headers: List[str], data: List[List[Any]]) -> str:
-        """Format table data as a simple text table""""""
+        """Format table data as a simple text table"""
         if not data:
             return "No data available"
 
@@ -464,7 +464,7 @@ class StrategyMetricsDashboard:
         return "\n".join(table_lines)
 
     def export_to_csv(self, filename: str = None) -> str:
-        """Export strategy metrics to CSV""""""
+        """Export strategy metrics to CSV"""
         if filename is None:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"strategy_metrics_{timestamp}.csv"
@@ -540,7 +540,7 @@ future results. Always perform your own due diligence and risk assessment.
         return report
 
     def start_monitoring(self):
-        """Start real-time monitoring thread""""""
+        """Start real-time monitoring thread"""
         if self.is_monitoring:
             return
 
@@ -572,7 +572,7 @@ future results. Always perform your own due diligence and risk assessment.
     def _update_live_metrics(self):
         """Update live strategy metrics (placeholder for real implementation)"""
         # In production, this would fetch real-time data from trading API
-        for strategy in self.strategies.values()""":
+        for strategy in self.strategies.values()"""
             if strategy.status == 'active':
                 # Simulate small metric updates
                 strategy.last_updated = datetime.now().isoformat()
@@ -581,7 +581,7 @@ future results. Always perform your own due diligence and risk assessment.
         """Check for performance alerts"""
         alerts = []
 
-        for strategy in self.strategies.values()""":
+        for strategy in self.strategies.values()"""
             if strategy.status == 'active':
                 # Check for concerning metrics
                 if strategy.sharpe_ratio < 1.0:
