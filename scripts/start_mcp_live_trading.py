@@ -72,12 +72,12 @@ class MCPLiveTradingLauncher:
                     merged_config = {**default_config, **task_config.get('config', {})}
 
                     # Add task metadata
-                    merged_config.update({)
+                    merged_config.update({
                         'task_name': task_config['name'],
                         'task_description': task_config['description'],
                         'schedule': task_config.get('schedule'),
                         'task_id_prefix': task_config['id']
-(                    })
+                    })
 
                     task_id = await create_live_trading_task(merged_config)
 
@@ -113,7 +113,7 @@ class MCPLiveTradingLauncher:
     async def run_interactive_mode(self):
         """Run in interactive mode with command interface"""
 
-        while True:"""
+        while True:
             try:
                 command = input("MCP Trading> ").strip().lower()
 
@@ -123,6 +123,7 @@ class MCPLiveTradingLauncher:
                     if self.connector:
                         status = await self.connector.get_trading_status()
                     else:
+                        print("No active connection")
                 elif command == 'create':
                     pass
                     config = self.tasks_config.get('default_config', {})
