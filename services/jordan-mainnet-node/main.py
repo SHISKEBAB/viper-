@@ -17,6 +17,8 @@ import json
 import logging
 import asyncio
 import uuid
+import sys
+from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Request, WebSocket
@@ -24,6 +26,18 @@ from fastapi.responses import StreamingResponse
 import uvicorn
 import httpx
 import redis.asyncio as redis
+
+# Add project paths for imports
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / 'infrastructure'))
+
+# Import credential client
+try:
+    from infrastructure.shared.credential_client import CredentialClient
+except ImportError:
+    print("Warning: Could not import credential client - falling back to environment variables")
+    CredentialClient = None
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
@@ -65,10 +79,66 @@ class JordanMainnetNode:
         # Initialize httpx client for Jordan Mainnet RPC calls
         self.rpc_client = httpx.AsyncClient(timeout=30.0)
         
+        # Initialize credential client for secure credential access
+        self.credential_client = None
+        if CredentialClient:
+            try:
+                self.credential_client = CredentialClient(
+                    vault_url=VAULT_URL,
+                    access_token=os.getenv('VAULT_ACCESS_TOKEN_JORDAN_MAINNET_NODE', 'jordan_mainnet_token_2025'),
+                    redis_url=REDIS_URL
+                )
+            except Exception as e:
+                logger.warning(f"Could not initialize credential client: {e}")
+        
+        # Credentials will be loaded during startup
+        self.jordan_key = None
+        self.jordan_secret = None  
+        self.jordan_passphrase = None
+        self.github_pat = None
+        
         # Initialize httpx client for GitHub API calls
         self.github_client = httpx.AsyncClient(timeout=30.0)
 
         self.setup_routes()
+
+    async def load_credentials_from_vault(self):
+        """Load credentials from the secure credential vault"""
+        if not self.credential_client:
+            logger.warning("No credential client available - using environment variables")
+            # Fallback to environment variables
+            self.jordan_key = JORDAN_MAINNET_KEY
+            self.jordan_secret = JORDAN_MAINNET_SECRET
+            self.jordan_passphrase = JORDAN_MAINNET_PASSPHRASE
+            self.github_pat = GITHUB_PAT
+            return
+        
+        try:
+            # Load Jordan Mainnet credentials from vault
+            self.jordan_key = await self.credential_client.get_credential('jordan-mainnet-node', 'JORDAN_MAINNET_KEY')
+            self.jordan_secret = await self.credential_client.get_credential('jordan-mainnet-node', 'JORDAN_MAINNET_SECRET')
+            self.jordan_passphrase = await self.credential_client.get_credential('jordan-mainnet-node', 'JORDAN_MAINNET_PASSPHRASE')
+            self.github_pat = await self.credential_client.get_credential('jordan-mainnet-node', 'GITHUB_PAT')
+            
+            # Fallback to environment variables if vault fails
+            if not self.jordan_key:
+                self.jordan_key = JORDAN_MAINNET_KEY
+            if not self.jordan_secret:
+                self.jordan_secret = JORDAN_MAINNET_SECRET
+            if not self.jordan_passphrase:
+                self.jordan_passphrase = JORDAN_MAINNET_PASSPHRASE
+            if not self.github_pat:
+                self.github_pat = GITHUB_PAT
+            
+            logger.info("# Check Credentials loaded from vault")
+            
+        except Exception as e:
+            logger.error(f"# X Failed to load credentials from vault: {e}")
+            # Fallback to environment variables
+            self.jordan_key = JORDAN_MAINNET_KEY
+            self.jordan_secret = JORDAN_MAINNET_SECRET
+            self.jordan_passphrase = JORDAN_MAINNET_PASSPHRASE
+            self.github_pat = GITHUB_PAT
 
     def setup_routes(self):
         """Setup Jordan Mainnet node routes"""
@@ -621,20 +691,20 @@ class JordanMainnetNode:
     async def create_github_issue(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a GitHub issue via MCP"""
         try:
-            if not GITHUB_PAT:
+            if not self.github_pat:
                 return {"error": "GitHub PAT not configured", "status": "error"}
 
             headers = {}
             # Handle both old (ghp_) and new (github_pat_) token formats
-            if GITHUB_PAT.startswith("github_pat_"):
+            if self.github_pat.startswith("github_pat_"):
                 headers = {
-                    "Authorization": f"Bearer {GITHUB_PAT}",
+                    "Authorization": f"Bearer {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json"
                 }
             else:
                 headers = {
-                    "Authorization": f"token {GITHUB_PAT}",
+                    "Authorization": f"token {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json"
                 }
@@ -670,19 +740,19 @@ class JordanMainnetNode:
     async def list_github_issues(self, status: str = "open") -> Dict[str, Any]:
         """List GitHub issues via MCP"""
         try:
-            if not GITHUB_PAT:
+            if not self.github_pat:
                 return {"error": "GitHub PAT not configured", "status": "error"}
 
             headers = {}
             # Handle both old (ghp_) and new (github_pat_) token formats
-            if GITHUB_PAT.startswith("github_pat_"):
+            if self.github_pat.startswith("github_pat_"):
                 headers = {
-                    "Authorization": f"Bearer {GITHUB_PAT}",
+                    "Authorization": f"Bearer {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json"
                 }
             else:
                 headers = {
-                    "Authorization": f"token {GITHUB_PAT}",
+                    "Authorization": f"token {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json"
                 }
 
@@ -719,7 +789,7 @@ class JordanMainnetNode:
     async def update_github_issue(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Update a GitHub issue via MCP"""
         try:
-            if not GITHUB_PAT:
+            if not self.github_pat:
                 return {"error": "GitHub PAT not configured", "status": "error"}
 
             issue_number = data.get("issue_number")
@@ -728,15 +798,15 @@ class JordanMainnetNode:
 
             headers = {}
             # Handle both old (ghp_) and new (github_pat_) token formats
-            if GITHUB_PAT.startswith("github_pat_"):
+            if self.github_pat.startswith("github_pat_"):
                 headers = {
-                    "Authorization": f"Bearer {GITHUB_PAT}",
+                    "Authorization": f"Bearer {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json"
                 }
             else:
                 headers = {
-                    "Authorization": f"token {GITHUB_PAT}",
+                    "Authorization": f"token {self.github_pat}",
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json"
                 }
@@ -779,16 +849,22 @@ class JordanMainnetNode:
             await self.redis_client.ping()
             logger.info("Redis connection established")
             
+            # Load credentials from vault
+            await self.load_credentials_from_vault()
+            
             # Check Jordan Mainnet configuration
             if not JORDAN_MAINNET_ENABLED:
                 logger.warning("Jordan Mainnet is not enabled in configuration")
                 self.node_status = "disabled"
                 return
             
-            if not all([JORDAN_MAINNET_KEY, JORDAN_MAINNET_SECRET, JORDAN_MAINNET_PASSPHRASE]):
+            # Check credentials (now using vault-loaded credentials)
+            if not all([self.jordan_key, self.jordan_secret, self.jordan_passphrase]):
                 logger.error("Jordan Mainnet credentials not fully configured")
                 self.node_status = "config_error"
                 return
+            
+            logger.info("# Check Jordan Mainnet credentials loaded successfully")
             
             # Check RPC connection
             rpc_status = await self.check_rpc_connection()
