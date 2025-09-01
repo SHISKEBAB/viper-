@@ -246,7 +246,7 @@ class RiskManager:
         """Create a position from a validated trading signal"""
         levels = validation['levels']
 
-        position = Position()
+        position = Position(
             symbol=signal.symbol,
             side=signal.side,
             size=validation['position_size'],
@@ -257,11 +257,11 @@ class RiskManager:
             take_profit=levels['take_profit'],
             trailing_stop=levels['trailing_stop'],
             trailing_activation=levels['trailing_activation']
-(        )
+        )
 
-        return position"""
+        return position
 
-    def update_position_tp_sl_tsl(self, symbol: str, current_price: float) -> Optional[Dict[str, Any]]
+    def update_position_tp_sl_tsl(self, symbol: str, current_price: float) -> Optional[Dict[str, Any]]:
         """Update position TP/SL/TSL levels based on current price"""
         if symbol not in self.active_positions:
             return None
@@ -279,10 +279,10 @@ class RiskManager:
             position.unrealized_pnl = (position.entry_price - current_price) * position.size
 
         # Check Take Profit
-        if position.take_profit and (:
+        if position.take_profit and (
             (position.side == PositionSide.LONG and current_price >= position.take_profit) or
             (position.side == PositionSide.SHORT and current_price <= position.take_profit)
-(        )
+        ):
             action_taken = {
                 'action': 'TAKE_PROFIT',
                 'symbol': symbol,
@@ -291,10 +291,10 @@ class RiskManager:
             }
 
         # Check Stop Loss
-        elif position.stop_loss and (:
+        elif position.stop_loss and (
             (position.side == PositionSide.LONG and current_price <= position.stop_loss) or
             (position.side == PositionSide.SHORT and current_price >= position.stop_loss)
-(        )
+        ):
             action_taken = {
                 'action': 'STOP_LOSS',
                 'symbol': symbol,
