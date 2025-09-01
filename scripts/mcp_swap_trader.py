@@ -81,7 +81,7 @@ class MCPSwapTrader:
             markets = self.exchange.loadMarkets()
             self.all_pairs = [
                 symbol for symbol in markets.keys()
-                if markets[symbol]['active'] and:
+                if markets[symbol]['active'] and
                 markets[symbol]['type'] == 'swap' and
                 markets[symbol]['quote'] == 'USDT'
             ]
@@ -97,7 +97,7 @@ class MCPSwapTrader:
         except Exception:
             return False
 
-    def get_market_data(self, symbol: str) -> Optional[Dict]
+    def get_market_data(self, symbol: str) -> Optional[Dict]:
         """Get current market data for a symbol"""
         try:
             ticker = self.exchange.fetch_ticker(symbol)
@@ -133,7 +133,7 @@ class MCPSwapTrader:
         except Exception as e:
             return 0
 
-    def generate_signal(self, symbol: str, viper_score: float, market_data: Dict) -> Optional[Dict]
+    def generate_signal(self, symbol: str, viper_score: float, market_data: Dict) -> Optional[Dict]:
         """Generate trading signal based on VIPER score"""
         try:
             # Check if we already have a position
@@ -188,11 +188,11 @@ class MCPSwapTrader:
             }
 
             # Call MCP server to execute trade
-            response = requests.post()
+            response = requests.post(
                 f"{self.mcp_server_url}/execute_trade",
                 json=trade_params,
                 timeout=30
-(            )
+            )
 
             if response.status_code == 200:
                 result = response.json()
@@ -255,11 +255,11 @@ class MCPSwapTrader:
                     'reason': reason
                 }
 
-                response = requests.post()
+                response = requests.post(
                     f"{self.mcp_server_url}/close_position",
                     json=close_params,
                     timeout=30
-(                )
+                )
 
                 if response.status_code == 200:
                     result = response.json()
@@ -314,10 +314,10 @@ class MCPSwapTrader:
                             viper_score = self.calculate_viper_score(market_data)
 
                             # Display market state
-                            print(f"  {symbol:<20} | Price: ${market_data['price']:<10.4f} | ")
+                            print(f"  {symbol:<20} | Price: ${market_data['price']:<10.4f} | "
                                   f"Change: {market_data['price_change']:<+6.2f}% | "
                                   f"VIPER: {viper_score:<5.1f} | "
-(                                  f"Volume: {market_data['volume']:<10.0f}")
+                                  f"Volume: {market_data['volume']:<10.0f}")
 
                             # Generate signal
                             signal = self.generate_signal(symbol, viper_score, market_data)
@@ -362,19 +362,17 @@ class MCPSwapTrader:
 
     def stop(self) -> None:
         """Stop the trading system"""
-        self.is_running = False"""
+        self.is_running = False
 
 def main():
     """Main entry point"""
-#==============================================================================#
-# # Rocket VIPER MCP SWAP TRADER - ALL PAIRS TRADING                               #
-# 🔥 Automated Swap Trading | # Chart 50x Leverage | # Target MCP Integration            #
-# ⚡ Real-time Scanning | 🧠 AI Signals | 📈 Risk Management                  #
-#==============================================================================#
-(    """)
-"""
+    print("=" * 78)
+    print("# Rocket VIPER MCP SWAP TRADER - ALL PAIRS TRADING")
+    print("🔥 Automated Swap Trading | 50x Leverage | MCP Integration")
+    print("⚡ Real-time Scanning | 🧠 AI Signals | 📈 Risk Management")
+    print("=" * 78)
 
-    # Check API credentials"""
+    # Check API credentials
     if not all([BITGET_API_KEY, BITGET_API_SECRET, BITGET_API_PASSWORD]):
         print("# Warning  Warning: API credentials not found in environment variables")
         print("   Some features may be limited without proper credentials")
