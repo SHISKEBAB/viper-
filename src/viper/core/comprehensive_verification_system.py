@@ -54,7 +54,7 @@ class VerificationResult:
 class ComprehensiveVerificationSystem:
     """
     Complete verification system for all VIPER components
-    """"""
+    """
 
     def __init__(self):
         self.results = []
@@ -268,7 +268,7 @@ class ComprehensiveVerificationSystem:
 ((            ))
 
     async def _calculate_test_rsi(self) -> Dict[str, Any]
-        """Test RSI calculation accuracy"""""":
+        """Test RSI calculation accuracy"""
         try:
             # Generate test data
             prices = np.random.normal(100, 5, 100)
@@ -322,7 +322,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e), 'details': 'RSI calculation failed'}
 
     async def _calculate_test_macd(self) -> Dict[str, Any]
-        """Test MACD calculation accuracy"""""":
+        """Test MACD calculation accuracy"""
         try:
             prices = np.random.normal(100, 2, 200)
 
@@ -343,7 +343,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _calculate_test_bollinger(self) -> Dict[str, Any]
-        """Test Bollinger Bands calculation accuracy"""""":
+        """Test Bollinger Bands calculation accuracy"""
         try:
             prices = np.random.normal(100, 3, 100)
             period = 20
@@ -364,7 +364,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _calculate_test_atr(self) -> Dict[str, Any]
-        """Test ATR calculation accuracy"""""":
+        """Test ATR calculation accuracy"""
         try:
             high = np.random.normal(105, 2, 100)
             low = np.random.normal(95, 2, 100)
@@ -389,7 +389,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _calculate_test_ema(self) -> Dict[str, Any]
-        """Test EMA calculation accuracy"""""":
+        """Test EMA calculation accuracy"""
         try:
             prices = np.random.normal(100, 2, 50)
             period = 21
@@ -406,7 +406,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _calculate_test_stochastic(self) -> Dict[str, Any]
-        """Test Stochastic Oscillator calculation accuracy"""""":
+        """Test Stochastic Oscillator calculation accuracy"""
         try:
             high = np.random.normal(105, 1, 50)
             low = np.random.normal(95, 1, 50)
@@ -503,7 +503,7 @@ import talib
 ((            ))
 
     async def _test_breakout_logic(self) -> Dict[str, Any]
-        """Test breakout signal logic"""""":
+        """Test breakout signal logic"""
         try:
             # Simulate breakout conditions
             test_data = {
@@ -532,7 +532,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _test_reversal_logic(self) -> Dict[str, Any]
-        """Test reversal signal logic"""""":
+        """Test reversal signal logic"""
         try:
             # Simulate reversal conditions
             test_data = {
@@ -559,7 +559,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _test_continuation_logic(self) -> Dict[str, Any]
-        """Test continuation signal logic"""""":
+        """Test continuation signal logic"""
         try:
             # Simulate continuation conditions
             test_data = {
@@ -586,7 +586,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _test_mean_reversion_logic(self) -> Dict[str, Any]
-        """Test mean reversion signal logic"""""":
+        """Test mean reversion signal logic"""
         try:
             # Simulate mean reversion conditions
             test_data = {
@@ -614,7 +614,7 @@ import talib
             return {'status': 'ERROR', 'error': str(e)}
 
     async def _test_momentum_logic(self) -> Dict[str, Any]
-        """Test momentum signal logic"""""":
+        """Test momentum signal logic"""
         try:
             # Simulate momentum conditions
             test_data = {
@@ -1968,7 +1968,7 @@ import os
         print(f"📄 Detailed verification report saved to: {report_path}")
 
     def _calculate_performance_score(self, results: Dict[str, Any]) -> float:
-        """Calculate overall performance score""""""
+        """Calculate overall performance score"""
         if results['total_tests'] == 0:
             return 0.0
 

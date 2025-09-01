@@ -41,10 +41,10 @@ logging.basicConfig()
         logging.StreamHandler()
     ]
 ()
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class CompleteMCPTradingIntegration:
-    """Complete MCP trading integration system""""""
+    """Complete MCP trading integration system"""
 
     def __init__(self):
         self.connector = None
@@ -211,7 +211,7 @@ class CompleteMCPTradingIntegration:
                 await asyncio.sleep(60)
 
     async def check_system_health(self, status: dict):
-        """Check system health and create alerts if needed""""""
+        """Check system health and create alerts if needed"""
         try:
             issues = []
 
@@ -248,7 +248,7 @@ class CompleteMCPTradingIntegration:
             logger.error(f"# X Health check failed: {e}")
 
     async def create_system_health_issue(self, issue: dict):
-        """Create GitHub issue for system health problem""""""
+        """Create GitHub issue for system health problem"""
         try:
             issue_title = f"🚨 System Health Alert: {issue['type'].replace('_', ' ').title()}"
 
@@ -317,7 +317,7 @@ class CompleteMCPTradingIntegration:
             return False
 
     async def get_complete_system_status(self):
-        """Get comprehensive system status""""""
+        """Get comprehensive system status"""
         try:
             status = {
                 'timestamp': datetime.now().isoformat(),

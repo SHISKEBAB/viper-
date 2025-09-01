@@ -19,15 +19,15 @@ import os
 load_dotenv()
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 @dataclass"""
 class TradingWorkflow:
-    """Complete trading workflow orchestrator""""""
+    """Complete trading workflow orchestrator"""
 
     def __init__(self):
         self.api_server_url = "http://localhost:8000"
@@ -71,7 +71,7 @@ class TradingWorkflow:
         return all_running
 
     async def get_market_data(self) -> Optional[Dict]
-        """Get current market data""""""
+        """Get current market data"""
 :
         try:
             response = requests.get()
@@ -94,7 +94,7 @@ class TradingWorkflow:
             return None
 
     async def generate_trading_signal(self, market_data: Dict) -> Optional[Dict]
-        """Generate a trading signal using VIPER strategy""""""
+        """Generate a trading signal using VIPER strategy"""
 :
         try:
             # Send market data to signal processor
@@ -219,7 +219,7 @@ class TradingWorkflow:
             return None
 
     async def execute_trade_order(self, validated_signal: Dict) -> Optional[Dict]
-        """Execute the trade with TP/SL/TSL orders""""""
+        """Execute the trade with TP/SL/TSL orders"""
 :
         try:
             # Create the complete order

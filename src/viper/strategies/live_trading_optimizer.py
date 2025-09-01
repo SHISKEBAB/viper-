@@ -30,10 +30,10 @@ logging.basicConfig()
         logging.StreamHandler()
     ]
 ()
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class LiveTradingOptimizer:
-    """Live trading system with continuous optimization""""""
+    """Live trading system with continuous optimization"""
 
     def __init__(self):
         self.is_running = False
@@ -118,7 +118,7 @@ class LiveTradingOptimizer:
         return all_healthy
 
     async def get_account_balance(self) -> Optional[float]
-        """Get current account balance"""""":
+        """Get current account balance"""
         try:
             response = requests.get(f"{self.exchange_connector_url}/api/balance", timeout=10)
             if response.status_code == 200:
@@ -133,7 +133,7 @@ class LiveTradingOptimizer:
             return None
 
     async def check_emergency_conditions(self) -> bool:
-        """Check if emergency stop conditions are met""""""
+        """Check if emergency stop conditions are met"""
         try:
             # Get current balance
             current_balance = await self.get_account_balance()
@@ -166,7 +166,7 @@ class LiveTradingOptimizer:
             return False
 
     async def generate_trading_signals(self) -> List[Dict]
-        """Generate trading signals from market data"""""":
+        """Generate trading signals from market data"""
         try:
             # Get market data from signal processor
             response = requests.get(f"{self.signal_processor_url}/api/signals/current", timeout=10)
@@ -192,7 +192,7 @@ class LiveTradingOptimizer:
             return []
 
     async def validate_and_execute_signal(self, signal: Dict) -> bool:
-        """Validate signal with risk management and execute if approved""""""
+        """Validate signal with risk management and execute if approved"""
         try:
             # Prepare signal for risk validation
             validation_signal = {
@@ -254,7 +254,7 @@ class LiveTradingOptimizer:
             return False
 
     async def optimize_strategy_parameters(self):
-        """Optimize strategy parameters based on performance""""""
+        """Optimize strategy parameters based on performance"""
         try:
             logger.info("# Tool Starting strategy optimization...")
 
@@ -299,7 +299,7 @@ class LiveTradingOptimizer:
             logger.error(f"# X Error optimizing strategy: {e}")
 
     async def get_performance_metrics(self) -> Dict:
-        """Get current performance metrics""""""
+        """Get current performance metrics"""
         try:
             response = requests.get(f"{self.api_server_url}/api/performance", timeout=10)
             if response.status_code == 200:
@@ -318,7 +318,7 @@ class LiveTradingOptimizer:
             return {}
 
     async def monitor_positions(self):
-        """Monitor active positions and handle exits""""""
+        """Monitor active positions and handle exits"""
         try:
             response = requests.get(f"{self.risk_manager_url}/api/tp-sl-tsl/positions", timeout=10)
             if response.status_code == 200:
@@ -349,7 +349,7 @@ class LiveTradingOptimizer:
             logger.error(f"# X Error monitoring positions: {e}")
 
     async def log_system_status(self):
-        """Log comprehensive system status""""""
+        """Log comprehensive system status"""
         try:
             balance = await self.get_account_balance()
             positions_response = requests.get(f"{self.risk_manager_url}/api/tp-sl-tsl/positions", timeout=5)

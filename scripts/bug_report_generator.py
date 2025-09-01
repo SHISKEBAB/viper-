@@ -47,7 +47,7 @@ class ReportMetrics:
     most_common_issue_type: str"""
 
 class ComprehensiveBugReportGenerator:
-    """Generates comprehensive bug reports with detailed analysis""""""
+    """Generates comprehensive bug reports with detailed analysis"""
 
     def __init__(self, scan_results_path: str = None):
         self.scan_results_path = scan_results_path or "reports/comprehensive_bug_scan.json"
@@ -193,7 +193,7 @@ class ComprehensiveBugReportGenerator:
                 </div>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_executive_summary(self, metrics: ReportMetrics, data: Dict) -> str:
         """Generate executive summary section"""
@@ -261,7 +261,7 @@ class ComprehensiveBugReportGenerator:
                 </ul>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_severity_breakdown(self, data: Dict) -> str:
         """Generate severity breakdown section"""
@@ -309,7 +309,7 @@ class ComprehensiveBugReportGenerator:
                 </div>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_severity_detail_cards(self, data: Dict) -> str:
         """Generate detailed severity cards"""
@@ -377,7 +377,7 @@ class ComprehensiveBugReportGenerator:
 (                ''' for item in category_data])}
             </div>
         </div>
-        """"""
+        """
 
     def _generate_file_analysis(self, data: Dict) -> str:
         """Generate file-by-file analysis"""
@@ -435,7 +435,7 @@ class ComprehensiveBugReportGenerator:
                 </table>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_issue_patterns(self, data: Dict) -> str:
         """Generate issue pattern analysis"""
@@ -475,7 +475,7 @@ class ComprehensiveBugReportGenerator:
                 </tbody>
             </table>
         </div>
-        """"""
+        """
 
     def _generate_recommendations_section(self, data: Dict) -> str:
         """Generate recommendations section"""
@@ -548,7 +548,7 @@ class ComprehensiveBugReportGenerator:
                 </div>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_trends_section(self) -> str:
         """Generate trends and improvement tracking section"""
@@ -582,7 +582,7 @@ class ComprehensiveBugReportGenerator:
                 </div>
             </div>
         </div>
-        """"""
+        """
 
     def _generate_footer_section(self) -> str:
         """Generate report footer"""
@@ -595,7 +595,7 @@ class ComprehensiveBugReportGenerator:
                 <p>For questions or support, contact the VIPER development team</p>
             </div>
         </div>
-        """"""
+        """
 
     def _combine_html_sections(self, sections: Dict[str, str]) -> str:
         """Combine all HTML sections into complete report"""
@@ -949,7 +949,7 @@ class ComprehensiveBugReportGenerator:
                 font-size: 2em;
             }
         }
-        """"""
+        """
 
     def _get_javascript(self) -> str:
         """Get JavaScript for interactive features"""
@@ -984,10 +984,10 @@ class ComprehensiveBugReportGenerator:
 (                });
 (            });
 (        });
-        """"""
+        """
 
     def _get_quality_class(self, score: float) -> str:
-        """Get CSS class for quality score""""""
+        """Get CSS class for quality score"""
         if score >= 90:
             return "excellent"
         elif score >= 80:
@@ -1000,7 +1000,7 @@ class ComprehensiveBugReportGenerator:
             return "critical"
 
     def _get_quality_description(self, score: float) -> str:
-        """Get description for quality score""""""
+        """Get description for quality score"""
         if score >= 90:
             return "Excellent code quality with minimal issues"
         elif score >= 80:

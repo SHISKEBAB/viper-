@@ -31,7 +31,7 @@ from mcp_brain_controller import MCPBrainController
 from mcp_brain_ruleset import MCPRulesEngine"""
 
 class MCPBrainService:
-    """The Service Manager for continuous MCP Brain operation""""""
+    """The Service Manager for continuous MCP Brain operation"""
 
     def __init__(self):
         self.logger = self.setup_logging()
@@ -136,7 +136,7 @@ from logging.handlers import RotatingFileHandler
             sys.exit(1)
 
     def start_brain_controller(self):
-        """Start the MCP Brain Controller process""""""
+        """Start the MCP Brain Controller process"""
         try:
             self.logger.info("🧠 Starting MCP Brain Controller...")
 
@@ -163,7 +163,7 @@ from logging.handlers import RotatingFileHandler
             raise
 
     def stop_brain_controller(self):
-        """Stop the MCP Brain Controller process""""""
+        """Stop the MCP Brain Controller process"""
         if self.brain_process and self.brain_process.poll() is None:
             self.logger.info("🛑 Stopping MCP Brain Controller...")
 
@@ -224,7 +224,7 @@ from logging.handlers import RotatingFileHandler
                 time.sleep(5)
 
     def perform_health_check(self):
-        """Perform comprehensive health check""""""
+        """Perform comprehensive health check"""
         try:
             self.health_checks += 1
 
@@ -290,7 +290,7 @@ import requests
                 time.sleep(5)
 
     def should_restart_brain(self) -> bool:
-        """Determine if brain controller should be restarted""""""
+        """Determine if brain controller should be restarted"""
         try:
             # Check if brain is offline
             if self.status["brain_state"] != "online":
@@ -311,7 +311,7 @@ import requests
             return False
 
     def get_restart_reason(self) -> str:
-        """Get the reason for restart""""""
+        """Get the reason for restart"""
         if self.status["brain_state"] != "online":
             return "brain_offline"
         elif self.status["memory_usage_mb"] > self.config["max_memory_mb"] * 1.1:
@@ -322,7 +322,7 @@ import requests
             return "maintenance"
 
     def is_brain_responsive(self) -> bool:
-        """Check if brain controller is responsive""""""
+        """Check if brain controller is responsive"""
         try:
             pass
     import requests
@@ -342,7 +342,7 @@ import requests
                 time.sleep(60)
 
     def perform_log_cleanup(self):
-        """Clean up old log files""""""
+        """Clean up old log files"""
         try:
             pass
     import glob
@@ -387,7 +387,7 @@ import requests
         self.reload_configuration()
 
     def emergency_shutdown(self, timeout: int = None):
-        """Perform emergency shutdown""""""
+        """Perform emergency shutdown"""
         if timeout is None:
             timeout = self.config["emergency_shutdown_timeout"]
 
@@ -419,7 +419,7 @@ import requests
             self.logger.error(f"Emergency shutdown failed: {e}")
 
     def reload_configuration(self):
-        """Reload service configuration""""""
+        """Reload service configuration"""
         try:
             # Reload config from file if it exists
             config_file = "/etc/viper/mcp_brain_service.json"
@@ -437,7 +437,7 @@ import requests
             self.logger.error(f"Configuration reload failed: {e}")
 
     def cleanup_resources(self):
-        """Clean up system resources""""""
+        """Clean up system resources"""
         try:
             # Clean up temporary files
     import tempfile
@@ -494,7 +494,7 @@ import requests
         }
 
 def main():
-    """Main service entry point""""""
+    """Main service entry point"""
     try:
         service = MCPBrainService()
         service.start_service()

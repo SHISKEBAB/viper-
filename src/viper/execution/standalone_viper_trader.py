@@ -67,7 +67,7 @@ class VIPERSignal:
     order_type: str = "MARKET"   # Recommended order type
 
 class StandaloneVIPERTrader:
-    """Complete standalone VIPER trading system""""""
+    """Complete standalone VIPER trading system"""
     
     def __init__(self):
         """Initialize the trading system"""
@@ -111,7 +111,7 @@ class StandaloneVIPERTrader:
                 logging.StreamHandler(sys.stdout)
             ]
 (        )
-        self.logger = logging.getLogger(__name__)"""
+        self.logger = logging.getLogger(__name__)
         
     def load_configuration(self) -> Dict:
         """Load trading configuration from environment"""
@@ -126,7 +126,7 @@ class StandaloneVIPERTrader:
         }"""
     
     def initialize_exchange(self):
-        """Initialize Bitget exchange connection""""""
+        """Initialize Bitget exchange connection"""
         try:
             self.logger.info("🔗 Connecting to Bitget exchange...")
             
@@ -162,7 +162,7 @@ class StandaloneVIPERTrader:
         """
         Fetch comprehensive market data with advanced metrics for optimization
         Includes volatility, liquidity metrics, and microstructure data
-        """:"""
+        """"""
         try:
             # Get ticker data
             ticker = self.exchange.fetch_ticker(symbol)
@@ -244,7 +244,7 @@ class StandaloneVIPERTrader:
         """
         Enhanced execution cost calculation with advanced market microstructure modeling
         Includes spread cost, market impact, volatility adjustment, and liquidity premiums
-        """"""
+        """
         try:
             spread = market_data.get('spread', 0)
             volume = market_data.get('volume', 0)
@@ -286,7 +286,7 @@ class StandaloneVIPERTrader:
         """
         Dynamic position sizing optimization based on market conditions:
         Returns: (optimized_position_size, reasoning)
-        """"""
+        """
         try:
             spread = market_data.get('spread', 0)
             volume = market_data.get('volume', 0)
@@ -359,7 +359,7 @@ class StandaloneVIPERTrader:
         """
         Advanced entry timing optimization with smart order placement
         Returns: {order_type, price, size, timing_score, reasoning}
-        """"""
+        """
         try:
             current_price = market_data.get('price', 0)
             spread = market_data.get('spread', 0)
@@ -503,7 +503,7 @@ class StandaloneVIPERTrader:
         Calculate VIPER score using Volume, Price, External, Range factors
         Enhanced with execution cost awareness to prevent $3+ losses on entry
         Returns score from 0-100 (higher = better opportunity)
-        """"""
+        """
         try:
             volume = market_data.get('volume', 0)
             price_change = abs(market_data.get('price_change', 0))
@@ -559,7 +559,7 @@ class StandaloneVIPERTrader:
         """
         Generate advanced trading signal with comprehensive entry optimization
         Uses dynamic position sizing, timing optimization, and smart order routing
-        """:"""
+        """"""
         try:
             # Calculate base VIPER score
             viper_score = self.calculate_viper_score(market_data)
@@ -730,7 +730,7 @@ class StandaloneVIPERTrader:
         return signals
     
     def calculate_position_size(self, signal: VIPERSignal) -> float:
-        """Calculate position size based on risk management""""""
+        """Calculate position size based on risk management"""
         try:
             # Get account balance
             balance = self.exchange.fetch_balance()
@@ -763,7 +763,7 @@ class StandaloneVIPERTrader:
             return 0
     
     def execute_trade(self, signal: VIPERSignal) -> bool:
-        """Execute trade based on VIPER signal""""""
+        """Execute trade based on VIPER signal"""
         try:
             # Check position limits
             if len(self.active_positions) >= self.max_positions:
@@ -825,7 +825,7 @@ class StandaloneVIPERTrader:
             return False
     
     def monitor_positions(self):
-        """Monitor active positions for TP/SL conditions""""""
+        """Monitor active positions for TP/SL conditions"""
         if not self.active_positions:
             return
         
@@ -880,7 +880,7 @@ class StandaloneVIPERTrader:
             self.close_position(symbol, reason)
     
     def close_position(self, symbol: str, reason: str = 'manual'):
-        """Close an active position""""""
+        """Close an active position"""
         try:
             if symbol not in self.active_positions:
                 self.logger.warning(f"# Warning No active position found for {symbol}")

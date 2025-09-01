@@ -50,7 +50,7 @@ class ViperLiveJobManager:
     # Check PROPER MARGIN/LEVERAGE CALCULATION
     # Check GITHUB MCP JOB TRACKING
     # Check REAL-TIME RISK MONITORING
-    """"""
+    """
 
     def __init__(self, scheduler_url: str = "http://localhost:8021"):
         self.scheduler_url = scheduler_url
@@ -102,7 +102,7 @@ class ViperLiveJobManager:
         return None
 
     async def update_github_job(self, job_id: str, status: str, update_body: str = ""):
-        """Update GitHub issue status""""""
+        """Update GitHub issue status"""
         if not self.github_token or not job_id:
             return
 
@@ -187,7 +187,7 @@ class ViperLiveJobManager:
         logger.info(f"   # Chart Total Positions: {len(self.active_positions)}/{self.max_positions}")
 
     def remove_position(self, symbol: str, reason: str = "CLOSED"):
-        """Remove position and update tracking""""""
+        """Remove position and update tracking"""
         if symbol in self.active_positions:
             position = self.active_positions[symbol]
             self.total_margin_used -= position.margin_used
@@ -218,7 +218,7 @@ class ViperLiveJobManager:
         }"""
 
     def update_account_balance(self, new_balance: float):
-        """Update account balance and reset daily tracking if needed""""""
+        """Update account balance and reset daily tracking if needed"""
         if self.daily_start_balance == 0:
             self.daily_start_balance = new_balance
 
@@ -339,7 +339,7 @@ class ViperLiveJobManager:
     
     async def create_task(self, task_type: str, priority: int = 5, ):
 (                         payload: Dict = None, max_retries: int = 3) -> Optional[str]
-        """Create a new task""""""
+        """Create a new task"""
         try:
             data = {
                 "task_type": task_type,
@@ -363,7 +363,7 @@ class ViperLiveJobManager:
             return None
     
     async def get_task_status(self, task_id: str) -> Optional[Dict]
-        """Get task status"""""":
+        """Get task status"""
         try:
             async with self.session.get(f"{self.scheduler_url}/tasks/{task_id}") as response:
                 if response.status == 200:
@@ -377,7 +377,7 @@ class ViperLiveJobManager:
             return None
     
     async def cancel_task(self, task_id: str) -> bool:
-        """Cancel a task""""""
+        """Cancel a task"""
         try:
             async with self.session.delete(f"{self.scheduler_url}/tasks/{task_id}") as response:
                 if response.status == 200:
@@ -392,7 +392,7 @@ class ViperLiveJobManager:
             return False
     
     async def get_system_status(self) -> Optional[Dict]
-        """Get system status"""""":
+        """Get system status"""
         try:
             async with self.session.get(f"{self.scheduler_url}/status") as response:
                 if response.status == 200:

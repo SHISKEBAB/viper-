@@ -98,7 +98,7 @@ class MCPSwapTrader:
             return False
 
     def get_market_data(self, symbol: str) -> Optional[Dict]
-        """Get current market data for a symbol""""""
+        """Get current market data for a symbol"""
         try:
             ticker = self.exchange.fetch_ticker(symbol)
             return {
@@ -134,7 +134,7 @@ class MCPSwapTrader:
             return 0
 
     def generate_signal(self, symbol: str, viper_score: float, market_data: Dict) -> Optional[Dict]
-        """Generate trading signal based on VIPER score""""""
+        """Generate trading signal based on VIPER score"""
         try:
             # Check if we already have a position
             if symbol in self.active_positions:

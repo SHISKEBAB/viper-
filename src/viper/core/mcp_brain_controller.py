@@ -43,12 +43,12 @@ import httpx
 
 # Create mock classes for standalone operation"""
 class MCPServer:
-    """Mock MCP Server for standalone operation""""""
+    """Mock MCP Server for standalone operation"""
     def __init__(self):
         pass
 
 class ViperTradingMCPServer:
-    """Mock Trading Server for standalone operation""""""
+    """Mock Trading Server for standalone operation"""
     def __init__(self):
         pass
 
@@ -69,7 +69,7 @@ BRAIN_CONFIG = {
 }
 
 class MCPBrainController:
-    """The MASTER BRAIN that controls all MCP operations""""""
+    """The MASTER BRAIN that controls all MCP operations"""
 
     def __init__(self):
         self.app = FastAPI(title="VIPER MCP Brain Controller", version="2.0.0")
@@ -150,7 +150,7 @@ class MCPBrainController:
         self.logger.info("📋 Ruleset loaded successfully")
 
     def initialize_redis(self):
-        """Initialize Redis for distributed state management""""""
+        """Initialize Redis for distributed state management"""
         try:
             # Try container networking first, then fallback to localhost
             redis_hosts = [
@@ -641,7 +641,7 @@ class MCPBrainController:
         }
 
     async def get_system_health(self) -> Dict[str, Any]
-        """Get comprehensive system health status"""""":
+        """Get comprehensive system health status"""
         try:
             # System metrics
             cpu_usage = psutil.cpu_percent(interval=1)
@@ -679,7 +679,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_unified_command(self, data: Dict[str, Any]) -> Dict[str, Any]
-        """Execute commands through the unified interface"""""":
+        """Execute commands through the unified interface"""
         try:
             command = data.get("command")
             params = data.get("params", {})
@@ -703,7 +703,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_trading_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]
-        """Execute trading-related commands"""""":
+        """Execute trading-related commands"""
         try:
             # Route to trading MCP server
             if not self.mcp_servers.get("trading"):
@@ -723,7 +723,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_github_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]
-        """Execute GitHub-related commands"""""":
+        """Execute GitHub-related commands"""
         try:
             # Route to MCP server with GitHub integration
             if not self.mcp_servers.get("main"):
@@ -748,7 +748,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_ai_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]
-        """Execute AI-related commands"""""":
+        """Execute AI-related commands"""
         try:
             if command == "cursor_command":
                 return await self.send_cursor_command(params)
@@ -765,7 +765,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_system_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]
-        """Execute system-related commands"""""":
+        """Execute system-related commands"""
         try:
             if command == "system_restart":
                 # Trigger system restart
@@ -786,7 +786,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def send_cursor_command(self, params: Dict[str, Any]) -> Dict[str, Any]
-        """Send command to Cursor's chat function"""""":
+        """Send command to Cursor's chat function"""
         try:
             command = params.get("command")
             command_params = params.get("params", {})
@@ -832,7 +832,7 @@ class MCPBrainController:
         }
 
     async def handle_websocket_message(self, data: Dict[str, Any]) -> Dict[str, Any]
-        """Handle WebSocket messages"""""":
+        """Handle WebSocket messages"""
         try:
             message_type = data.get("type")
 
@@ -850,7 +850,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def process_cursor_response(self, data: Dict[str, Any]) -> Dict[str, Any]
-        """Process response from Cursor AI"""""":
+        """Process response from Cursor AI"""
         try:
             response_data = data.get("response", {})
             command_id = data.get("command_id")
@@ -870,7 +870,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def execute_ai_recommendations(self, recommendations: Dict[str, Any]):
-        """Execute AI recommendations if confidence is high enough""""""
+        """Execute AI recommendations if confidence is high enough"""
         try:
             confidence = recommendations.get("confidence", 0)
             threshold = self.ruleset.get("ai_control_rules", {}).get("decision_threshold", 85)
@@ -956,7 +956,7 @@ class MCPBrainController:
         memory_percent = psutil.virtual_memory().percent
 
         # Check MCP servers
-        for server_name, server in self.mcp_servers.items()""":
+        for server_name, server in self.mcp_servers.items()"""
             try:
                 # Ping server health endpoint
                 async with httpx.AsyncClient() as client:
@@ -972,7 +972,7 @@ class MCPBrainController:
         self.system_status["memory_usage"] = memory_percent
 
     async def collect_performance_metrics(self):
-        """Collect performance metrics""""""
+        """Collect performance metrics"""
         try:
             metrics = {
                 "timestamp": datetime.now().isoformat(),
@@ -994,7 +994,7 @@ class MCPBrainController:
 
     async def check_and_restart_failed_services(self):
         """Check and restart failed services"""
-        for server_name, server in self.mcp_servers.items()""":
+        for server_name, server in self.mcp_servers.items()"""
             try:
                 # Check if server is responsive
                 async with httpx.AsyncClient(timeout=5.0) as client:
@@ -1009,7 +1009,7 @@ class MCPBrainController:
                 await self.restart_service(server_name)
 
     async def restart_service(self, server_name: str):
-        """Restart a failed service""""""
+        """Restart a failed service"""
         try:
             if server_name == "trading":
                 # Restart trading server
@@ -1063,7 +1063,7 @@ class MCPBrainController:
             self.logger.error(f"Cursor connection initialization failed: {e}")
 
     async def handle_emergency_action(self, action: str) -> Dict[str, Any]
-        """Handle emergency actions"""""":
+        """Handle emergency actions"""
         try:
             if action == "stop_all":
                 # Emergency stop all trading
@@ -1098,7 +1098,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def generate_performance_report(self) -> Dict[str, Any]
-        """Generate comprehensive performance report"""""":
+        """Generate comprehensive performance report"""
         try:
             report = {
                 "timestamp": datetime.now().isoformat(),
@@ -1134,7 +1134,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def backup_system_state(self) -> Dict[str, Any]
-        """Backup current system state"""""":
+        """Backup current system state"""
         try:
             backup_data = {
                 "timestamp": datetime.now().isoformat(),
@@ -1158,7 +1158,7 @@ class MCPBrainController:
             return {"status": "error", "error": str(e)}
 
     async def optimize_brain(self, params: Dict[str, Any]) -> Dict[str, Any]
-        """Optimize brain performance based on parameters"""""":
+        """Optimize brain performance based on parameters"""
         try:
             optimize_for = params.get("optimize_for", "performance")
 
@@ -1230,7 +1230,7 @@ class MCPBrainController:
 (        )
 
 def main():
-    """Main entry point for the MCP Brain Controller""""""
+    """Main entry point for the MCP Brain Controller"""
     try:
         brain = MCPBrainController()
         brain.run()

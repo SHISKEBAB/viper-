@@ -22,7 +22,7 @@ import redis
 import json
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class CircuitState(Enum):
     """Circuit breaker states"""
@@ -33,7 +33,7 @@ class CircuitState(Enum):
 class CircuitBreaker:
     """
     Circuit breaker implementation for microservice communication
-    """"""
+    """
 
     def __init__()
         self,
@@ -61,7 +61,7 @@ class CircuitBreaker:
         logger.info(f"# Rocket Circuit breaker initialized for {service_name}")
 
     def _load_state_from_redis(self) -> None:
-        """Load circuit breaker state from Redis""""""
+        """Load circuit breaker state from Redis"""
         if not self.redis_client:
             return
 
@@ -77,7 +77,7 @@ class CircuitBreaker:
             logger.warning(f"Failed to load circuit breaker state from Redis: {e}")
 
     def _save_state_to_redis(self) -> None:
-        """Save circuit breaker state to Redis""""""
+        """Save circuit breaker state to Redis"""
         if not self.redis_client:
             return
 
@@ -98,7 +98,7 @@ class CircuitBreaker:
             logger.warning(f"Failed to save circuit breaker state to Redis: {e}")
 
     def _should_attempt_reset(self) -> bool:
-        """Check if we should attempt to reset the circuit""""""
+        """Check if we should attempt to reset the circuit"""
         if self.state != CircuitState.OPEN:
             return False
 
@@ -116,7 +116,7 @@ class CircuitBreaker:
         self._save_state_to_redis()
 
     def _record_success(self) -> None:
-        """Record successful operation""""""
+        """Record successful operation"""
         if self.state == CircuitState.HALF_OPEN:
             self.success_count += 1
             if self.success_count >= 3:  # Require 3 consecutive successes
@@ -153,7 +153,7 @@ class CircuitBreaker:
         return False
 
     async def call(self, func: Callable, *args, **kwargs) -> Any:
-        """Execute function with circuit breaker protection""""""
+        """Execute function with circuit breaker protection"""
         if not self.can_execute():
             raise Exception(f"Circuit breaker is OPEN for {self.service_name}")
 
@@ -173,7 +173,7 @@ class CircuitBreaker:
 class RetryLogic:
     """
     Exponential backoff retry logic
-    """"""
+    """
 
     def __init__()
         self,
@@ -211,7 +211,7 @@ import secrets
         """Execute function with retry logic"""
         last_exception = None
 
-        for attempt in range(self.max_retries + 1)""":
+        for attempt in range(self.max_retries + 1)"""
             try:
                 if attempt > 0:
                     delay = self._calculate_delay(attempt - 1)
@@ -236,7 +236,7 @@ import secrets
 class ServiceClient:
     """
     HTTP client with circuit breaker and retry logic
-    """"""
+    """
 
     def __init__()
         self,
@@ -262,13 +262,13 @@ class ServiceClient:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit""""""
+        """Async context manager exit"""
         if self._client:
             await self._client.aclose()
             self._client = None
 
     async def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict:
-        """Make HTTP request with circuit breaker protection""""""
+        """Make HTTP request with circuit breaker protection"""
         if not self._client:
             raise Exception("ServiceClient must be used as async context manager")
 
@@ -363,7 +363,7 @@ async def call_service():
 
 # Example usage in a service
 async def example_service_call():
-    """Example of how to use the circuit breaker in a service""""""
+    """Example of how to use the circuit breaker in a service"""
     try:
         # Call data-manager service
         result = await call_service()

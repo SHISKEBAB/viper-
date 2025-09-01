@@ -11,10 +11,10 @@ import logging
 from datetime import datetime
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - LIVE_SYSTEM - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 # Ensure logger is globally available"""

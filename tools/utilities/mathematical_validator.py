@@ -25,7 +25,7 @@ from enum import Enum
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)"""
+logger = logging.getLogger(__name__)
 
 class ValidationLevel(Enum):
     BASIC = "basic"
@@ -67,7 +67,7 @@ class ValidationResult:
         }
 
 class EnhancedMathematicalValidator:
-    """Advanced mathematical validation system with comprehensive analysis""""""
+    """Advanced mathematical validation system with comprehensive analysis"""
     
     def __init__(self):
         self.tolerance = 1e-10
@@ -420,7 +420,7 @@ class EnhancedMathematicalValidator:
         return max(0.0, min(1.0, confidence))"""
     
     def _calculate_monotonic_score(self, arr: np.ndarray) -> float:
-        """Calculate monotonicity score (0 = not monotonic, 1 = perfectly monotonic)""""""
+        """Calculate monotonicity score (0 = not monotonic, 1 = perfectly monotonic)"""
         if len(arr) < 2:
             return 1.0
         
@@ -437,7 +437,7 @@ class EnhancedMathematicalValidator:
         return max_direction / total_diffs
     
     def _detect_periodicity(self, arr: np.ndarray) -> Dict[str, Any]
-        """Detect periodicity in the array""":"""
+        """Detect periodicity in the array""""""
         try:
             # Autocorrelation approach
             autocorr = np.correlate(arr - np.mean(arr), arr - np.mean(arr), mode='full')
@@ -467,7 +467,7 @@ class EnhancedMathematicalValidator:
             return {'periodicity_error': str(e)}
     
     def _lempel_ziv_complexity(self, arr: np.ndarray) -> float:
-        """Calculate Lempel-Ziv complexity (simplified version)""""""
+        """Calculate Lempel-Ziv complexity (simplified version)"""
         try:
             # Convert to binary string (simplified)
             binary_arr = (arr > np.median(arr)).astype(int)
@@ -491,7 +491,7 @@ class EnhancedMathematicalValidator:
             return 0.0
     
     def _estimate_fractal_dimension(self, arr: np.ndarray) -> float:
-        """Estimate fractal dimension using box-counting method (simplified)""""""
+        """Estimate fractal dimension using box-counting method (simplified)"""
         try:
             if len(arr) < 10:
                 return 1.0
@@ -524,7 +524,7 @@ class EnhancedMathematicalValidator:
             return 1.0
     
     def _sample_entropy(self, arr: np.ndarray, m: int = 2, r: float = 0.2) -> float:
-        """Calculate sample entropy""""""
+        """Calculate sample entropy"""
         try:
             if len(arr) < m + 1:
                 return 0.0
@@ -560,7 +560,7 @@ class EnhancedMathematicalValidator:
             return 0.0
     
     def _test_stationarity(self, arr: np.ndarray) -> Dict[str, Any]
-        """Test time series stationarity (simplified)""":"""
+        """Test time series stationarity (simplified)""""""
         try:
             # Split into segments and test for consistent statistics
             n_segments = min(5, len(arr) // 10)
@@ -669,7 +669,7 @@ class EnhancedMathematicalValidator:
     
     def _monte_carlo_analysis(self, calculation_func: Callable, )
 (                            base_inputs: Dict[str, Any]) -> Dict[str, Any]
-        """Perform Monte Carlo analysis on calculation""":"""
+        """Perform Monte Carlo analysis on calculation""""""
         try:
             results = []
             
@@ -767,7 +767,7 @@ class EnhancedMathematicalValidator:
 (            )
     
     def _calculate_max_drawdown(self, returns: np.ndarray) -> float:
-        """Calculate maximum drawdown from returns""""""
+        """Calculate maximum drawdown from returns"""
         try:
             cumulative = np.cumprod(1 + returns)
             running_max = np.maximum.accumulate(cumulative)
@@ -779,7 +779,7 @@ class EnhancedMathematicalValidator:
     def safe_divide(self, numerator: Union[float, np.ndarray], )
                    denominator: Union[float, np.ndarray], 
 (                   default: float = 0.0) -> Union[float, np.ndarray]
-        """Enhanced safe division with comprehensive error handling""":"""
+        """Enhanced safe division with comprehensive error handling""""""
         try:
             if isinstance(denominator, np.ndarray):
                 result = np.full_like(numerator, default, dtype=float)

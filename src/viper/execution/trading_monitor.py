@@ -27,16 +27,16 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - TRADING_MONITOR - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class TradingMonitor:
     """
     Comprehensive trading monitor and alert system
-    """"""
+    """
 
     def __init__(self):
         self.is_monitoring = False
@@ -82,7 +82,7 @@ class TradingMonitor:
         }"""
 
     def start_monitoring(self):
-        """Start the monitoring system""""""
+        """Start the monitoring system"""
         if self.is_monitoring:
             logger.warning("Monitor already running")
             return
@@ -173,7 +173,7 @@ class TradingMonitor:
             logger.error(f"Health check failed: {e}")
 
     async def _check_trading_job_status(self):
-        """Check trading job status and performance""""""
+        """Check trading job status and performance"""
         try:
             # Check if job is running
             job_status = await self._check_job_process()
@@ -204,7 +204,7 @@ class TradingMonitor:
             logger.error(f"Job status check failed: {e}")
 
     async def _validate_tp_sl_functions(self):
-        """Validate Take Profit and Stop Loss functions""""""
+        """Validate Take Profit and Stop Loss functions"""
         try:
             # Check if TP/SL orders are being placed
             tp_sl_status = await self._check_tp_sl_status()
@@ -238,7 +238,7 @@ class TradingMonitor:
             logger.error(f"TP/SL validation failed: {e}")
 
     async def _monitor_system_performance(self):
-        """Monitor overall system performance""""""
+        """Monitor overall system performance"""
         try:
             # Collect system metrics
             metrics = {
@@ -270,7 +270,7 @@ class TradingMonitor:
             logger.error(f"Performance monitoring failed: {e}")
 
     async def _check_job_process(self) -> Dict[str, Any]
-        """Check if trading job process is running"""""":
+        """Check if trading job process is running"""
         try:
             # Look for python processes running viper_trading_job.py
     import psutil
@@ -310,7 +310,7 @@ class TradingMonitor:
             }
 
     async def _get_job_performance(self) -> Dict[str, Any]
-        """Get trading job performance metrics"""""":
+        """Get trading job performance metrics"""
         try:
             # Read from job logs or status files
             log_file = Path(__file__).parent / "logs" / "viper_trading_job.log"
@@ -347,7 +347,7 @@ class TradingMonitor:
             }
 
     async def _check_tp_sl_status(self) -> Dict[str, Any]
-        """Check TP/SL order status"""""":
+        """Check TP/SL order status"""
         try:
             # This would integrate with your exchange API to check actual orders
             # For now, return mock data
@@ -424,7 +424,7 @@ class TradingMonitor:
         return issues
 
     async def _check_exchange_connectivity(self) -> Dict[str, Any]
-        """Check exchange connectivity"""""":
+        """Check exchange connectivity"""
         try:
             # This would test actual exchange connectivity
             # For now, return mock status
@@ -443,7 +443,7 @@ class TradingMonitor:
             }
 
     def _check_system_resources(self) -> Dict[str, float]
-        """Check system resource usage""":"""
+        """Check system resource usage""""""
         try:
             pass
     import psutil
@@ -483,7 +483,7 @@ class TradingMonitor:
         return self._check_system_resources()['disk_usage']
 
     async def _check_network_status(self) -> Dict[str, Any]
-        """Check network connectivity"""""":
+        """Check network connectivity"""
         try:
             # Simple network check
     import socket
@@ -520,7 +520,7 @@ class TradingMonitor:
         logger.warning(f"🚨 ALERT [{severity.upper()}]: {title} - {message}")
 
     def _should_skip_alert(self, severity: str) -> bool:
-        """Check if alert should be skipped due to cooldown""""""
+        """Check if alert should be skipped due to cooldown"""
         try:
             # Get recent alerts of same severity
             recent_alerts = [
@@ -536,7 +536,7 @@ class TradingMonitor:
             return False
 
     async def _send_email_alert(self, alert_data: Dict[str, Any]):
-        """Send email alert""""""
+        """Send email alert"""
         try:
             if not self.email_config['sender_email'] or not self.email_config['recipient_emails']:
                 logger.warning("Email configuration incomplete")
@@ -574,7 +574,7 @@ Details:
             logger.error(f"Email alert failed: {e}")
 
     async def _send_telegram_alert(self, alert_data: Dict[str, Any]):
-        """Send Telegram alert""""""
+        """Send Telegram alert"""
         try:
             if not self.telegram_config['bot_token'] or not self.telegram_config['chat_ids']:
                 logger.warning("Telegram configuration incomplete")
@@ -592,7 +592,7 @@ import requests
 *Time:* {alert_data['timestamp']}
             """.strip()
 
-            for chat_id in self.telegram_config['chat_ids']""":
+            for chat_id in self.telegram_config['chat_ids']"""
                 if chat_id.strip():
                     url = f"https://api.telegram.org/bot{self.telegram_config['bot_token']}/sendMessage"
                     data = {
@@ -625,7 +625,7 @@ import requests
 (        )
 
     async def _generate_status_report(self):
-        """Generate comprehensive status report""""""
+        """Generate comprehensive status report"""
         try:
             report = {
                 'timestamp': datetime.now().isoformat(),

@@ -38,7 +38,7 @@ class TradeSignal(Enum):
 class DirectSwapTrader:
     """
     Direct swap trader for all Bitget pairs with 50x leverage
-    """"""
+    """
 
     def __init__(self):
         """Initialize direct swap trader"""
@@ -74,7 +74,7 @@ class DirectSwapTrader:
         print(f"# Target Risk per trade: {self.risk_per_trade*100}%")
 
     def load_all_pairs(self) -> None:
-        """Load all available swap pairs from Bitget""""""
+        """Load all available swap pairs from Bitget"""
         try:
             markets = self.exchange.loadMarkets()
             self.all_pairs = [
@@ -88,7 +88,7 @@ class DirectSwapTrader:
             self.all_pairs = []
 
     def get_market_data(self, symbol: str) -> Optional[Dict]
-        """Get current market data for a symbol""":"""
+        """Get current market data for a symbol""""""
         try:
             ticker = self.exchange.fetch_ticker(symbol)
             return {
@@ -104,7 +104,7 @@ class DirectSwapTrader:
             return None
 
     def calculate_position_size(self, symbol: str, price: float, balance: float) -> float:
-        """Calculate position size based on risk management""""""
+        """Calculate position size based on risk management"""
         try:
             # Get contract size and leverage info
             market = self.exchange.market(symbol)
@@ -124,7 +124,7 @@ class DirectSwapTrader:
             return self.min_order_size
 
     def calculate_viper_score(self, market_data: Dict) -> float:
-        """Calculate VIPER score for trading signal""""""
+        """Calculate VIPER score for trading signal"""
         try:
             price_change = market_data.get('price_change', 0)
             volume = market_data.get('volume', 0)
@@ -144,7 +144,7 @@ class DirectSwapTrader:
             return 0
 
     def generate_signal(self, symbol: str, viper_score: float, market_data: Dict) -> Optional[Dict]
-        """Generate trading signal based on VIPER score""":"""
+        """Generate trading signal based on VIPER score""""""
         try:
             # Check if we already have a position
             if symbol in self.active_positions:
@@ -185,7 +185,7 @@ class DirectSwapTrader:
             return None
 
     def execute_swap_trade(self, signal: Dict) -> bool:
-        """Execute swap trade directly via Bitget API""""""
+        """Execute swap trade directly via Bitget API"""
         try:
             symbol = signal['symbol']
             side = 'buy' if signal['signal'] == 'LONG' else 'sell'
@@ -245,7 +245,7 @@ class DirectSwapTrader:
             return False
 
     def monitor_positions(self) -> None:
-        """Monitor active positions and close if needed""""""
+        """Monitor active positions and close if needed"""
         try:
             for symbol, position in list(self.active_positions.items()):
                 market_data = self.get_market_data(symbol)
@@ -270,7 +270,7 @@ class DirectSwapTrader:
             pass
 
     def close_position(self, symbol: str, reason: str) -> None:
-        """Close a position""""""
+        """Close a position"""
         try:
             if symbol in self.active_positions:
                 position = self.active_positions[symbol]

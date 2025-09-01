@@ -32,10 +32,10 @@ sys.path.append(str(project_root))
 from github_mcp_integration import GitHubMCPIntegration
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - PERFORMANCE - %(levelname)s - %(message)s'
-()
+)
 logger = logging.getLogger(__name__)
 
 @dataclass"""
@@ -68,7 +68,7 @@ class PerformanceMetrics:
     net_pnl: float = 0.0"""
 
 class MCPPerformanceTracker:
-    """Performance tracker for MCP trading system""""""
+    """Performance tracker for MCP trading system"""
 
     def __init__(self):
         self.github_mcp = GitHubMCPIntegration()
@@ -92,7 +92,7 @@ class MCPPerformanceTracker:
         logger.info("📈 MCP Performance Tracker initialized")
 
     def record_trade(self, trade_data: Dict[str, Any]):
-        """Record a new trade""""""
+        """Record a new trade"""
         try:
             trade = TradeRecord()
                 trade_id=trade_data.get('trade_id', f"trade_{len(self.trades)}"),
@@ -124,7 +124,7 @@ class MCPPerformanceTracker:
             return False
 
     def calculate_performance_metrics(self, trades: List[TradeRecord] = None) -> PerformanceMetrics:
-        """Calculate comprehensive performance metrics""""""
+        """Calculate comprehensive performance metrics"""
         try:
             if trades is None:
                 trades = self.trades
@@ -192,7 +192,7 @@ class MCPPerformanceTracker:
             return PerformanceMetrics()
 
     def get_daily_performance(self, date: str = None) -> PerformanceMetrics:
-        """Get performance metrics for a specific day""""""
+        """Get performance metrics for a specific day"""
         if date is None:
             date = datetime.now().strftime('%Y-%m-%d')
 
@@ -214,7 +214,7 @@ class MCPPerformanceTracker:
         return self.calculate_performance_metrics()
 
     async def generate_daily_report(self, date: str = None):
-        """Generate and submit daily performance report to GitHub""""""
+        """Generate and submit daily performance report to GitHub"""
         try:
             if date is None:
                 date = datetime.now().strftime('%Y-%m-%d')
@@ -255,7 +255,7 @@ class MCPPerformanceTracker:
             return None
 
     async def check_performance_alerts(self, daily_metrics: PerformanceMetrics, cumulative_metrics: PerformanceMetrics):
-        """Check for performance alerts and create GitHub issues if needed""""""
+        """Check for performance alerts and create GitHub issues if needed"""
         try:
             alerts = []
 
@@ -296,7 +296,7 @@ class MCPPerformanceTracker:
             logger.error(f"# X Alert check failed: {e}")
 
     async def create_performance_alert_issue(self, alert: Dict[str, Any]):
-        """Create GitHub issue for performance alert""""""
+        """Create GitHub issue for performance alert"""
         try:
             issue_title = f"🚨 Performance Alert: {alert['type'].replace('_', ' ').title()}"
 
@@ -340,7 +340,7 @@ class MCPPerformanceTracker:
             logger.error(f"# X Alert issue creation failed: {e}")
 
     async def export_performance_data(self, filename: str = None):
-        """Export performance data to JSON file""""""
+        """Export performance data to JSON file"""
         try:
             if filename is None:
                 filename = f"performance_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -379,7 +379,7 @@ class MCPPerformanceTracker:
             return None
 
     async def import_performance_data(self, filename: str):
-        """Import performance data from JSON file""""""
+        """Import performance data from JSON file"""
         try:
             with open(filename, 'r') as f:
                 import_data = json.load(f)

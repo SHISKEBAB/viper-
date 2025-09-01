@@ -39,7 +39,7 @@ class Colors:
     UNDERLINE = '\033[4m'"""
 
 class VIPERSetup:
-    """VIPER Trading Bot automated setup manager""""""
+    """VIPER Trading Bot automated setup manager"""
     
     def __init__(self):
         self.root_dir = Path(__file__).parent
@@ -355,7 +355,7 @@ from dotenv import load_dotenv
         return True
 
 def main():
-    """Main setup function""""""
+    """Main setup function"""
     try:
         setup = VIPERSetup()
         success = setup.run_setup()

@@ -30,14 +30,14 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # Configure logging
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - EMERGENCY_ROLLBACK - %(levelname)s - %(message)s'
-()
-logger = logging.getLogger(__name__)"""
+)
+logger = logging.getLogger(__name__)
 
 class EmergencyRollback:
-    """Emergency rollback system for trading platform""""""
+    """Emergency rollback system for trading platform"""
 
     def __init__(self):
         self.rollback_log = []
@@ -613,7 +613,7 @@ class EmergencyRollback:
         return step_result
 
     def _capture_system_state(self) -> Dict[str, Any]
-        """Capture current system state""":"""
+        """Capture current system state""""""
         try:
             system_state = {
                 "timestamp": datetime.now().isoformat(),
@@ -684,7 +684,7 @@ class EmergencyRollback:
             return {"error": str(e)}
 
     def _evaluate_rollback_success(self, rollback_results: Dict[str, Any]) -> bool:
-        """Evaluate overall rollback success""""""
+        """Evaluate overall rollback success"""
         try:
             steps = rollback_results.get("rollback_steps", [])
 
@@ -731,7 +731,7 @@ class EmergencyRollback:
             return False
 
     def _save_rollback_results(self, results: Dict[str, Any]):
-        """Save rollback results to file""""""
+        """Save rollback results to file"""
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             results_path = self.rollback_dir / f"rollback_results_{timestamp}.json"
@@ -745,7 +745,7 @@ class EmergencyRollback:
             logger.error(f"# X Error saving rollback results: {e}")
 
     def _generate_rollback_report(self, rollback_results: Dict[str, Any]):
-        """Generate human-readable rollback report""""""
+        """Generate human-readable rollback report"""
         try:
             report_lines = [
                 "=" * 80,
@@ -850,7 +850,7 @@ def execute_emergency_rollback():
         return False
 
 def monitor_system_health():
-    """Monitor system health and trigger rollback if needed""""""
+    """Monitor system health and trigger rollback if needed"""
 
     try:
         # Define health thresholds
