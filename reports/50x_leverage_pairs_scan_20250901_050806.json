@@ -1,0 +1,217 @@
+{
+  "scan_date": "2025-09-01T05:08:03.298454",
+  "total_pairs_scanned": 20,
+  "pairs_with_50x_leverage": [
+    {
+      "symbol": "BTC/USDT:USDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "max_leverage": 125,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "ETH/USDT:USDT",
+      "base": "ETH",
+      "quote": "USDT",
+      "max_leverage": 100,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "BNB/USDT:USDT",
+      "base": "BNB",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "SOL/USDT:USDT",
+      "base": "SOL",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "ADA/USDT:USDT",
+      "base": "ADA",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "DOGE/USDT:USDT",
+      "base": "DOGE",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "XRP/USDT:USDT",
+      "base": "XRP",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "MATIC/USDT:USDT",
+      "base": "MATIC",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "LINK/USDT:USDT",
+      "base": "LINK",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "UNI/USDT:USDT",
+      "base": "UNI",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "AVAX/USDT:USDT",
+      "base": "AVAX",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "DOT/USDT:USDT",
+      "base": "DOT",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "NEAR/USDT:USDT",
+      "base": "NEAR",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "FTM/USDT:USDT",
+      "base": "FTM",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "ATOM/USDT:USDT",
+      "base": "ATOM",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "LTC/USDT:USDT",
+      "base": "LTC",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "BCH/USDT:USDT",
+      "base": "BCH",
+      "quote": "USDT",
+      "max_leverage": 75,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "ETC/USDT:USDT",
+      "base": "ETC",
+      "quote": "USDT",
+      "max_leverage": 50,
+      "supports_50x": true,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    }
+  ],
+  "pairs_without_50x_leverage": [
+    {
+      "symbol": "ICP/USDT:USDT",
+      "base": "ICP",
+      "quote": "USDT",
+      "max_leverage": 25,
+      "supports_50x": false,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    },
+    {
+      "symbol": "APT/USDT:USDT",
+      "base": "APT",
+      "quote": "USDT",
+      "max_leverage": 25,
+      "supports_50x": false,
+      "method": "mock_data",
+      "tiers_count": 3,
+      "note": "\u26a0\ufe0f Mock data for demonstration - verify with live exchange data"
+    }
+  ],
+  "error_pairs": [],
+  "summary": {
+    "total_scanned": 20,
+    "pairs_with_50x_leverage": 18,
+    "pairs_without_50x_leverage": 2,
+    "error_pairs": 0,
+    "success_rate": "100.0%",
+    "leverage_50x_rate": "90.0%"
+  }
+}
