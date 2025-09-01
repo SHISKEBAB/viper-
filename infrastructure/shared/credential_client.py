@@ -7,6 +7,7 @@ Client utility for retrieving encrypted credentials from the credential vault
 import os
 import json
 import logging
+from typing import Optional, Dict
 import httpx
 import redis
 
