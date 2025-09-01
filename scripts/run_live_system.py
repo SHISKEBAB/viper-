@@ -20,10 +20,10 @@ sys.path.append(str(project_root / "src"))
 
 # Enhanced terminal display
 try:
-    from src.viper.utils.terminal_display import ()
+    from src.viper.utils.terminal_display import (
         terminal, display_error, display_success, display_warning, 
         print_banner, print_status
-(    )
+    )
     ENHANCED_DISPLAY = True
 except ImportError:
     ENHANCED_DISPLAY = False
@@ -37,14 +37,14 @@ except ImportError:
 load_dotenv()
 
 # Configure logging with enhanced formatting
-logging.basicConfig()
+logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('logs/viper_live_system.log'),
         logging.StreamHandler()
     ]
-()
+)
 logger = logging.getLogger(__name__)
 
 class ViperLiveSystem:
@@ -87,14 +87,13 @@ class ViperLiveSystem:
 # 🔥 Real-Time Live Trading | # Chart Mandatory Risk Management                      #
 # # Target MCP-Powered Automation | 🛡️ Docker Infrastructure Required                 #
 # ⚡ Live Market Execution | 📈 Real-Time Performance Monitoring                #
-|==============================================================================|
+#==============================================================================#
 # 🚨 LIVE MONEY TRADING SYSTEM - NO SIMULATION MODE                            #
 # 🔒 DOCKER & MCP ENFORCEMENT ACTIVE                                           #
 # 🛑 EMERGENCY STOP: Ctrl+C or 'docker compose down'                          #
 # # Chart MONITORING: http://localhost:8000                                       #
 # 📈 MCP SERVER: http://localhost:8015                                       #
 #==============================================================================#
-(        """)"""
 
     def validate_system(self) -> bool:
         """Validate system readiness for live trading"""
@@ -122,12 +121,12 @@ class ViperLiveSystem:
     def check_docker(self) -> bool:
         """Check Docker availability"""
         try:
-            result = subprocess.run()
+            result = subprocess.run(
                 ["docker", "--version"],
                 capture_output=True,
                 text=True,
                 timeout=5
-(            )
+            )
             return result.returncode == 0
         except Exception:
             return False
@@ -140,7 +139,7 @@ class ViperLiveSystem:
         ]
 
         for var in required_vars:
-            value = os.getenv(var)"""
+            value = os.getenv(var)
             if not value or (var != 'REAL_DATA_ONLY' and value.startswith('your_')):
                 return False
 
@@ -156,7 +155,7 @@ class ViperLiveSystem:
             'live_trading_monitor.py'
         ]
 
-        for file in required_files:"""
+        for file in required_files:
             if not (self.project_root / file).exists():
                 return False
 
@@ -187,10 +186,10 @@ class ViperLiveSystem:
 
         try:
             # Start the system using the startup script
-            result = subprocess.run([)
+            result = subprocess.run([
                 sys.executable,
                 str(self.startup_script)
-(            ], cwd=self.project_root)
+            ], cwd=self.project_root)
 
             if result.returncode == 0:
                 logger.info("# Check VIPER Live Trading System completed successfully")
@@ -213,12 +212,12 @@ class ViperLiveSystem:
 
         # Stop Docker services
         try:
-            subprocess.run()
+            subprocess.run(
                 ["docker", "compose", "down"],
                 cwd=self.project_root,
                 capture_output=True,
                 timeout=60
-(            )
+            )
         except Exception as e:
             pass
 
@@ -246,7 +245,7 @@ class ViperLiveSystem:
 
         # Setup signal handlers
         signal.signal(signal.SIGINT, self.signal_handler)
-        signal.signal(signal.SIGTERM, self.signal_handler)"""
+        signal.signal(signal.SIGTERM, self.signal_handler)
 
         try:
             # Step 1: System validation
@@ -284,7 +283,7 @@ class ViperLiveSystem:
 def main():
     """Main entry point for VIPER Live Trading System"""
     system = ViperLiveSystem()
-    system.run_complete_system()"""
+    system.run_complete_system()
 
 if __name__ == "__main__":
     main()
