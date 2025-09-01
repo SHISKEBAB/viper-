@@ -1,692 +1,596 @@
 #!/usr/bin/env python3
 """
-# Rocket VIPER Trading Bot - Configuration Manager Service
-Centralized configuration management for all trading parameters and settings
+# Rocket VIPER Trading Bot - Unified Configuration Manager Service
+Single source of truth for all VIPER system configurations
 
 Features:
-- Centralized parameter management
-- Environment variable validation
-- Configuration validation and schema enforcement
-- Real-time configuration updates
-- Configuration history and rollback
-- Service-specific configuration profiles
+- Unified configuration management across all services
+- Runtime configuration updates with validation
+- Service-specific configuration injection
+- Environment-aware configuration loading
+- Real-time configuration synchronization
+- Configuration versioning and rollback
 """
 
 import os
 import json
 import logging
-import hashlib
-from fastapi import FastAPI, HTTPException, Query, Request
+import asyncio
+from pathlib import Path
+from typing import Dict, Any, Optional, List
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 import uvicorn
-import redis
-from pathlib import Path
-import yaml
+import redis.asyncio as redis
+from datetime import datetime
+import jsonschema
+from jsonschema import validate, ValidationError
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 SERVICE_NAME = os.getenv('SERVICE_NAME', 'config-manager')
 
-# Backup configuration from environment variables
-BACKUP_INTERVAL_HOURS = int(os.getenv('BACKUP_INTERVAL_HOURS', '24'))
-BACKUP_RETENTION_DAYS = int(os.getenv('BACKUP_RETENTION_DAYS', '30'))
-
-# Configuration paths
-CONFIG_DIR = Path("/app/config")
-ENV_FILE = Path("/app/.env")
-
 # Configure logging
-log_level = getattr(logging, LOG_LEVEL.upper(), logging.INFO)
-logging.basicConfig(
-    level=log_level,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=getattr(logging, LOG_LEVEL.upper(), logging.INFO))
 logger = logging.getLogger(__name__)
 
-class TradingConfig(BaseModel):
-    """Trading configuration schema"""
-    # VIPER Scoring
-    viper_threshold_high: float = Field(default=85, ge=0, le=100)
-    viper_threshold_medium: float = Field(default=70, ge=0, le=100)
-    signal_cooldown: int = Field(default=300, ge=30, le=3600)  # seconds
-    max_signals_per_symbol: int = Field(default=3, ge=1, le=10)
-
-    # Risk Management
-    risk_per_trade: float = Field(default=0.02, ge=0.001, le=0.1)  # 0.1% to 10%
-    max_position_size_percent: float = Field(default=0.10, ge=0.01, le=1.0)  # 1% to 100%
-    daily_loss_limit: float = Field(default=0.03, ge=0.001, le=0.1)  # 0.1% to 10%
-    enable_auto_stops: bool = Field(default=True)
-    max_positions: int = Field(default=10, ge=1, le=50)
-    max_leverage: int = Field(default=50, ge=1, le=125)
-
-    # Market Data
-    enable_data_streaming: bool = Field(default=True)
-    streaming_interval: int = Field(default=5, ge=1, le=300)  # seconds
-    rate_limit_delay: float = Field(default=0.1, ge=0.01, le=1.0)  # seconds
-    batch_size: int = Field(default=50, ge=10, le=200)
-    cache_ttl: int = Field(default=300, ge=60, le=3600)  # seconds
-
-    # Event System
-    event_retention_seconds: int = Field(default=3600, ge=300, le=86400)
-    max_events_per_channel: int = Field(default=1000, ge=100, le=10000)
-    health_check_interval: int = Field(default=30, ge=10, le=300)
-    dead_letter_ttl: int = Field(default=86400, ge=3600, le=604800)
-
-    # Scanning
-    scan_all_pairs: bool = Field(default=True)
-    max_pairs_limit: int = Field(default=500, ge=50, le=2000)
-    scan_interval_seconds: int = Field(default=300, ge=60, le=3600)
-    leverage_scan_enabled: bool = Field(default=True)
-
-class ServiceConfig(BaseModel):
-    """Service-specific configuration"""
-    service_name: str
-    port: int
-    url: str
-    enabled: bool = True
-    dependencies: List[str] = []
-    config_overrides: Dict[str, Any] = {}
-
-class ConfigurationManager:
-    """Centralized configuration management service"""
+class UnifiedConfigManager:
+    """Unified configuration manager - single source of truth for all VIPER configurations"""
 
     def __init__(self):
         self.redis_client = None
-        self.current_config = {}
-        self.config_history = []
-        self.service_configs = {}
-        self.is_running = False
+        self.app = FastAPI(title="VIPER Unified Configuration Manager", version="2.0.0")
+        self.config_cache = {}
+        self.config_watchers = {}
+        self.config_versions = {}
+        
+        # Configuration file paths
+        self.config_dir = Path(__file__).parent.parent.parent / 'config'
+        self.unified_config_file = self.config_dir / 'unified_trading_config.json'
+        self.legacy_config_file = self.config_dir / 'SAFE_TRADING_CONFIG.json'
+        self.jordan_config_file = self.config_dir / 'jordan_mainnet_config.json'
+        
+        # Master configuration - single source of truth
+        self.master_config = {}
+        
+        logger.info("# Construction Unified Configuration Manager initialized")
+        self.setup_routes()
 
-        # Default trading configuration
-        self.default_trading_config = TradingConfig()
+    def setup_routes(self):
+        """Setup unified configuration manager routes"""
+        
+        @self.app.get("/health")
+        async def health_check():
+            """Health check endpoint"""
+            return {
+                "status": "healthy",
+                "service": "unified-config-manager",
+                "version": "2.0.0",
+                "redis_connected": self.redis_client is not None,
+                "config_files_loaded": len(self.config_cache),
+                "master_config_loaded": bool(self.master_config),
+                "active_services": list(self.config_cache.keys())
+            }
 
-        logger.info("⚙️ Configuration Manager initialized")
+        @self.app.get("/config/unified")
+        async def get_unified_config():
+            """Get the complete unified configuration - master source of truth"""
+            try:
+                if not self.master_config:
+                    await self.load_unified_configuration()
+                
+                return {
+                    "status": "success", 
+                    "config": self.master_config,
+                    "version": self.config_versions.get('unified', '1.0.0'),
+                    "last_updated": datetime.utcnow().isoformat()
+                }
+            except Exception as e:
+                logger.error(f"Error getting unified config: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
 
-    def initialize_redis(self) -> bool:
-        """Initialize Redis connection"""
+        @self.app.get("/config/{service_name}")
+        async def get_service_config(service_name: str):
+            """Get configuration for a specific service from unified config"""
+            try:
+                config = await self.get_service_configuration(service_name)
+                if config:
+                    return {
+                        "status": "success", 
+                        "service": service_name,
+                        "config": config,
+                        "source": "unified_config",
+                        "timestamp": datetime.utcnow().isoformat()
+                    }
+                else:
+                    raise HTTPException(status_code=404, detail=f"Configuration not found for service: {service_name}")
+            except Exception as e:
+                logger.error(f"Error getting config for {service_name}: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+        @self.app.post("/config/unified")
+        async def update_unified_config(request: Request):
+            """Update the unified configuration - master update"""
+            try:
+                config_data = await request.json()
+                success = await self.update_unified_configuration(config_data)
+                if success:
+                    return {
+                        "status": "success", 
+                        "message": "Unified configuration updated successfully",
+                        "version": self.config_versions.get('unified', '1.0.0'),
+                        "services_notified": await self.notify_all_services()
+                    }
+                else:
+                    raise HTTPException(status_code=400, detail="Failed to update unified configuration")
+            except Exception as e:
+                logger.error(f"Error updating unified config: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+        @self.app.post("/config/{service_name}")
+        async def update_service_config(service_name: str, request: Request):
+            """Update configuration for a specific service within unified config"""
+            try:
+                config_data = await request.json()
+                success = await self.update_service_in_unified_config(service_name, config_data)
+                if success:
+                    return {
+                        "status": "success", 
+                        "message": f"Configuration updated for {service_name} in unified config",
+                        "service": service_name
+                    }
+                else:
+                    raise HTTPException(status_code=400, detail="Failed to update service configuration")
+            except Exception as e:
+                logger.error(f"Error updating config for {service_name}: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+        @self.app.get("/config")
+        async def get_all_service_configs():
+            """Get all service configurations from unified config"""
+            try:
+                configs = await self.get_all_service_configurations()
+                return {
+                    "status": "success", 
+                    "configs": configs,
+                    "source": "unified_config",
+                    "total_services": len(configs),
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            except Exception as e:
+                logger.error(f"Error getting all configs: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+        @self.app.get("/strategies")
+        async def get_trading_strategies():
+            """Get all trading strategy configurations from unified config"""
+            try:
+                strategies = await self.get_trading_strategies()
+                return {
+                    "status": "success",
+                    "strategies": strategies,
+                    "enabled_strategies": [name for name, config in strategies.items() if config.get('enabled', False)],
+                    "total_strategies": len(strategies)
+                }
+            except Exception as e:
+                logger.error(f"Error getting trading strategies: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+        @self.app.post("/validate/config")
+        async def validate_configuration(request: Request):
+            """Validate a configuration against the unified schema"""
+            try:
+                config_data = await request.json()
+                is_valid, errors = await self.validate_config_structure(config_data)
+                return {
+                    "status": "success",
+                    "valid": is_valid,
+                    "errors": errors,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            except Exception as e:
+                logger.error(f"Error validating configuration: {e}")
+                raise HTTPException(status_code=500, detail="Internal server error")
+
+    async def startup(self):
+        """Initialize Redis and load unified configuration"""
         try:
-            self.redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
-            self.redis_client.ping()
+            # Connect to Redis
+            self.redis_client = redis.from_url(REDIS_URL)
+            await self.redis_client.ping()
             logger.info("# Check Redis connection established")
-            return True
+
+            # Load unified configuration - single source of truth
+            await self.load_unified_configuration()
+            
+            # Migrate legacy configurations to unified format
+            await self.migrate_legacy_configurations()
+            
+            # Initialize service configurations from unified config
+            await self.initialize_service_configurations()
+            
+            logger.info("# Check Unified Configuration Manager started successfully")
+            
         except Exception as e:
-            logger.error(f"# X Failed to connect to Redis: {e}")
+            logger.error(f"# X Startup error: {e}")
+
+    async def load_unified_configuration(self):
+        """Load the unified configuration - master source of truth"""
+        try:
+            if self.unified_config_file.exists():
+                with open(self.unified_config_file, 'r') as f:
+                    self.master_config = json.load(f)
+                    
+                # Store in Redis as master config
+                await self.redis_client.setex(
+                    "viper:config:unified:master",
+                    86400 * 7,  # 7 days - longer TTL for master config
+                    json.dumps(self.master_config)
+                )
+                
+                self.config_versions['unified'] = self.master_config.get('system_info', {}).get('version', '1.0.0')
+                logger.info(f"# Check Unified configuration loaded - version {self.config_versions['unified']}")
+                return True
+            else:
+                logger.error(f"# X Unified config file not found: {self.unified_config_file}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"# X Error loading unified configuration: {e}")
             return False
 
-    def load_config_from_env(self) -> Dict[str, Any]:
-        """Load configuration from environment variables"""
+    async def migrate_legacy_configurations(self):
+        """Migrate legacy configurations to unified format"""
         try:
-            config = {}
-
-            # Load trading configuration
-            trading_config = TradingConfig(
-                viper_threshold_high=float(os.getenv('VIPER_THRESHOLD_HIGH', '85')),
-                viper_threshold_medium=float(os.getenv('VIPER_THRESHOLD_MEDIUM', '70')),
-                signal_cooldown=int(os.getenv('SIGNAL_COOLDOWN', '300')),
-                max_signals_per_symbol=int(os.getenv('MAX_SIGNALS_PER_SYMBOL', '3')),
-                risk_per_trade=float(os.getenv('RISK_PER_TRADE', '0.02')),
-                max_position_size_percent=float(os.getenv('MAX_POSITION_SIZE_PERCENT', '0.10')),
-                daily_loss_limit=float(os.getenv('DAILY_LOSS_LIMIT', '0.03')),
-                enable_auto_stops=os.getenv('ENABLE_AUTO_STOPS', 'true').lower() == 'true',
-                max_positions=int(os.getenv('MAX_POSITIONS', '10')),
-                max_leverage=int(os.getenv('MAX_LEVERAGE', '50')),
-                enable_data_streaming=os.getenv('ENABLE_DATA_STREAMING', 'true').lower() == 'true',
-                streaming_interval=int(os.getenv('STREAMING_INTERVAL', '5')),
-                rate_limit_delay=float(os.getenv('RATE_LIMIT_DELAY', '0.1')),
-                batch_size=int(os.getenv('BATCH_SIZE', '50')),
-                cache_ttl=int(os.getenv('CACHE_TTL', '300')),
-                event_retention_seconds=int(os.getenv('EVENT_RETENTION_SECONDS', '3600')),
-                max_events_per_channel=int(os.getenv('MAX_EVENTS_PER_CHANNEL', '1000')),
-                health_check_interval=int(os.getenv('HEALTH_CHECK_INTERVAL', '30')),
-                dead_letter_ttl=int(os.getenv('DEAD_LETTER_TTL', '86400')),
-                scan_all_pairs=os.getenv('SCAN_ALL_PAIRS', 'true').lower() == 'true',
-                max_pairs_limit=int(os.getenv('MAX_PAIRS_LIMIT', '500')),
-                scan_interval_seconds=int(os.getenv('SCAN_INTERVAL_SECONDS', '300')),
-                leverage_scan_enabled=os.getenv('LEVERAGE_SCAN_ENABLED', 'true').lower() == 'true'
-            )
-
-            config['trading'] = trading_config.dict()
-
-            # Load service configurations
-            services = [
-                {
-                    'service_name': 'market-data-manager',
-                    'port': int(os.getenv('MARKET_DATA_MANAGER_PORT', '8003')),
-                    'url': os.getenv('MARKET_DATA_MANAGER_URL', 'http://market-data-manager:8003'),
-                    'dependencies': []
-                },
-                {
-                    'service_name': 'viper-scoring-service',
-                    'port': int(os.getenv('VIPER_SCORING_SERVICE_PORT', '8009')),
-                    'url': os.getenv('VIPER_SCORING_SERVICE_URL', 'http://viper-scoring-service:8009'),
-                    'dependencies': ['market-data-manager']
-                },
-                {
-                    'service_name': 'live-trading-engine',
-                    'port': int(os.getenv('LIVE_TRADING_ENGINE_PORT', '8007')),
-                    'url': os.getenv('LIVE_TRADING_ENGINE_URL', 'http://live-trading-engine:8007'),
-                    'dependencies': ['viper-scoring-service', 'risk-manager']
-                },
-                {
-                    'service_name': 'risk-manager',
-                    'port': int(os.getenv('RISK_MANAGER_PORT', '8002')),
-                    'url': os.getenv('RISK_MANAGER_URL', 'http://risk-manager:8002'),
-                    'dependencies': ['market-data-manager']
-                },
-                {
-                    'service_name': 'unified-scanner',
-                    'port': int(os.getenv('UNIFIED_SCANNER_PORT', '8011')),
-                    'url': os.getenv('UNIFIED_SCANNER_URL', 'http://unified-scanner:8011'),
-                    'dependencies': ['market-data-manager', 'viper-scoring-service']
-                },
-                {
-                    'service_name': 'event-system',
-                    'port': int(os.getenv('EVENT_SYSTEM_PORT', '8010')),
-                    'url': os.getenv('EVENT_SYSTEM_URL', 'http://event-system:8010'),
-                    'dependencies': []
-                }
-            ]
-
-            config['services'] = {service['service_name']: service for service in services}
-
-            logger.info("# Check Configuration loaded from environment")
-            return config
-
+            # Check if legacy configs exist and merge them
+            legacy_configs = {}
+            
+            if self.legacy_config_file.exists():
+                with open(self.legacy_config_file, 'r') as f:
+                    legacy_configs['safe_trading'] = json.load(f)
+                    logger.info("# Check Legacy SAFE_TRADING_CONFIG.json loaded for migration")
+            
+            if self.jordan_config_file.exists():
+                with open(self.jordan_config_file, 'r') as f:
+                    legacy_configs['jordan_mainnet'] = json.load(f)
+                    logger.info("# Check Legacy jordan_mainnet_config.json loaded for migration")
+            
+            # Store legacy configs for reference
+            if legacy_configs:
+                await self.redis_client.setex(
+                    "viper:config:legacy:backup",
+                    86400 * 30,  # 30 days backup
+                    json.dumps(legacy_configs)
+                )
+                logger.info("# Check Legacy configurations backed up")
+                
         except Exception as e:
-            logger.error(f"# X Error loading configuration from environment: {e}")
+            logger.error(f"# X Error migrating legacy configurations: {e}")
+
+    async def initialize_service_configurations(self):
+        """Initialize individual service configurations from unified config"""
+        try:
+            if not self.master_config:
+                await self.load_unified_configuration()
+            
+            services = self.master_config.get('services', {}).get('microservices', {})
+            
+            for service_name, service_info in services.items():
+                if service_info.get('enabled', False):
+                    service_config = await self.generate_service_config(service_name)
+                    
+                    await self.redis_client.setex(
+                        f"viper:config:service:{service_name}",
+                        86400,  # 24 hours
+                        json.dumps(service_config)
+                    )
+                    
+                    self.config_cache[service_name] = service_config
+                    logger.info(f"# Check Service configuration initialized for {service_name}")
+                    
+        except Exception as e:
+            logger.error(f"# X Error initializing service configurations: {e}")
+
+    async def generate_service_config(self, service_name: str) -> Dict[str, Any]:
+        """Generate service-specific configuration from unified config"""
+        try:
+            service_config = {
+                'service_info': {
+                    'name': service_name,
+                    'version': self.master_config.get('system_info', {}).get('version', '2.0.0'),
+                    'source': 'unified_config'
+                },
+                'global_settings': self.master_config.get('global_settings', {}),
+                'performance': self.master_config.get('performance', {}),
+                'monitoring': self.master_config.get('monitoring', {}),
+                'security': self.master_config.get('security', {})
+            }
+            
+            # Add service-specific configurations
+            if service_name == 'live-trading-engine':
+                service_config.update({
+                    'exchanges': self.master_config.get('exchanges', {}),
+                    'trading_pairs': self.master_config.get('trading_pairs', {}),
+                    'risk_management': self.master_config.get('risk_management', {}),
+                    'strategies': self.master_config.get('strategies', {}),
+                    'api_credentials': self.master_config.get('api_credentials', {})
+                })
+            
+            elif service_name == 'ultra-backtester':
+                service_config.update({
+                    'backtesting': self.master_config.get('backtesting', {}),
+                    'strategies': self.master_config.get('strategies', {}),
+                    'trading_pairs': self.master_config.get('trading_pairs', {}),
+                    'data_management': self.master_config.get('data_management', {})
+                })
+            
+            elif service_name == 'market-data-manager':
+                service_config.update({
+                    'exchanges': self.master_config.get('exchanges', {}),
+                    'trading_pairs': self.master_config.get('trading_pairs', {}),
+                    'data_management': self.master_config.get('data_management', {}),
+                    'api_credentials': self.master_config.get('api_credentials', {})
+                })
+            
+            elif service_name == 'risk-manager':
+                service_config.update({
+                    'risk_management': self.master_config.get('risk_management', {}),
+                    'trading_pairs': self.master_config.get('trading_pairs', {}),
+                    'compliance': self.master_config.get('compliance', {})
+                })
+            
+            elif service_name == 'jordan-mainnet-node':
+                jordan_config = self.master_config.get('jordan_mainnet', {})
+                if not jordan_config and self.jordan_config_file.exists():
+                    # Fallback to legacy config if not in unified config
+                    with open(self.jordan_config_file, 'r') as f:
+                        jordan_config = json.load(f)
+                
+                service_config.update({
+                    'jordan_mainnet': jordan_config,
+                    'api_credentials': self.master_config.get('api_credentials', {})
+                })
+            
+            return service_config
+            
+        except Exception as e:
+            logger.error(f"# X Error generating config for {service_name}: {e}")
             return {}
 
-    def validate_configuration(self, config: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate configuration against schema"""
+    async def get_service_configuration(self, service_name: str) -> Optional[Dict[str, Any]]:
+        """Get configuration for a specific service from unified config"""
         try:
-            validation_results = {
-                'valid': True,
-                'errors': [],
-                'warnings': []
-            }
-
-            # Validate trading configuration
-            if 'trading' in config:
-                try:
-                    TradingConfig(**config['trading'])
-                    logger.info("# Check Trading configuration validated")
-                except Exception as e:
-                    validation_results['valid'] = False
-                    validation_results['errors'].append(f"Trading config validation failed: {e}")
-
-            # Validate service configurations
-            if 'services' in config:
-                for service_name, service_config in config['services'].items():
-                    try:
-                        ServiceConfig(**service_config)
-                    except Exception as e:
-                        validation_results['valid'] = False
-                        validation_results['errors'].append(f"Service {service_name} config validation failed: {e}")
-
-            # Cross-validation
-            if 'trading' in config and 'services' in config:
-                trading_config = config['trading']
-
-                # Check risk management consistency
-                if trading_config.get('risk_per_trade', 0) * trading_config.get('max_positions', 0) > 1.0:
-                    validation_results['warnings'].append(
-                        "Warning: Total risk exposure may exceed 100% with current settings"
-                    )
-
-                # Check service dependencies
-                for service_name, service_config in config['services'].items():
-                    for dependency in service_config.get('dependencies', []):
-                        if dependency not in config['services']:
-                            validation_results['errors'].append(
-                                f"Service {service_name} depends on {dependency} which is not configured"
-                            )
-
-            return validation_results
-
-        except Exception as e:
-            logger.error(f"# X Configuration validation error: {e}")
-            return {'valid': False, 'errors': [str(e)], 'warnings': []}
-
-    def save_configuration(self, config: Dict[str, Any], user: str = "system") -> bool:
-        """Save configuration with history tracking"""
-        try:
-            # Validate configuration
-            validation = self.validate_configuration(config)
-            if not validation['valid']:
-                logger.error(f"# X Configuration validation failed: {validation['errors']}")
-                return False
-
-            # Create configuration snapshot
-            config_snapshot = {
-                'config': config,
-                'timestamp': datetime.now().isoformat(),
-                'user': user,
-                'version': len(self.config_history) + 1,
-                'hash': hashlib.md5(json.dumps(config, sort_keys=True).encode()).hexdigest()[:8]
-            }
-
-            # Save to history
-            self.config_history.append(config_snapshot)
-
-            # Keep only last 10 versions
-            if len(self.config_history) > 10:
-                self.config_history = self.config_history[-10:]
-
-            # Save to Redis
-            self.redis_client.set('viper:current_config', json.dumps(config))
-            self.redis_client.set('viper:config_history', json.dumps(self.config_history))
-
-            # Update current config
-            self.current_config = config
-
-            # Publish configuration update event
-            update_event = {
-                'type': 'config_updated',
-                'timestamp': datetime.now().isoformat(),
-                'user': user,
-                'version': config_snapshot['version']
-            }
-
-            self.redis_client.publish('config_events', json.dumps(update_event))
-
-            logger.info(f"# Check Configuration saved (version {config_snapshot['version']})")
-            return True
-
-        except Exception as e:
-            logger.error(f"# X Error saving configuration: {e}")
-            return False
-
-    def load_configuration(self) -> Dict[str, Any]:
-        """Load current configuration"""
-        try:
-            # Try to load from Redis first
-            config_data = self.redis_client.get('viper:current_config')
+            # Check cache first
+            if service_name in self.config_cache:
+                return self.config_cache[service_name]
+            
+            # Check Redis
+            config_data = await self.redis_client.get(f"viper:config:service:{service_name}")
             if config_data:
                 config = json.loads(config_data)
-                self.current_config = config
-                logger.info("# Check Configuration loaded from Redis")
+                self.config_cache[service_name] = config
                 return config
-
-            # Fallback to loading from environment
-            config = self.load_config_from_env()
-            if config:
-                self.save_configuration(config, "system")
-                return config
-
-            logger.error("# X No configuration available")
-            return {}
-
+            
+            # Generate from unified config
+            if self.master_config:
+                service_config = await self.generate_service_config(service_name)
+                if service_config:
+                    self.config_cache[service_name] = service_config
+                    return service_config
+            
+            return None
+            
         except Exception as e:
-            logger.error(f"# X Error loading configuration: {e}")
-            return {}
-
-    def get_service_config(self, service_name: str) -> Optional[Dict[str, Any]]:
-        """Get configuration for a specific service"""
-        try:
-            if service_name in self.current_config.get('services', {}):
-                service_config = self.current_config['services'][service_name].copy()
-
-                # Merge with trading configuration overrides
-                trading_config = self.current_config.get('trading', {})
-                service_config['trading_config'] = trading_config
-
-                return service_config
-
+            logger.error(f"# X Error getting config for {service_name}: {e}")
             return None
 
-        except Exception as e:
-            logger.error(f"# X Error getting service config for {service_name}: {e}")
-            return None
-
-    def update_trading_parameter(self, parameter: str, value: Any, user: str = "system") -> bool:
-        """Update a specific trading parameter"""
+    async def update_unified_configuration(self, config_data: Dict[str, Any]) -> bool:
+        """Update the unified configuration - master update"""
         try:
-            if 'trading' not in self.current_config:
-                self.current_config['trading'] = {}
-
-            # Validate the parameter exists in our schema
-            temp_config = TradingConfig(**self.current_config['trading'])
-            if not hasattr(temp_config, parameter):
-                logger.error(f"# X Unknown trading parameter: {parameter}")
+            # Validate configuration structure
+            is_valid, errors = await self.validate_config_structure(config_data)
+            if not is_valid:
+                logger.error(f"# X Configuration validation failed: {errors}")
                 return False
-
-            # Update the parameter
-            self.current_config['trading'][parameter] = value
-
-            # Validate the updated configuration
-            validation = self.validate_configuration(self.current_config)
-            if not validation['valid']:
-                logger.error(f"# X Parameter update validation failed: {validation['errors']}")
-                return False
-
-            # Save the updated configuration
-            return self.save_configuration(self.current_config, user)
-
-        except Exception as e:
-            logger.error(f"# X Error updating trading parameter: {e}")
-            return False
-
-    def get_configuration_history(self, limit: int = 10) -> List[Dict]:
-        """Get configuration change history"""
-        try:
-            return self.config_history[-limit:] if self.config_history else []
-        except Exception as e:
-            logger.error(f"# X Error getting configuration history: {e}")
-            return []
-
-    def export_configuration(self, format: str = "json") -> str:
-        """Export current configuration"""
-        try:
-            if format.lower() == "yaml":
-                return yaml.dump(self.current_config, default_flow_style=False)
-            else:
-                return json.dumps(self.current_config, indent=2)
-        except Exception as e:
-            logger.error(f"# X Error exporting configuration: {e}")
-            return ""
-
-    def import_configuration(self, config_data: str, format: str = "json", user: str = "system") -> bool:
-        """Import configuration from string"""
-        try:
-            if format.lower() == "yaml":
-                config = yaml.safe_load(config_data)
-            else:
-                config = json.loads(config_data)
-
-            return self.save_configuration(config, user)
-
-        except Exception as e:
-            logger.error(f"# X Error importing configuration: {e}")
-            return False
-
-    def get_system_status(self) -> Dict[str, Any]:
-        """Get system configuration status"""
-        try:
-            return {
-                'config_loaded': bool(self.current_config),
-                'config_version': len(self.config_history),
-                'last_update': self.config_history[-1]['timestamp'] if self.config_history else None,
-                'services_configured': len(self.current_config.get('services', {})),
-                'trading_parameters': len(self.current_config.get('trading', {})),
-                'redis_connected': self.redis_client is not None,
-                'backup_interval_hours': BACKUP_INTERVAL_HOURS,
-                'backup_retention_days': BACKUP_RETENTION_DAYS
-            }
-        except Exception as e:
-            logger.error(f"# X Error getting system status: {e}")
-            return {'error': str(e)}
-    
-    def create_backup(self) -> bool:
-        """Create a configuration backup using environment settings"""
-        try:
-            import datetime
             
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_key = f"viper:config_backup:{timestamp}"
+            # Backup current config
+            backup_key = f"viper:config:unified:backup:{datetime.utcnow().isoformat()}"
+            await self.redis_client.setex(backup_key, 86400 * 7, json.dumps(self.master_config))
             
-            backup_data = {
-                'timestamp': timestamp,
-                'config': self.current_config,
-                'metadata': {
-                    'backup_interval_hours': BACKUP_INTERVAL_HOURS,
-                    'retention_days': BACKUP_RETENTION_DAYS,
-                    'created_by': 'config_manager_auto_backup'
-                }
-            }
+            # Update master config
+            self.master_config = config_data
             
-            # Store backup in Redis
-            self.redis_client.setex(
-                backup_key, 
-                BACKUP_RETENTION_DAYS * 24 * 3600,  # Convert days to seconds
-                json.dumps(backup_data)
+            # Update version
+            current_version = self.config_versions.get('unified', '1.0.0')
+            new_version = config_data.get('system_info', {}).get('version', current_version)
+            self.config_versions['unified'] = new_version
+            
+            # Store in Redis
+            await self.redis_client.setex(
+                "viper:config:unified:master",
+                86400 * 7,
+                json.dumps(self.master_config)
             )
             
-            logger.info(f"# Check Configuration backup created: {backup_key}")
+            # Save to file
+            with open(self.unified_config_file, 'w') as f:
+                json.dump(self.master_config, f, indent=2)
+            
+            # Regenerate all service configurations
+            await self.initialize_service_configurations()
+            
+            # Notify all services
+            await self.notify_unified_config_change()
+            
+            logger.info(f"# Check Unified configuration updated to version {new_version}")
             return True
             
         except Exception as e:
-            logger.error(f"# X Error creating backup: {e}")
+            logger.error(f"# X Error updating unified configuration: {e}")
             return False
-    
-    def cleanup_old_backups(self) -> int:
-        """Clean up backups older than retention period"""
+
+    async def update_service_in_unified_config(self, service_name: str, service_config: Dict[str, Any]) -> bool:
+        """Update a specific service configuration within unified config"""
         try:
-            import datetime
+            if not self.master_config:
+                await self.load_unified_configuration()
             
-            cutoff_timestamp = datetime.datetime.now() - datetime.timedelta(days=BACKUP_RETENTION_DAYS)
-            cutoff_str = cutoff_timestamp.strftime("%Y%m%d_%H%M%S")
+            # Update the relevant section in unified config based on service
+            if service_name == 'live-trading-engine':
+                if 'risk_management' in service_config:
+                    self.master_config['risk_management'] = service_config['risk_management']
+                if 'strategies' in service_config:
+                    self.master_config['strategies'] = service_config['strategies']
+            elif service_name == 'ultra-backtester':
+                if 'backtesting' in service_config:
+                    self.master_config['backtesting'] = service_config['backtesting']
+            # Add more service-specific updates as needed
             
-            # Get all backup keys
-            backup_keys = self.redis_client.keys("viper:config_backup:*")
-            deleted_count = 0
-            
-            for key in backup_keys:
-                # Extract timestamp from key
-                timestamp_str = key.decode('utf-8').split(':')[-1]
-                if timestamp_str < cutoff_str:
-                    self.redis_client.delete(key)
-                    deleted_count += 1
-            
-            if deleted_count > 0:
-                logger.info(f"# Check Cleaned up {deleted_count} old backups")
-            
-            return deleted_count
+            # Save updated unified config
+            return await self.update_unified_configuration(self.master_config)
             
         except Exception as e:
-            logger.error(f"# X Error cleaning up backups: {e}")
-            return 0
+            logger.error(f"# X Error updating {service_name} in unified config: {e}")
+            return False
 
-# FastAPI application
-app = FastAPI(
-    title="VIPER Configuration Manager",
-    version="1.0.0",
-    description="Centralized configuration management service"
-)
+    async def get_all_service_configurations(self) -> Dict[str, Any]:
+        """Get all service configurations from unified config"""
+        try:
+            configs = {}
+            services = self.master_config.get('services', {}).get('microservices', {})
+            
+            for service_name, service_info in services.items():
+                if service_info.get('enabled', False):
+                    config = await self.get_service_configuration(service_name)
+                    if config:
+                        configs[service_name] = config
+            
+            return configs
+            
+        except Exception as e:
+            logger.error(f"# X Error getting all service configurations: {e}")
+            return {}
 
-config_manager = ConfigurationManager()
+    async def get_trading_strategies(self) -> Dict[str, Any]:
+        """Get all trading strategy configurations from unified config"""
+        try:
+            return self.master_config.get('strategies', {})
+        except Exception as e:
+            logger.error(f"# X Error getting trading strategies: {e}")
+            return {}
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize services on startup"""
-    if not config_manager.initialize_redis():
-        logger.error("# X Failed to initialize Redis")
-        return
+    async def validate_config_structure(self, config_data: Dict[str, Any]) -> tuple[bool, List[str]]:
+        """Validate configuration structure"""
+        try:
+            errors = []
+            
+            # Basic structure validation
+            required_sections = ['system_info', 'global_settings', 'services', 'strategies']
+            for section in required_sections:
+                if section not in config_data:
+                    errors.append(f"Missing required section: {section}")
+            
+            # Validate strategies
+            if 'strategies' in config_data:
+                strategies = config_data['strategies']
+                if 'enabled_strategies' not in strategies:
+                    errors.append("Missing 'enabled_strategies' in strategies section")
+            
+            # Validate services
+            if 'services' in config_data:
+                services = config_data['services']
+                if 'microservices' not in services:
+                    errors.append("Missing 'microservices' in services section")
+            
+            return len(errors) == 0, errors
+            
+        except Exception as e:
+            return False, [f"Validation error: {str(e)}"]
 
-    # Load initial configuration
-    config_manager.load_configuration()
+    async def notify_all_services(self) -> List[str]:
+        """Notify all services of configuration changes"""
+        try:
+            notified_services = []
+            services = self.master_config.get('services', {}).get('microservices', {})
+            
+            for service_name in services.keys():
+                await self.notify_service_config_change(service_name)
+                notified_services.append(service_name)
+            
+            return notified_services
+            
+        except Exception as e:
+            logger.error(f"# X Error notifying services: {e}")
+            return []
 
-    logger.info("# Check Configuration Manager started successfully")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Clean shutdown"""
-    pass
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    try:
-        status = config_manager.get_system_status()
-        return {
-            "status": "healthy" if status.get('config_loaded') else "degraded",
-            "service": "config-manager",
-            "redis_connected": config_manager.redis_client is not None,
-            **status
-        }
-    except Exception as e:
-        return JSONResponse(
-            status_code=503,
-            content={
-                "status": "unhealthy",
-                "service": "config-manager",
-                "error": str(e)
+    async def notify_unified_config_change(self):
+        """Notify all services of unified configuration change"""
+        try:
+            notification = {
+                'type': 'unified_config_update',
+                'version': self.config_versions.get('unified', '1.0.0'),
+                'timestamp': datetime.utcnow().isoformat(),
+                'services_affected': list(self.master_config.get('services', {}).get('microservices', {}).keys())
             }
-        )
+            
+            await self.redis_client.publish('config_updates', json.dumps(notification))
+            logger.info("# Check Unified configuration change notification sent to all services")
+            
+        except Exception as e:
+            logger.error(f"# X Error sending unified config change notification: {e}")
 
-@app.get("/api/config")
-async def get_configuration():
-    """Get current configuration"""
-    try:
-        return config_manager.current_config
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Unable to get configuration: {e}")
-
-@app.post("/api/config")
-async def save_configuration(request: Request, user: str = Query("api", description="User making the change")):
-    """Save new configuration"""
-    try:
-        config_data = await request.json()
-        success = config_manager.save_configuration(config_data, user)
-
-        if success:
-            return {"status": "saved", "message": "Configuration updated successfully"}
-        else:
-            raise HTTPException(status_code=400, detail="Configuration validation failed")
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Save failed: {e}")
-
-@app.get("/api/config/service/{service_name}")
-async def get_service_configuration(service_name: str):
-    """Get configuration for a specific service"""
-    try:
-        service_config = config_manager.get_service_config(service_name)
-        if service_config:
-            return service_config
-        else:
-            raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Unable to get service config: {e}")
-
-@app.put("/api/config/trading/{parameter}")
-async def update_trading_parameter(
-    parameter: str,
-    value: str = Query(..., description="New parameter value"),
-    user: str = Query("api", description="User making the change")
-):
-    """Update a specific trading parameter"""
-    try:
-        # Convert value to appropriate type
-        if value.isdigit():
-            value = int(value)
-        elif value.replace('.', '', 1).isdigit():
-            value = float(value)
-        elif value.lower() in ['true', 'false']:
-            value = value.lower() == 'true'
-
-        success = config_manager.update_trading_parameter(parameter, value, user)
-
-        if success:
-            return {"status": "updated", "parameter": parameter, "value": value}
-        else:
-            raise HTTPException(status_code=400, detail=f"Parameter update failed for {parameter}")
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Update failed: {e}")
-
-@app.get("/api/config/history")
-async def get_configuration_history(limit: int = Query(10, ge=1, le=50)):
-    """Get configuration change history"""
-    try:
-        history = config_manager.get_configuration_history(limit)
-        return {"history": history, "count": len(history)}
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Unable to get history: {e}")
-
-@app.get("/api/config/export")
-async def export_configuration(format: str = Query("json", description="Export format (json or yaml)")):
-    """Export current configuration"""
-    try:
-        exported = config_manager.export_configuration(format)
-        return {"configuration": exported, "format": format}
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Export failed: {e}")
-
-@app.post("/api/config/import")
-async def import_configuration(
-    request: Request,
-    format: str = Query("json", description="Import format (json or yaml)"),
-    user: str = Query("api", description="User importing the configuration")
-):
-    """Import configuration"""
-    try:
-        config_data = await request.text()
-        success = config_manager.import_configuration(config_data, format, user)
-
-        if success:
-            return {"status": "imported", "message": "Configuration imported successfully"}
-        else:
-            raise HTTPException(status_code=400, detail="Configuration import failed")
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Import failed: {e}")
-
-@app.get("/api/config/validate")
-async def validate_current_configuration():
-    """Validate current configuration"""
-    try:
-        validation = config_manager.validate_configuration(config_manager.current_config)
-        return validation
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Validation failed: {e}")
-
-@app.get("/api/status")
-async def get_system_status():
-    """Get system configuration status"""
-    try:
-        return config_manager.get_system_status()
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Unable to get status: {e}")
-
-@app.post("/api/backup/create")
-async def create_configuration_backup():
-    """Create a configuration backup"""
-    try:
-        success = config_manager.create_backup()
-        if success:
-            return {
-                "status": "created",
-                "message": "Configuration backup created successfully",
-                "backup_settings": {
-                    "interval_hours": BACKUP_INTERVAL_HOURS,
-                    "retention_days": BACKUP_RETENTION_DAYS
-                }
+    async def notify_service_config_change(self, service_name: str):
+        """Notify a specific service of configuration changes"""
+        try:
+            config = await self.get_service_configuration(service_name)
+            notification = {
+                'type': 'service_config_update',
+                'service': service_name,
+                'config': config,
+                'timestamp': datetime.utcnow().isoformat(),
+                'source': 'unified_config'
             }
-        else:
-            raise HTTPException(status_code=500, detail="Backup creation failed")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Backup failed: {e}")
+            
+            await self.redis_client.publish(f'config_updates:{service_name}', json.dumps(notification))
+            logger.info(f"# Check Configuration change notification sent to {service_name}")
+            
+        except Exception as e:
+            logger.error(f"# X Error sending config change notification to {service_name}: {e}")
 
-@app.post("/api/backup/cleanup")
-async def cleanup_old_backups():
-    """Clean up old configuration backups"""
+    async def shutdown(self):
+        """Cleanup on shutdown"""
+        try:
+            if self.redis_client:
+                await self.redis_client.close()
+            logger.info("# Check Unified Configuration Manager shutdown complete")
+        except Exception as e:
+            logger.error(f"# X Shutdown error: {e}")
+
+async def main():
+    """Main entry point"""
+    manager = UnifiedConfigManager()
+    
+    # Startup
+    await manager.startup()
+    
+    # Start FastAPI server
+    port = int(os.getenv('CONFIG_MANAGER_PORT', '8001'))
+    config = uvicorn.Config(
+        manager.app,
+        host="0.0.0.0", 
+        port=port,
+        log_level=LOG_LEVEL.lower()
+    )
+    
+    server = uvicorn.Server(config)
+    
     try:
-        deleted_count = config_manager.cleanup_old_backups()
-        return {
-            "status": "completed",
-            "deleted_backups": deleted_count,
-            "retention_policy": f"{BACKUP_RETENTION_DAYS} days"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Cleanup failed: {e}")
+        await server.serve()
+    except KeyboardInterrupt:
+        logger.info("# Stop Shutting down Unified Configuration Manager...")
+    finally:
+        await manager.shutdown()
 
 if __name__ == "__main__":
-    port = int(os.getenv("CONFIG_MANAGER_PORT", 8012))
-    logger.info(f"Starting VIPER Configuration Manager on port {port}")
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=os.getenv("DEBUG_MODE", "false").lower() == "true",
-        log_level="info"
-    )
+    asyncio.run(main())

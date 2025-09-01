@@ -1,0 +1,407 @@
+{
+  "system_info": {
+    "name": "VIPER Trading System",
+    "version": "2.0.0",
+    "description": "Unified configuration for all trading strategies and services",
+    "last_updated": "2025-01-01",
+    "author": "VIPER Development Team"
+  },
+  "global_settings": {
+    "environment": "production",
+    "debug_mode": false,
+    "log_level": "INFO",
+    "timezone": "UTC",
+    "enable_real_trading": true,
+    "enable_paper_trading": false
+  },
+  "api_credentials": {
+    "vault_storage": true,
+    "vault_service_prefix": "jordan-mainnet-node",
+    "credential_keys": {
+      "bitget": {
+        "api_key": "BITGET_API_KEY",
+        "api_secret": "BITGET_API_SECRET", 
+        "api_password": "BITGET_API_PASSWORD"
+      },
+      "jordan_mainnet": {
+        "key": "JORDAN_MAINNET_KEY",
+        "secret": "JORDAN_MAINNET_SECRET",
+        "passphrase": "JORDAN_MAINNET_PASSPHRASE",
+        "rpc_url": "JORDAN_MAINNET_RPC_URL"
+      },
+      "github": {
+        "personal_access_token": "GITHUB_PAT"
+      }
+    },
+    "fallback_to_env": true
+  },
+  "exchanges": {
+    "primary_exchange": "bitget",
+    "bitget": {
+      "enabled": true,
+      "api_version": "v2",
+      "base_url": "https://api.bitget.com",
+      "websocket_url": "wss://ws.bitget.com/mix/v1/stream",
+      "default_type": "swap",
+      "sandbox_mode": false,
+      "rate_limits": {
+        "requests_per_second": 10,
+        "burst_limit": 50,
+        "timeout_seconds": 30,
+        "retry_attempts": 3,
+        "retry_delay": 1.0
+      },
+      "supported_markets": ["USDT-M", "COIN-M", "SPOT"],
+      "default_market": "USDT-M"
+    }
+  },
+  "trading_pairs": {
+    "focus": "USDT_margined_futures",
+    "primary_symbols": [
+      "BTCUSDT_UMCBL",
+      "ETHUSDT_UMCBL", 
+      "BNBUSDT_UMCBL",
+      "ADAUSDT_UMCBL",
+      "SOLUSDT_UMCBL",
+      "MATICUSDT_UMCBL",
+      "DOGEUSDT_UMCBL",
+      "XRPUSDT_UMCBL"
+    ],
+    "symbol_filters": {
+      "min_volume_24h": 1000000,
+      "max_spread_percent": 0.1,
+      "min_price": 0.0001,
+      "exclude_patterns": ["^.*DOWN$", "^.*UP$", "^.*BEAR$", "^.*BULL$"]
+    },
+    "max_concurrent_pairs": 8
+  },
+  "risk_management": {
+    "global_limits": {
+      "max_daily_loss_percent": 3.0,
+      "max_single_trade_loss_percent": 2.0,
+      "max_open_positions": 15,
+      "max_leverage": 50,
+      "max_position_size_percent": 10.0,
+      "min_margin_requirement": 1.0,
+      "max_portfolio_risk": 20.0
+    },
+    "position_sizing": {
+      "method": "risk_based",
+      "risk_per_trade_percent": 2.0,
+      "kelly_criterion_enabled": false,
+      "fixed_amount_usdt": null,
+      "leverage_scaling": true,
+      "min_position_size_usdt": 10.0,
+      "max_position_size_usdt": 10000.0
+    },
+    "stop_loss": {
+      "enabled": true,
+      "default_percent": 2.5,
+      "trailing_stop_enabled": true,
+      "trailing_distance_percent": 1.0,
+      "emergency_stop_percent": 5.0,
+      "adaptive_sl_enabled": true
+    },
+    "take_profit": {
+      "enabled": true,
+      "default_percent": 3.0,
+      "partial_tp_enabled": true,
+      "tp_levels": [1.5, 2.5, 4.0],
+      "tp_percentages": [30, 40, 30],
+      "scaling_out_enabled": true
+    },
+    "correlation_limits": {
+      "max_pair_correlation": 0.8,
+      "correlation_window_days": 30,
+      "correlation_check_enabled": true
+    }
+  },
+  "strategies": {
+    "enabled_strategies": [
+      "viper_scalping",
+      "momentum_breakout", 
+      "mean_reversion",
+      "trend_following",
+      "grid_trading"
+    ],
+    "strategy_allocation": {
+      "viper_scalping": 40,
+      "momentum_breakout": 25,
+      "mean_reversion": 15,
+      "trend_following": 15,
+      "grid_trading": 5
+    },
+    "viper_scalping": {
+      "enabled": true,
+      "timeframes": ["1m", "5m", "15m"],
+      "indicators": {
+        "sma_fast": 10,
+        "sma_slow": 20,
+        "rsi_period": 14,
+        "rsi_overbought": 70,
+        "rsi_oversold": 30,
+        "bb_period": 20,
+        "bb_std": 2.0,
+        "volume_sma": 20
+      },
+      "signal_threshold": 85,
+      "max_positions": 5,
+      "holding_time_max_minutes": 60
+    },
+    "momentum_breakout": {
+      "enabled": true,
+      "timeframes": ["15m", "1h"],
+      "breakout_threshold": 2.0,
+      "volume_confirmation": true,
+      "max_positions": 3,
+      "holding_time_max_hours": 24
+    },
+    "mean_reversion": {
+      "enabled": true,
+      "timeframes": ["5m", "15m"],
+      "deviation_threshold": 2.5,
+      "mean_period": 50,
+      "max_positions": 2
+    },
+    "trend_following": {
+      "enabled": true,
+      "timeframes": ["1h", "4h"],
+      "trend_strength_min": 0.7,
+      "max_positions": 2
+    },
+    "grid_trading": {
+      "enabled": false,
+      "grid_spacing_percent": 0.5,
+      "max_grid_levels": 10,
+      "max_positions": 1
+    }
+  },
+  "backtesting": {
+    "default_settings": {
+      "initial_balance": 10000.0,
+      "commission": 0.001,
+      "slippage": 0.0005,
+      "lookback_days": 365,
+      "walk_forward_enabled": true,
+      "monte_carlo_runs": 1000
+    },
+    "performance_criteria": {
+      "min_sharpe_ratio": 1.2,
+      "max_drawdown_percent": 15.0,
+      "min_win_rate_percent": 55.0,
+      "min_profit_factor": 1.5,
+      "min_total_trades": 100
+    },
+    "optimization_ranges": {
+      "sma_fast": [5, 10, 15, 20, 25],
+      "sma_slow": [20, 30, 40, 50, 60],
+      "rsi_period": [10, 12, 14, 16, 18, 20],
+      "bb_std": [1.5, 2.0, 2.5, 3.0]
+    }
+  },
+  "data_management": {
+    "primary_data_source": "bitget",
+    "fallback_sources": ["binance_public", "coinbase_public"],
+    "data_quality": {
+      "price_validation": true,
+      "volume_validation": true,
+      "timestamp_validation": true,
+      "outlier_detection": true,
+      "data_freshness_seconds": 30
+    },
+    "caching": {
+      "redis_enabled": true,
+      "cache_duration_minutes": 15,
+      "historical_data_cache_hours": 24
+    },
+    "websockets": {
+      "enabled": true,
+      "max_connections": 50,
+      "heartbeat_interval": 30,
+      "reconnect_attempts": 5,
+      "reconnect_delay": 5,
+      "buffer_size": 8192,
+      "compression": true,
+      "vectorized_processing": true
+    }
+  },
+  "monitoring": {
+    "health_checks": {
+      "enabled": true,
+      "interval_seconds": 30,
+      "timeout_seconds": 10,
+      "failure_threshold": 3
+    },
+    "metrics": {
+      "prometheus_enabled": true,
+      "custom_metrics": true,
+      "performance_tracking": true,
+      "latency_monitoring": true
+    },
+    "alerting": {
+      "email_enabled": false,
+      "telegram_enabled": false,
+      "discord_enabled": false,
+      "system_alerts": [
+        "api_connection_failure",
+        "order_execution_failure", 
+        "position_limit_exceeded",
+        "daily_loss_limit_reached",
+        "system_error"
+      ]
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "json",
+      "rotation": "daily",
+      "retention_days": 30,
+      "centralized_logging": true
+    }
+  },
+  "services": {
+    "service_discovery": {
+      "enabled": true,
+      "registry": "redis",
+      "health_check_interval": 60
+    },
+    "microservices": {
+      "config_manager": {
+        "enabled": true,
+        "port": 8001,
+        "priority": 1
+      },
+      "market_data_manager": {
+        "enabled": true,
+        "port": 8003,
+        "priority": 2
+      },
+      "live_trading_engine": {
+        "enabled": true,
+        "port": 8004,
+        "priority": 3
+      },
+      "risk_manager": {
+        "enabled": true,
+        "port": 8005,
+        "priority": 2
+      },
+      "ultra_backtester": {
+        "enabled": true,
+        "port": 8006,
+        "priority": 4
+      },
+      "viper_scoring_service": {
+        "enabled": true,
+        "port": 8009,
+        "priority": 3
+      },
+      "jordan_mainnet_node": {
+        "enabled": true,
+        "port": 8022,
+        "priority": 5
+      },
+      "credential_vault": {
+        "enabled": true,
+        "port": 8008,
+        "priority": 1
+      }
+    },
+    "load_balancing": {
+      "enabled": false,
+      "strategy": "round_robin"
+    }
+  },
+  "performance": {
+    "optimization": {
+      "vectorization_enabled": true,
+      "parallel_processing": true,
+      "worker_processes": 4,
+      "async_io": true,
+      "connection_pooling": true,
+      "memory_optimization": true
+    },
+    "caching": {
+      "strategy": "redis_primary_memory_fallback",
+      "ttl_seconds": 300,
+      "max_memory_mb": 512
+    },
+    "execution": {
+      "max_latency_ms": 500,
+      "order_execution_timeout": 30,
+      "batch_processing": true,
+      "priority_queue": true
+    }
+  },
+  "ui_aesthetics": {
+    "theme": "dark_professional",
+    "color_scheme": {
+      "primary": "#00d4ff",
+      "secondary": "#ff6b35", 
+      "success": "#28a745",
+      "danger": "#dc3545",
+      "warning": "#ffc107",
+      "info": "#17a2b8",
+      "background": "#1a1a1a",
+      "surface": "#2d2d2d",
+      "text_primary": "#ffffff",
+      "text_secondary": "#cccccc"
+    },
+    "typography": {
+      "font_family": "Inter, system-ui, sans-serif",
+      "font_sizes": {
+        "xs": "0.75rem",
+        "sm": "0.875rem", 
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem"
+      }
+    },
+    "animations": {
+      "enabled": true,
+      "duration": "200ms",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "layout": {
+      "responsive": true,
+      "grid_system": "12_column",
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px", 
+        "lg": "1024px",
+        "xl": "1280px"
+      }
+    }
+  },
+  "security": {
+    "encryption": {
+      "at_rest": true,
+      "in_transit": true,
+      "key_rotation_days": 90
+    },
+    "authentication": {
+      "api_key_required": true,
+      "rate_limiting": true,
+      "ip_whitelisting": false
+    },
+    "audit": {
+      "enabled": true,
+      "log_all_trades": true,
+      "log_config_changes": true,
+      "retention_days": 2555
+    }
+  },
+  "compliance": {
+    "regulatory_requirements": {
+      "position_reporting": true,
+      "trade_logging": true,
+      "audit_trail": true,
+      "data_retention_years": 7
+    },
+    "risk_controls": {
+      "circuit_breakers": true,
+      "position_limits": true,
+      "drawdown_limits": true
+    }
+  }
+}
