@@ -88,14 +88,14 @@ class CleanRootEnforcer:
         """Get automatic move location for a file"""
         filename = file_path.name.lower()
         
-        for pattern, destination in self.auto_move_rules.items()""":
+        for pattern, destination in self.auto_move_rules.items():
             if self._matches_pattern(filename, pattern.lower()):
                 return destination
         
         return None
 
     def _matches_pattern(self, filename: str, pattern: str) -> bool:
-        """Simple wildcard pattern matching""""""
+        """Simple wildcard pattern matching"""
         if '*' not in pattern:
             return filename == pattern
         
@@ -113,7 +113,7 @@ class CleanRootEnforcer:
 
     def clean_root_directory(self, dry_run=True):
         """Clean root directory by moving misplaced files"""
-        violations = self.scan_root_violations()"""
+        violations = self.scan_root_violations()
         
         if not violations:
             return
@@ -153,12 +153,11 @@ Root Directory Monitor - Watches for files placed in root
 import time
 import sys
 from pathlib import Path
-from clean_root_enforcer import CleanRootEnforcer"""
+from clean_root_enforcer import CleanRootEnforcer
 
 def monitor_root():
     repo_root = Path.cwd()
     enforcer = CleanRootEnforcer(repo_root)
-    
     
     try:
         while True:
@@ -167,6 +166,7 @@ def monitor_root():
             if violations:
                 print(f"# Warning  Found {len(violations)} files in root directory:")
                 for violation in violations[:3]:  # Show first 3
+                    print(f"  - {violation['file'].name}")
                 
                 # Auto-clean if requested
                 if '--auto-clean' in sys.argv:

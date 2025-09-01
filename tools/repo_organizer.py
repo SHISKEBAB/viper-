@@ -7,6 +7,7 @@ Maintains clean repository organization and prevents clutter
 from pathlib import Path
 import shutil
 from datetime import datetime
+from typing import List, Dict
 
 class RepositoryOrganizer:
     """Enforces clean repository structure and organization rules"""
