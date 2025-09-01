@@ -76,27 +76,27 @@ class MCPTakeProfitOptimizer:
         self.max_holding_period = timedelta(hours=24)
         self.trailing_stop_activation_pct = 0.02  # 2% profit before trailing
 
-        # Default exit configurations
+        # Enhanced exit configurations with more aggressive settings
         self.exit_configurations = {
             TPLevel.CONSERVATIVE: {
-                'levels': [0.015, 0.035, 0.065],  # 1.5%, 3.5%, 6.5%
-                'allocations': [0.3, 0.3, 0.4],   # 30%, 30%, 40%
-                'trailing_pct': 0.008
+                'levels': [0.008, 0.025, 0.048],  # 0.8%, 2.5%, 4.8% - More conservative for better win rate
+                'allocations': [0.4, 0.35, 0.25],  # 40%, 35%, 25% - Front-loaded exits
+                'trailing_pct': 0.006
             },
             TPLevel.MODERATE: {
-                'levels': [0.025, 0.055, 0.095],  # 2.5%, 5.5%, 9.5%
-                'allocations': [0.25, 0.35, 0.4],  # 25%, 35%, 40%
-                'trailing_pct': 0.012
+                'levels': [0.015, 0.042, 0.085],  # 1.5%, 4.2%, 8.5% - Balanced approach
+                'allocations': [0.3, 0.4, 0.3],   # 30%, 40%, 30% - Balanced distribution
+                'trailing_pct': 0.010
             },
             TPLevel.AGGRESSIVE: {
-                'levels': [0.04, 0.085, 0.145],   # 4%, 8.5%, 14.5%
-                'allocations': [0.2, 0.3, 0.5],    # 20%, 30%, 50%
-                'trailing_pct': 0.018
+                'levels': [0.025, 0.065, 0.125],  # 2.5%, 6.5%, 12.5% - Higher targets for momentum
+                'allocations': [0.25, 0.35, 0.4], # 25%, 35%, 40% - Back-loaded for trend continuation
+                'trailing_pct': 0.015
             },
             TPLevel.BREAKOUT: {
-                'levels': [0.06, 0.125, 0.21],    # 6%, 12.5%, 21%
-                'allocations': [0.15, 0.35, 0.5],  # 15%, 35%, 50%
-                'trailing_pct': 0.025
+                'levels': [0.035, 0.095, 0.18],   # 3.5%, 9.5%, 18% - Maximum targets for breakouts
+                'allocations': [0.2, 0.3, 0.5],   # 20%, 30%, 50% - Let winners run
+                'trailing_pct': 0.020
             }
         }
 
@@ -678,6 +678,138 @@ class MCPTakeProfitOptimizer:
             reasoning.append("No exit conditions met")
 
         return reasoning
+
+    def optimize_tp_levels_dynamically(self, symbol: str, market_conditions: Dict[str, Any], 
+                                     recent_performance: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Dynamically optimize TP levels based on current market conditions and recent performance
+        
+        Args:
+            symbol: Trading symbol
+            market_conditions: Current market analysis (volatility, trend, volume etc)
+            recent_performance: Recent strategy performance metrics
+            
+        Returns:
+            Optimized TP configuration
+        """
+        
+        try:
+            # Base configuration
+            volatility = market_conditions.get('volatility', 0.02)
+            trend_strength = market_conditions.get('trend_strength', 0.5)
+            volume_ratio = market_conditions.get('volume_ratio', 1.0)
+            recent_win_rate = recent_performance.get('win_rate', 0.5)
+            
+            # Adjust TP levels based on volatility
+            if volatility > 0.04:  # High volatility
+                level_multiplier = 1.4
+                allocation_shift = 0.1  # Front-load exits
+            elif volatility > 0.025:  # Medium volatility
+                level_multiplier = 1.2
+                allocation_shift = 0.05
+            else:  # Low volatility
+                level_multiplier = 0.9
+                allocation_shift = -0.05
+                
+            # Adjust based on recent performance
+            if recent_win_rate < 0.5:  # Poor performance - be more conservative
+                level_multiplier *= 0.8
+                allocation_shift += 0.15  # Heavy front-loading
+            elif recent_win_rate > 0.7:  # Great performance - be more aggressive
+                level_multiplier *= 1.3
+                allocation_shift -= 0.1  # Let winners run
+                
+            # Calculate optimized levels
+            base_levels = [0.015, 0.042, 0.085]  # Moderate base
+            optimized_levels = [level * level_multiplier for level in base_levels]
+            
+            # Adjust allocations
+            base_allocations = [0.3, 0.4, 0.3]
+            optimized_allocations = [
+                max(0.1, min(0.5, base_allocations[0] + allocation_shift)),
+                base_allocations[1],
+                max(0.1, min(0.6, base_allocations[2] - allocation_shift))
+            ]
+            
+            # Normalize allocations to sum to 1.0
+            total = sum(optimized_allocations)
+            optimized_allocations = [alloc / total for alloc in optimized_allocations]
+            
+            # Calculate trailing stop percentage
+            trailing_pct = max(0.008, min(0.025, volatility * 0.6))
+            
+            # Determine TP level type
+            if trend_strength > 0.7 and volume_ratio > 1.3:
+                tp_level = TPLevel.BREAKOUT
+            elif trend_strength > 0.5 and recent_win_rate > 0.6:
+                tp_level = TPLevel.AGGRESSIVE
+            elif recent_win_rate < 0.5 or volatility > 0.04:
+                tp_level = TPLevel.CONSERVATIVE
+            else:
+                tp_level = TPLevel.MODERATE
+                
+            return {
+                'tp_level': tp_level,
+                'levels': optimized_levels,
+                'allocations': optimized_allocations,
+                'trailing_pct': trailing_pct,
+                'level_multiplier': level_multiplier,
+                'volatility_adjustment': volatility,
+                'performance_adjustment': recent_win_rate,
+                'optimization_score': self._calculate_optimization_score(
+                    optimized_levels, optimized_allocations, trailing_pct, market_conditions
+                )
+            }
+            
+        except Exception as e:
+            logger.error(f"Dynamic TP optimization failed: {e}")
+            return {
+                'tp_level': TPLevel.MODERATE,
+                'levels': [0.015, 0.042, 0.085],
+                'allocations': [0.3, 0.4, 0.3],
+                'trailing_pct': 0.012,
+                'error': str(e)
+            }
+            
+    def _calculate_optimization_score(self, levels: List[float], allocations: List[float],
+                                    trailing_pct: float, market_conditions: Dict[str, Any]) -> float:
+        """Calculate a score for the optimization quality"""
+        
+        try:
+            # Base score
+            score = 0.5
+            
+            # Risk-reward balance (prefer higher reward if conditions are good)
+            max_level = max(levels)
+            min_level = min(levels)
+            rr_ratio = max_level / min_level if min_level > 0 else 1.0
+            
+            if 2.0 <= rr_ratio <= 6.0:  # Optimal range
+                score += 0.2
+            
+            # Allocation balance (penalize extreme front or back loading)
+            front_weight = allocations[0]
+            back_weight = allocations[-1]
+            if 0.2 <= front_weight <= 0.4 and 0.2 <= back_weight <= 0.4:
+                score += 0.15
+                
+            # Trailing stop appropriateness
+            volatility = market_conditions.get('volatility', 0.02)
+            expected_trailing = volatility * 0.6
+            if abs(trailing_pct - expected_trailing) < 0.005:
+                score += 0.1
+                
+            # Market condition alignment
+            trend_strength = market_conditions.get('trend_strength', 0.5)
+            if trend_strength > 0.6 and max_level > 0.08:  # Strong trend, aggressive target
+                score += 0.1
+            elif trend_strength < 0.4 and max_level < 0.06:  # Weak trend, conservative target
+                score += 0.1
+                
+            return min(1.0, score)
+            
+        except Exception:
+            return 0.5  # Default score
 
 # Global TP optimizer instance
 advanced_tp_optimizer = MCPTakeProfitOptimizer()

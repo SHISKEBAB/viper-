@@ -143,7 +143,10 @@ class OptimizedTradeEntrySystem:
             signals.sort(key=lambda x: x.confidence_score, reverse=True)
             signals = signals[:self.config['max_entry_signals_per_symbol']]
 
-            # Step 5: Calculate position sizing and expected profits
+            # Step 5: Enhanced signal quality scoring
+            signals = self._enhance_signal_quality_scoring(signals, market_data, current_price)
+            
+            # Step 6: Calculate position sizing and expected profits
             for signal in signals:
                 signal.position_size = self._calculate_optimal_position_size(
                     signal, account_balance, current_price
@@ -608,6 +611,302 @@ class OptimizedTradeEntrySystem:
             return 'FAIR'
         else:
             return 'POOR'
+            
+    def _enhance_signal_quality_scoring(self, signals: List[OptimizedEntrySignal], 
+                                       market_data: Dict[str, pd.DataFrame], 
+                                       current_price: float) -> List[OptimizedEntrySignal]:
+        """
+        Enhanced signal quality scoring with advanced multi-factor analysis
+        """
+        
+        enhanced_signals = []
+        
+        for signal in signals:
+            try:
+                # Multi-timeframe momentum alignment
+                momentum_score = self._calculate_momentum_alignment(signal, market_data)
+                
+                # Volume confluence analysis
+                volume_score = self._analyze_volume_confluence(signal, market_data)
+                
+                # Market structure alignment
+                structure_score = self._evaluate_market_structure(signal, market_data, current_price)
+                
+                # Risk-adjusted entry timing
+                timing_score = self._calculate_entry_timing_score(signal, market_data)
+                
+                # Institutional flow alignment
+                flow_score = self._analyze_institutional_flow(signal, market_data)
+                
+                # Calculate enhanced confidence score
+                factor_scores = {
+                    'momentum': momentum_score * 0.25,
+                    'volume': volume_score * 0.20,
+                    'structure': structure_score * 0.20,
+                    'timing': timing_score * 0.20,
+                    'flow': flow_score * 0.15
+                }
+                
+                enhanced_confidence = sum(factor_scores.values())
+                
+                # Update signal with enhanced metrics
+                signal.confidence_score = min(0.95, enhanced_confidence)
+                signal.entry_factors = factor_scores
+                signal.timeframe_confluence = momentum_score
+                signal.volume_confirmation = volume_score
+                signal.market_structure_score = structure_score
+                
+                # Recalculate entry quality
+                signal.entry_quality = self._determine_entry_quality(signal.confidence_score)
+                
+                # Boost win probability for high-quality signals
+                if signal.confidence_score > 0.8:
+                    signal.win_probability = min(0.8, signal.win_probability * 1.2)
+                elif signal.confidence_score > 0.7:
+                    signal.win_probability = min(0.75, signal.win_probability * 1.1)
+                
+                enhanced_signals.append(signal)
+                
+            except Exception as e:
+                logger.warning(f"Signal enhancement failed: {e}")
+                enhanced_signals.append(signal)  # Keep original if enhancement fails
+                
+        # Re-sort by enhanced confidence
+        enhanced_signals.sort(key=lambda x: x.confidence_score, reverse=True)
+        
+        return enhanced_signals
+    
+    def _calculate_momentum_alignment(self, signal: OptimizedEntrySignal, 
+                                    market_data: Dict[str, pd.DataFrame]) -> float:
+        """Calculate multi-timeframe momentum alignment score"""
+        
+        try:
+            momentum_scores = []
+            
+            for timeframe, df in market_data.items():
+                if len(df) < 20:
+                    continue
+                    
+                # Calculate momentum indicators
+                roc_5 = df['close'].pct_change(5).iloc[-1]
+                roc_10 = df['close'].pct_change(10).iloc[-1]
+                roc_20 = df['close'].pct_change(20).iloc[-1]
+                
+                # Direction alignment
+                direction_score = 0
+                if signal.direction == 'buy':
+                    if roc_5 > 0: direction_score += 0.4
+                    if roc_10 > 0: direction_score += 0.3
+                    if roc_20 > 0: direction_score += 0.3
+                else:
+                    if roc_5 < 0: direction_score += 0.4
+                    if roc_10 < 0: direction_score += 0.3
+                    if roc_20 < 0: direction_score += 0.3
+                
+                momentum_scores.append(direction_score)
+                
+            return np.mean(momentum_scores) if momentum_scores else 0.5
+            
+        except Exception:
+            return 0.5
+            
+    def _analyze_volume_confluence(self, signal: OptimizedEntrySignal,
+                                 market_data: Dict[str, pd.DataFrame]) -> float:
+        """Analyze volume confluence across timeframes"""
+        
+        try:
+            volume_scores = []
+            
+            for timeframe, df in market_data.items():
+                if len(df) < 20:
+                    continue
+                    
+                # Volume moving average
+                vol_ma = df['volume'].rolling(20).mean()
+                current_vol = df['volume'].iloc[-1]
+                recent_vol_avg = df['volume'].rolling(5).mean().iloc[-1]
+                
+                # Volume confirmation score
+                vol_score = 0
+                
+                # Current volume vs average
+                if current_vol > vol_ma.iloc[-1] * 1.2:
+                    vol_score += 0.4
+                elif current_vol > vol_ma.iloc[-1]:
+                    vol_score += 0.2
+                    
+                # Recent volume trend
+                if recent_vol_avg > vol_ma.iloc[-1] * 1.1:
+                    vol_score += 0.3
+                    
+                # Volume breakout detection
+                vol_percentile = np.percentile(df['volume'], 80)
+                if current_vol > vol_percentile:
+                    vol_score += 0.3
+                    
+                volume_scores.append(min(1.0, vol_score))
+                
+            return np.mean(volume_scores) if volume_scores else 0.5
+            
+        except Exception:
+            return 0.5
+            
+    def _evaluate_market_structure(self, signal: OptimizedEntrySignal,
+                                 market_data: Dict[str, pd.DataFrame], 
+                                 current_price: float) -> float:
+        """Evaluate market structure for entry quality"""
+        
+        try:
+            structure_scores = []
+            
+            for timeframe, df in market_data.items():
+                if len(df) < 50:
+                    continue
+                    
+                # Support/Resistance levels
+                highs = df['high'].rolling(10).max()
+                lows = df['low'].rolling(10).min()
+                
+                # Price position analysis
+                price_range = highs.iloc[-1] - lows.iloc[-1]
+                price_position = (current_price - lows.iloc[-1]) / price_range if price_range > 0 else 0.5
+                
+                structure_score = 0
+                
+                # Optimal entry positions
+                if signal.direction == 'buy':
+                    # Buy near support (lower part of range)
+                    if 0.1 <= price_position <= 0.4:
+                        structure_score += 0.6
+                    elif 0.4 < price_position <= 0.6:
+                        structure_score += 0.3
+                else:
+                    # Sell near resistance (upper part of range)
+                    if 0.6 <= price_position <= 0.9:
+                        structure_score += 0.6
+                    elif 0.4 <= price_position < 0.6:
+                        structure_score += 0.3
+                
+                # Trend structure
+                ma_20 = df['close'].rolling(20).mean().iloc[-1]
+                ma_50 = df['close'].rolling(50).mean().iloc[-1] if len(df) >= 50 else ma_20
+                
+                if signal.direction == 'buy' and current_price > ma_20 > ma_50:
+                    structure_score += 0.4
+                elif signal.direction == 'sell' and current_price < ma_20 < ma_50:
+                    structure_score += 0.4
+                    
+                structure_scores.append(min(1.0, structure_score))
+                
+            return np.mean(structure_scores) if structure_scores else 0.5
+            
+        except Exception:
+            return 0.5
+            
+    def _calculate_entry_timing_score(self, signal: OptimizedEntrySignal,
+                                    market_data: Dict[str, pd.DataFrame]) -> float:
+        """Calculate optimal entry timing score"""
+        
+        try:
+            timing_scores = []
+            
+            for timeframe, df in market_data.items():
+                if len(df) < 14:
+                    continue
+                    
+                # RSI timing
+                delta = df['close'].diff()
+                gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+                loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+                rs = gain / loss
+                rsi = 100 - (100 / (1 + rs))
+                current_rsi = rsi.iloc[-1]
+                
+                timing_score = 0
+                
+                # Optimal RSI zones for entry
+                if signal.direction == 'buy':
+                    if 30 <= current_rsi <= 50:  # Oversold recovery
+                        timing_score += 0.6
+                    elif 50 < current_rsi <= 60:  # Bullish momentum
+                        timing_score += 0.4
+                else:
+                    if 50 <= current_rsi <= 70:  # Overbought
+                        timing_score += 0.6
+                    elif 40 <= current_rsi < 50:  # Bearish momentum
+                        timing_score += 0.4
+                
+                # Price action timing
+                recent_candles = df['close'].iloc[-5:]
+                if signal.direction == 'buy':
+                    # Look for bullish momentum
+                    if recent_candles.iloc[-1] > recent_candles.iloc[-2]:
+                        timing_score += 0.2
+                    if recent_candles.iloc[-1] > recent_candles.iloc[-5]:
+                        timing_score += 0.2
+                else:
+                    # Look for bearish momentum
+                    if recent_candles.iloc[-1] < recent_candles.iloc[-2]:
+                        timing_score += 0.2
+                    if recent_candles.iloc[-1] < recent_candles.iloc[-5]:
+                        timing_score += 0.2
+                        
+                timing_scores.append(min(1.0, timing_score))
+                
+            return np.mean(timing_scores) if timing_scores else 0.5
+            
+        except Exception:
+            return 0.5
+            
+    def _analyze_institutional_flow(self, signal: OptimizedEntrySignal,
+                                  market_data: Dict[str, pd.DataFrame]) -> float:
+        """Analyze institutional money flow indicators"""
+        
+        try:
+            flow_scores = []
+            
+            for timeframe, df in market_data.items():
+                if len(df) < 20:
+                    continue
+                    
+                # Money Flow Index approximation
+                typical_price = (df['high'] + df['low'] + df['close']) / 3
+                money_flow = typical_price * df['volume']
+                
+                positive_flow = money_flow[typical_price.diff() > 0].rolling(14).sum()
+                negative_flow = money_flow[typical_price.diff() < 0].rolling(14).sum()
+                
+                mfi = 100 - (100 / (1 + positive_flow / negative_flow))
+                current_mfi = mfi.iloc[-1] if not np.isnan(mfi.iloc[-1]) else 50
+                
+                flow_score = 0
+                
+                # Institutional flow alignment
+                if signal.direction == 'buy':
+                    if 20 <= current_mfi <= 40:  # Institutional accumulation
+                        flow_score += 0.6
+                    elif 40 < current_mfi <= 60:
+                        flow_score += 0.4
+                else:
+                    if 60 <= current_mfi <= 80:  # Institutional distribution
+                        flow_score += 0.6
+                    elif 40 <= current_mfi < 60:
+                        flow_score += 0.4
+                
+                # Large volume candles (institutional activity)
+                recent_volume = df['volume'].iloc[-5:]
+                avg_volume = df['volume'].rolling(20).mean().iloc[-1]
+                
+                large_vol_candles = (recent_volume > avg_volume * 1.5).sum()
+                if large_vol_candles >= 2:
+                    flow_score += 0.4
+                    
+                flow_scores.append(min(1.0, flow_score))
+                
+            return np.mean(flow_scores) if flow_scores else 0.5
+            
+        except Exception:
+            return 0.5
 
     def get_entry_performance_report(self, symbol: str) -> Dict[str, Any]:
         """Get performance report for entry signals"""
