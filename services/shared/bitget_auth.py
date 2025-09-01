@@ -339,6 +339,29 @@ class BitgetAuthenticator:
             logger.error(f"Failed to get open orders: {e}")
             return {'code': '500', 'msg': str(e), 'data': []}
 
+    async def get_klines(self, symbol: str, granularity: str, limit: int = 1000) -> Dict[str, Any]:
+        """Get historical klines/candles for USDT swap trading
+        
+        Args:
+            symbol: Trading pair (e.g., 'BTCUSDT')
+            granularity: Timeframe ('1m', '5m', '15m', '30m', '1H', '4H', '1D')
+            limit: Number of candles to fetch (max 1000)
+        """
+        try:
+            params = {
+                'symbol': self.get_usdt_swap_symbol(symbol),
+                'productType': 'UMCBL',  # V2 API: USDT-M Futures
+                'granularity': granularity,
+                'limit': str(limit)
+            }
+
+            response = await self.make_request('GET', 'klines', params)
+            return response
+
+        except Exception as e:
+            logger.error(f"Failed to get klines for {symbol}: {e}")
+            return {'code': '500', 'msg': str(e), 'data': []}
+
     async def place_order(self, symbol: str, side: str, size: str,
                          order_type: str = 'market', price: str = None) -> Dict[str, Any]:
         """Place order for USDT swap trading"""

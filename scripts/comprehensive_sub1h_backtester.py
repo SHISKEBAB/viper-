@@ -97,74 +97,96 @@ class EntryPoint:
     expected_move: float
     timeframe_alignment: Dict[str, float]
 
-class MarketDataProvider:
-    """Simplified market data provider that works without heavy dependencies"""
+class RealMarketDataProvider:
+    """Real market data provider using Bitget API - NO SYNTHETIC DATA"""
     
     def __init__(self):
         self.cache = {}
-        self.base_prices = {
-            'BTCUSDT': 43000,
-            'ETHUSDT': 2600,
-            'ADAUSDT': 0.48,
-            'SOLUSDT': 95,
-            'DOTUSDT': 7.2,
-            'LINKUSDT': 14.5,
-            'AVAXUSDT': 36,
-            'MATICUSDT': 0.85,
-            'UNIUSDT': 6.2,
-            'ATOMUSDT': 9.8
-        }
+        
+        # Import BitgetAuthenticator
+        try:
+            sys.path.append(str(project_root / 'services' / 'shared'))
+            from bitget_auth import BitgetAuthenticator
+            self.api_client = BitgetAuthenticator()
+            
+            if not self.api_client.validate_credentials():
+                logger.error("❌ BITGET API CREDENTIALS NOT CONFIGURED! Set BITGET_API_KEY, BITGET_API_SECRET, BITGET_API_PASSWORD in .env")
+                raise ValueError("Bitget API credentials required for real data backtesting")
+            
+            logger.info("✅ Real Bitget API client initialized")
+            
+        except ImportError as e:
+            logger.error(f"❌ Failed to import BitgetAuthenticator: {e}")
+            raise ValueError("BitgetAuthenticator required for real data backtesting")
     
-    def get_historical_data(self, symbol: str, timeframe: str, start: datetime, end: datetime) -> List[Dict]:
-        """Generate realistic historical data"""
+    async def get_historical_data(self, symbol: str, timeframe: str, start: datetime, end: datetime) -> List[Dict]:
+        """Get REAL historical data from Bitget API - NO SYNTHETIC DATA ALLOWED"""
         cache_key = f"{symbol}_{timeframe}_{start}_{end}"
         if cache_key in self.cache:
             return self.cache[cache_key]
+        
+        logger.info(f"🔥 Fetching REAL market data for {symbol} {timeframe} from Bitget API")
         
         # Calculate number of candles needed
         tf_minutes = {'1m': 1, '5m': 5, '15m': 15, '30m': 30}
         minutes = tf_minutes.get(timeframe, 15)
         total_minutes = int((end - start).total_seconds() / 60)
-        num_candles = total_minutes // minutes
+        num_candles = min(total_minutes // minutes, 1000)  # API limit
         
-        base_price = self.base_prices.get(symbol, 100)
-        
-        # Generate price movement with realistic patterns
-        data = []
-        current_time = start
-        current_price = base_price
-        
-        for i in range(num_candles):
-            # Create realistic price movement
-            volatility = 0.002 if timeframe == '1m' else 0.005 if timeframe == '5m' else 0.008 if timeframe == '15m' else 0.012
+        try:
+            # Make API call to get real klines
+            response = await self.api_client.get_klines(symbol, timeframe, num_candles)
             
-            # Add trend and noise
-            trend = 0.0001 * (1 if i % 100 < 60 else -1)  # Alternating trend
-            noise = (hash(f"{symbol}_{i}") % 1000 - 500) / 100000  # Deterministic "random"
+            if response.get('code') == '00000' and response.get('data'):
+                # Convert API response to our format
+                api_data = response['data']
+                converted_data = []
+                
+                for candle in api_data:
+                    # Bitget API returns: [timestamp, open, high, low, close, volume, volumeUSDT]
+                    timestamp_ms = int(candle[0])
+                    converted_data.append({
+                        'timestamp': datetime.fromtimestamp(timestamp_ms / 1000),
+                        'open': float(candle[1]),
+                        'high': float(candle[2]),
+                        'low': float(candle[3]),
+                        'close': float(candle[4]),
+                        'volume': float(candle[5])
+                    })
+                
+                # Sort by timestamp to ensure correct order
+                converted_data.sort(key=lambda x: x['timestamp'])
+                
+                self.cache[cache_key] = converted_data
+                logger.info(f"✅ Successfully fetched {len(converted_data)} real candles for {symbol}")
+                return converted_data
             
-            price_change = trend + noise
-            current_price *= (1 + price_change)
-            
-            # Create OHLC
-            open_price = current_price * (1 + (hash(f"open_{i}") % 100 - 50) / 100000)
-            high_price = max(open_price, current_price) * (1 + abs(hash(f"high_{i}") % 100) / 50000)
-            low_price = min(open_price, current_price) * (1 - abs(hash(f"low_{i}") % 100) / 50000)
-            close_price = current_price
-            volume = 10000 + (hash(f"vol_{i}") % 50000)
-            
-            data.append({
-                'timestamp': current_time,
-                'open': open_price,
-                'high': high_price,
-                'low': low_price,
-                'close': close_price,
-                'volume': volume
-            })
-            
-            current_time += timedelta(minutes=minutes)
-        
-        self.cache[cache_key] = data
-        return data
+            else:
+                error_msg = f"❌ API Error: {response.get('msg', 'Unknown error')}"
+                logger.error(error_msg)
+                raise ValueError(f"Failed to fetch real data for {symbol}: {error_msg}")
+                
+        except Exception as e:
+            error_msg = f"❌ CRITICAL: Failed to fetch REAL data for {symbol}: {e}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+    
+    def get_historical_data_sync(self, symbol: str, timeframe: str, start: datetime, end: datetime) -> List[Dict]:
+        """Synchronous wrapper for async get_historical_data"""
+        try:
+            # Try to get existing event loop
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If loop is running, create new task
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, self.get_historical_data(symbol, timeframe, start, end))
+                    return future.result()
+            else:
+                return loop.run_until_complete(self.get_historical_data(symbol, timeframe, start, end))
+        except RuntimeError:
+            # No event loop, create new one
+            return asyncio.run(self.get_historical_data(symbol, timeframe, start, end))
 
 class StrategyEngine:
     """Simplified strategy engine for backtesting"""
@@ -641,7 +663,8 @@ class ComprehensiveBacktester:
     """Main backtesting engine"""
     
     def __init__(self):
-        self.data_provider = MarketDataProvider()
+        logger.info("🔥 Initializing REAL API-only backtesting engine")
+        self.data_provider = RealMarketDataProvider()
         self.strategy_engine = StrategyEngine()
         self.entry_optimizer = EntryPointOptimizer()
         self.results = []
@@ -650,7 +673,7 @@ class ComprehensiveBacktester:
         self.results_dir = Path('/home/runner/work/viper-/viper-/backtest_results')
         self.results_dir.mkdir(exist_ok=True)
         
-        logger.info("Comprehensive Backtester initialized")
+        logger.info("✅ Real API backtesting engine initialized - NO SYNTHETIC DATA")
     
     def generate_configurations(self) -> List[BacktestConfiguration]:
         """Generate all possible backtest configurations"""
@@ -744,8 +767,8 @@ class ComprehensiveBacktester:
         start_time = time.time()
         
         try:
-            # Get historical data
-            data = self.data_provider.get_historical_data(
+            # Get historical data from REAL API
+            data = self.data_provider.get_historical_data_sync(
                 config.symbol, 
                 config.timeframe, 
                 config.start_date, 

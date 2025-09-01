@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
-🎯 MASTER ENTRY POINT OPTIMIZATION RUNNER
-=========================================
+🔥 MASTER ENTRY POINT OPTIMIZATION RUNNER - REAL API DATA ONLY
+================================================================
 
 This is the MASTER script that runs ALL entry point optimizations
 for ALL timeframes under 1 hour with EVERY possible configuration.
 
 This script orchestrates:
-✅ Comprehensive synthetic data backtesting
-✅ Real API data backtesting  
+✅ REAL API data backtesting ONLY - NO SYNTHETIC DATA ALLOWED
 ✅ Entry point optimization across all sub-1h timeframes
-✅ Performance analysis and ranking
+✅ Performance analysis and ranking using REAL market data
 ✅ Configuration recommendation system
 ✅ Detailed reporting and results consolidation
 
-Usage: python master_entry_optimizer.py [--real-data-only] [--synthetic-only] [--quick-test]
+Usage: python master_entry_optimizer.py [--quick-test]
 """
 
 import asyncio
@@ -141,25 +140,42 @@ to find the optimal entry points for each strategy!
         
         return checks
     
-    def run_comprehensive_synthetic_backtesting(self) -> Dict:
-        """Run comprehensive synthetic data backtesting"""
+    def run_real_data_backtesting(self) -> Dict:
+        """Run REAL API data backtesting - NO SYNTHETIC DATA"""
         phase_start = time.time()
         
         if console:
-            console.print("🚀 Phase 1: Comprehensive Synthetic Data Backtesting", style="bold green")
+            console.print("🔥 Phase 1: REAL API Data Backtesting", style="bold red")
         else:
-            print("🚀 Phase 1: Comprehensive Synthetic Data Backtesting")
+            print("🔥 Phase 1: REAL API Data Backtesting")
+        
+        # CRITICAL: Ensure API credentials are configured
+        api_key = os.getenv('BITGET_API_KEY', '')
+        api_secret = os.getenv('BITGET_API_SECRET', '')
+        api_password = os.getenv('BITGET_API_PASSWORD', '')
+        
+        if not all([api_key, api_secret, api_password]):
+            error_msg = "❌ CRITICAL: BITGET API CREDENTIALS NOT CONFIGURED! Set BITGET_API_KEY, BITGET_API_SECRET, BITGET_API_PASSWORD in .env"
+            logger.error(error_msg)
+            return {
+                'success': False,
+                'phase': 'real_data',
+                'execution_time': 0,
+                'error': error_msg
+            }
+        
+        logger.info("✅ API credentials configured, running REAL data backtesting")
         
         try:
-            # Run the comprehensive backtester
+            # Run the comprehensive backtester with REAL data only
             result = subprocess.run([
                 sys.executable, str(self.comprehensive_script)
-            ], capture_output=True, text=True, timeout=1800)  # 30 minute timeout
+            ], capture_output=True, text=True, timeout=3600)  # 60 minute timeout for API calls
             
             phase_time = time.time() - phase_start
             
             if result.returncode == 0:
-                logger.info("Comprehensive synthetic backtesting completed successfully")
+                logger.info("REAL API data backtesting completed successfully")
                 
                 # Try to parse any JSON output
                 output_lines = result.stdout.split('\n')
@@ -174,80 +190,14 @@ to find the optimal entry points for each strategy!
                 
                 return {
                     'success': True,
-                    'phase': 'synthetic',
+                    'phase': 'real_data',
                     'execution_time': phase_time,
                     'output': result.stdout[-1000:],  # Last 1000 chars
                     'data': json_data,
-                    'configurations_estimated': 8 * 10 * 4 * 4  # strategies * symbols * timeframes * param_sets
+                    'configurations_estimated': 8 * 15 * 4 * 4  # strategies * symbols * timeframes * param_sets
                 }
             else:
-                logger.error(f"Comprehensive synthetic backtesting failed: {result.stderr}")
-                return {
-                    'success': False,
-                    'phase': 'synthetic',
-                    'execution_time': phase_time,
-                    'error': result.stderr,
-                    'output': result.stdout
-                }
-        
-        except subprocess.TimeoutExpired:
-            logger.error("Comprehensive synthetic backtesting timed out")
-            return {
-                'success': False,
-                'phase': 'synthetic',
-                'execution_time': phase_time,
-                'error': 'Process timed out after 30 minutes'
-            }
-        except Exception as e:
-            logger.error(f"Error running comprehensive synthetic backtesting: {e}")
-            return {
-                'success': False,
-                'phase': 'synthetic',
-                'execution_time': phase_time,
-                'error': str(e)
-            }
-    
-    def run_real_data_backtesting(self) -> Dict:
-        """Run real API data backtesting"""
-        phase_start = time.time()
-        
-        if console:
-            console.print("🔥 Phase 2: Real API Data Backtesting", style="bold red")
-        else:
-            print("🔥 Phase 2: Real API Data Backtesting")
-        
-        try:
-            # Run the real data backtester
-            result = subprocess.run([
-                sys.executable, str(self.real_data_script)
-            ], capture_output=True, text=True, timeout=1200)  # 20 minute timeout
-            
-            phase_time = time.time() - phase_start
-            
-            if result.returncode == 0:
-                logger.info("Real data backtesting completed successfully")
-                
-                # Try to parse any JSON output
-                output_lines = result.stdout.split('\n')
-                json_data = None
-                for line in output_lines:
-                    if line.strip().startswith('{'):
-                        try:
-                            json_data = json.loads(line)
-                            break
-                        except:
-                            continue
-                
-                return {
-                    'success': True,
-                    'phase': 'real_data',
-                    'execution_time': phase_time,
-                    'output': result.stdout[-1000:],
-                    'data': json_data,
-                    'configurations_estimated': 4 * 5 * 3 * 2  # strategies * symbols * timeframes * param_sets
-                }
-            else:
-                logger.error(f"Real data backtesting failed: {result.stderr}")
+                logger.error(f"REAL API data backtesting failed: {result.stderr}")
                 return {
                     'success': False,
                     'phase': 'real_data',
@@ -257,15 +207,15 @@ to find the optimal entry points for each strategy!
                 }
         
         except subprocess.TimeoutExpired:
-            logger.error("Real data backtesting timed out")
+            logger.error("REAL API data backtesting timed out")
             return {
                 'success': False,
                 'phase': 'real_data',
                 'execution_time': phase_time,
-                'error': 'Process timed out after 20 minutes'
+                'error': 'Process timed out after 60 minutes'
             }
         except Exception as e:
-            logger.error(f"Error running real data backtesting: {e}")
+            logger.error(f"Error running REAL API data backtesting: {e}")
             return {
                 'success': False,
                 'phase': 'real_data',
@@ -274,90 +224,97 @@ to find the optimal entry points for each strategy!
             }
     
     def consolidate_results(self) -> Dict:
-        """Consolidate all backtesting results"""
+        """Consolidate REAL API backtesting results - NO SYNTHETIC DATA"""
         if console:
-            console.print("📊 Phase 3: Results Consolidation and Analysis", style="bold yellow")
+            console.print("📊 Phase 2: Results Consolidation and Analysis", style="bold yellow")
         else:
-            print("📊 Phase 3: Results Consolidation and Analysis")
+            print("📊 Phase 2: Results Consolidation and Analysis")
         
         consolidated = {
             'consolidation_timestamp': datetime.now().isoformat(),
-            'synthetic_results': None,
             'real_data_results': None,
-            'combined_analysis': {},
+            'analysis': {},
             'recommendations': {}
         }
         
-        # Look for synthetic results
-        synthetic_results_dir = Path('/home/runner/work/viper-/viper-/backtest_results')
-        synthetic_files = list(synthetic_results_dir.glob('comprehensive_sub1h_results*.json'))
+        # Look for REAL data results only
+        real_data_dir = Path('/home/runner/work/viper-/viper-/backtest_results')
         
-        if synthetic_files:
+        # Check multiple possible locations for real results
+        result_files = []
+        result_files.extend(list(real_data_dir.glob('comprehensive_sub1h_results*.json')))
+        if (real_data_dir / 'real_data').exists():
+            result_files.extend(list((real_data_dir / 'real_data').glob('real_data_comprehensive*.json')))
+        
+        if result_files:
             try:
-                latest_synthetic = sorted(synthetic_files)[-1]
-                with open(latest_synthetic) as f:
-                    consolidated['synthetic_results'] = json.load(f)
-                logger.info(f"Loaded synthetic results from {latest_synthetic}")
-            except Exception as e:
-                logger.error(f"Error loading synthetic results: {e}")
-        
-        # Look for real data results
-        real_data_dir = Path('/home/runner/work/viper-/viper-/backtest_results/real_data')
-        real_data_files = list(real_data_dir.glob('real_data_comprehensive*.json'))
-        
-        if real_data_files:
-            try:
-                latest_real = sorted(real_data_files)[-1]
+                latest_real = sorted(result_files)[-1]
                 with open(latest_real) as f:
                     consolidated['real_data_results'] = json.load(f)
-                logger.info(f"Loaded real data results from {latest_real}")
+                logger.info(f"✅ Loaded REAL API results from {latest_real}")
             except Exception as e:
-                logger.error(f"Error loading real data results: {e}")
+                logger.error(f"❌ Error loading REAL data results: {e}")
+        else:
+            logger.warning("⚠️ No REAL API backtest results found")
         
-        # Generate combined analysis
-        combined_analysis = self._analyze_combined_results(
-            consolidated.get('synthetic_results'),
-            consolidated.get('real_data_results')
-        )
-        consolidated['combined_analysis'] = combined_analysis
+        # Generate analysis from REAL data only
+        analysis = self._analyze_real_results(consolidated.get('real_data_results'))
+        consolidated['analysis'] = analysis
         
         # Generate recommendations
-        recommendations = self._generate_recommendations(combined_analysis)
+        recommendations = self._generate_recommendations(analysis)
         consolidated['recommendations'] = recommendations
         
         return consolidated
     
-    def _analyze_combined_results(self, synthetic_data: Optional[Dict], real_data: Optional[Dict]) -> Dict:
-        """Analyze combined results from both synthetic and real data"""
+    def _analyze_real_results(self, real_data: Optional[Dict]) -> Dict:
+        """Analyze REAL API data results - NO SYNTHETIC DATA"""
         analysis = {
             'total_configurations_tested': 0,
-            'synthetic_successful': 0,
             'real_data_successful': 0,
             'strategy_performance': {},
             'timeframe_performance': {},
             'symbol_performance': {},
             'best_overall_configs': [],
-            'consistency_analysis': {}
+            'performance_metrics': {}
         }
         
-        # Analyze synthetic results
-        if synthetic_data:
-            synthetic_results = synthetic_data
-            if isinstance(synthetic_results, list):
-                successful_synthetic = [r for r in synthetic_results if r.get('success', False)]
-                analysis['synthetic_successful'] = len(successful_synthetic)
-                analysis['total_configurations_tested'] += len(synthetic_results)
-            else:
-                analysis['synthetic_successful'] = synthetic_data.get('successful_tests', 0)
-                analysis['total_configurations_tested'] += synthetic_data.get('total_tests', 0)
-        
-        # Analyze real data results
+        # Analyze REAL data results only
         if real_data:
             real_results = real_data.get('results', [])
-            successful_real = [r for r in real_results if r.get('success', False)]
-            analysis['real_data_successful'] = len(successful_real)
-            analysis['total_configurations_tested'] += len(real_results)
+            if isinstance(real_results, list):
+                successful_real = [r for r in real_results if r.get('success', False)]
+                analysis['real_data_successful'] = len(successful_real)
+                analysis['total_configurations_tested'] = len(real_results)
+                
+                # Analyze successful configurations
+                if successful_real:
+                    # Extract top performers by total return
+                    sorted_results = sorted(successful_real, key=lambda x: x.get('total_return', 0), reverse=True)
+                    analysis['best_overall_configs'] = sorted_results[:10]  # Top 10
+                    
+                    # Strategy performance analysis
+                    strategy_stats = {}
+                    for result in successful_real:
+                        strategy = result.get('config', {}).get('strategy_name', 'unknown')
+                        if strategy not in strategy_stats:
+                            strategy_stats[strategy] = {'count': 0, 'total_return': 0, 'win_rate': 0}
+                        strategy_stats[strategy]['count'] += 1
+                        strategy_stats[strategy]['total_return'] += result.get('total_return', 0)
+                        strategy_stats[strategy]['win_rate'] += result.get('win_rate', 0)
+                    
+                    # Calculate averages
+                    for strategy, stats in strategy_stats.items():
+                        if stats['count'] > 0:
+                            stats['avg_return'] = stats['total_return'] / stats['count']
+                            stats['avg_win_rate'] = stats['win_rate'] / stats['count']
+                    
+                    analysis['strategy_performance'] = strategy_stats
+            else:
+                analysis['real_data_successful'] = real_data.get('successful_tests', 0)
+                analysis['total_configurations_tested'] = real_data.get('total_tests', 0)
         
+        logger.info(f"✅ Analyzed {analysis['total_configurations_tested']} REAL API configurations")
         return analysis
     
     def _generate_recommendations(self, analysis: Dict) -> Dict:
@@ -414,12 +371,30 @@ to find the optimal entry points for each strategy!
         
         # Configuration summary
         consolidated = results.get('consolidated', {})
-        combined_analysis = consolidated.get('combined_analysis', {})
+        analysis = consolidated.get('analysis', {})
         
         report_lines.append(f"\n📊 CONFIGURATION SUMMARY:")
-        report_lines.append(f"Total Configurations Tested: {combined_analysis.get('total_configurations_tested', 0):,}")
-        report_lines.append(f"Synthetic Successful: {combined_analysis.get('synthetic_successful', 0):,}")
-        report_lines.append(f"Real Data Successful: {combined_analysis.get('real_data_successful', 0):,}")
+        report_lines.append(f"Total Configurations Tested: {analysis.get('total_configurations_tested', 0):,}")
+        report_lines.append(f"REAL API Data Successful: {analysis.get('real_data_successful', 0):,}")
+        
+        # Performance metrics
+        performance_metrics = analysis.get('performance_metrics', {})
+        if performance_metrics:
+            report_lines.append(f"\n📈 PERFORMANCE METRICS:")
+            for metric, value in performance_metrics.items():
+                report_lines.append(f"{metric}: {value}")
+        
+        # Best configurations
+        best_configs = analysis.get('best_overall_configs', [])
+        if best_configs:
+            report_lines.append(f"\n🏆 TOP PERFORMING CONFIGURATIONS:")
+            for i, config in enumerate(best_configs[:5], 1):
+                strategy = config.get('config', {}).get('strategy_name', 'Unknown')
+                symbol = config.get('config', {}).get('symbol', 'Unknown')
+                timeframe = config.get('config', {}).get('timeframe', 'Unknown')
+                total_return = config.get('total_return', 0)
+                win_rate = config.get('win_rate', 0)
+                report_lines.append(f"{i}. {strategy} on {symbol} {timeframe}: {total_return:.2%} return, {win_rate:.1%} win rate")
         
         # Recommendations
         recommendations = consolidated.get('recommendations', {})
@@ -463,26 +438,31 @@ to find the optimal entry points for each strategy!
         # File locations
         report_lines.append(f"\n📁 RESULT FILES:")
         report_lines.append(f"Results Directory: {self.results_dir}")
-        report_lines.append(f"Synthetic Results: backtest_results/comprehensive_sub1h_results.json")
-        report_lines.append(f"Real Data Results: backtest_results/real_data/real_data_comprehensive_*.json")
+        report_lines.append(f"REAL API Results: backtest_results/comprehensive_sub1h_results.json")
         report_lines.append(f"Master Report: {self.results_dir}/master_optimization_report.txt")
         
-        report_lines.append(f"\n🎉 OPTIMIZATION COMPLETE!")
-        report_lines.append("You now have comprehensive data on optimal entry points")
+        report_lines.append(f"\n🎉 REAL API OPTIMIZATION COMPLETE!")
+        report_lines.append("You now have comprehensive REAL market data on optimal entry points")
         report_lines.append("for all strategies across all sub-1h timeframes!")
         
         return "\n".join(report_lines)
     
-    def run_master_optimization(self, synthetic_only: bool = False, real_data_only: bool = False, quick_test: bool = False) -> Dict:
-        """Run complete master optimization"""
+    def run_master_optimization(self, quick_test: bool = False) -> Dict:
+        """Run complete REAL API master optimization - NO SYNTHETIC DATA"""
         
         self.print_banner()
         
-        # Check prerequisites
+        # Check prerequisites including API credentials
         if console:
             console.print("🔍 Checking Prerequisites...", style="yellow")
         
         checks = self.check_prerequisites()
+        
+        # Additional API credential check
+        api_key = os.getenv('BITGET_API_KEY', '')
+        api_secret = os.getenv('BITGET_API_SECRET', '')
+        api_password = os.getenv('BITGET_API_PASSWORD', '')
+        checks['api_credentials'] = bool(api_key and api_secret and api_password)
         
         if console:
             check_table = Table(title="System Checks")
@@ -495,6 +475,12 @@ to find the optimal entry points for each strategy!
             
             console.print(check_table)
         
+        # CRITICAL: Stop if API credentials are missing
+        if not checks['api_credentials']:
+            error_msg = "❌ CRITICAL: BITGET API CREDENTIALS NOT CONFIGURED! Cannot proceed with REAL data backtesting."
+            logger.error(error_msg)
+            return {'success': False, 'error': error_msg}
+        
         # Results collection
         results = {
             'start_time': self.stats['start_time'].isoformat(),
@@ -502,34 +488,23 @@ to find the optimal entry points for each strategy!
             'phases': {}
         }
         
-        # Phase 1: Synthetic Data Backtesting
-        if not real_data_only:
-            if console:
-                console.print("\n🚀 Starting Phase 1: Comprehensive Synthetic Backtesting", style="bold green")
-            
-            synthetic_result = self.run_comprehensive_synthetic_backtesting()
-            results['phases']['synthetic'] = synthetic_result
-            self.stats['execution_phases'].append(synthetic_result)
-            
-            if synthetic_result['success']:
-                estimated_configs = synthetic_result.get('configurations_estimated', 0)
-                self.stats['total_configurations_tested'] += estimated_configs
-                self.stats['successful_backtests'] += estimated_configs
+        # Phase 1: REAL API Data Backtesting ONLY
+        if console:
+            console.print("\n🔥 Starting Phase 1: REAL API Data Backtesting", style="bold red")
         
-        # Phase 2: Real Data Backtesting
-        if not synthetic_only:
-            if console:
-                console.print("\n🔥 Starting Phase 2: Real Data Backtesting", style="bold red")
-            
-            real_data_result = self.run_real_data_backtesting()
-            results['phases']['real_data'] = real_data_result
-            self.stats['execution_phases'].append(real_data_result)
-            
-            if real_data_result['success']:
-                estimated_configs = real_data_result.get('configurations_estimated', 0)
-                self.stats['total_configurations_tested'] += estimated_configs
+        real_data_result = self.run_real_data_backtesting()
+        results['phases']['real_data'] = real_data_result
+        self.stats['execution_phases'].append(real_data_result)
         
-        # Phase 3: Results Consolidation
+        if real_data_result['success']:
+            estimated_configs = real_data_result.get('configurations_estimated', 0)
+            self.stats['total_configurations_tested'] += estimated_configs
+            logger.info(f"✅ Successfully tested {estimated_configs} REAL API configurations")
+        else:
+            logger.error("❌ REAL API backtesting failed - cannot proceed")
+            return results
+        
+        # Phase 2: Results Consolidation
         if console:
             console.print("\n📊 Starting Phase 3: Results Consolidation", style="bold yellow")
         
@@ -571,9 +546,7 @@ to find the optimal entry points for each strategy!
 def main():
     """Main entry point"""
     
-    parser = argparse.ArgumentParser(description="Master Entry Point Optimization System")
-    parser.add_argument('--synthetic-only', action='store_true', help='Run only synthetic data backtesting')
-    parser.add_argument('--real-data-only', action='store_true', help='Run only real data backtesting')
+    parser = argparse.ArgumentParser(description="Master Entry Point Optimization System - REAL API DATA ONLY")
     parser.add_argument('--quick-test', action='store_true', help='Run quick test with reduced configurations')
     args = parser.parse_args()
     
@@ -586,8 +559,6 @@ def main():
     
     try:
         results = master_optimizer.run_master_optimization(
-            synthetic_only=args.synthetic_only,
-            real_data_only=args.real_data_only,
             quick_test=args.quick_test
         )
         

@@ -104,99 +104,12 @@ class RealDataProvider:
             if data and 'success' in data and data['success']:
                 return data.get('data', [])
         except Exception as e:
-            logger.warning(f"Market data manager not available: {e}")
+            logger.error(f"Market data manager not available: {e}")
         
-        # Fallback to direct API simulation (mock data with realistic patterns)
-        logger.info(f"Using fallback data generation for {symbol} {timeframe}")
-        return self._generate_realistic_fallback_data(symbol, timeframe, limit)
-    
-    def _generate_realistic_fallback_data(self, symbol: str, timeframe: str, limit: int) -> List[Dict]:
-        """Generate realistic fallback data when API is not available"""
-        
-        # Base prices for different symbols
-        base_prices = {
-            'BTCUSDT': 43500,
-            'ETHUSDT': 2650,
-            'ADAUSDT': 0.48,
-            'SOLUSDT': 98,
-            'DOTUSDT': 7.3,
-            'LINKUSDT': 14.8,
-            'AVAXUSDT': 37,
-            'MATICUSDT': 0.87,
-            'UNIUSDT': 6.4,
-            'ATOMUSDT': 9.9,
-            'BNBUSDT': 310,
-            'XRPUSDT': 0.63,
-            'LTCUSDT': 73,
-            'BCHUSDT': 240,
-            'EOSUSDT': 0.78
-        }
-        
-        base_price = base_prices.get(symbol, 100)
-        
-        # Timeframe configurations
-        tf_minutes = {'1m': 1, '5m': 5, '15m': 15, '30m': 30}
-        minutes = tf_minutes.get(timeframe, 15)
-        
-        data = []
-        current_time = datetime.now()
-        current_price = base_price
-        
-        # Generate realistic market data
-        for i in range(limit):
-            # Time series (going backwards)
-            timestamp = current_time - timedelta(minutes=minutes * (limit - i))
-            
-            # Generate realistic price movement
-            # Use symbol hash for consistent "randomness"
-            seed = hash(f"{symbol}_{timeframe}_{i}") % 10000
-            
-            # Trend component
-            trend_factor = 0.0001 * (1 if i % 200 < 120 else -1)  # Market cycles
-            
-            # Volatility based on timeframe
-            volatility = {
-                '1m': 0.0008,
-                '5m': 0.002,
-                '15m': 0.004,
-                '30m': 0.007
-            }.get(timeframe, 0.003)
-            
-            # Price change
-            noise = (seed / 10000 - 0.5) * volatility
-            price_change = trend_factor + noise
-            current_price *= (1 + price_change)
-            
-            # Generate OHLC based on intrabar volatility
-            intrabar_vol = volatility * 0.5
-            
-            open_price = current_price * (1 + ((seed % 100) / 10000 - 0.005))
-            high_price = max(open_price, current_price) * (1 + ((seed % 50) / 20000))
-            low_price = min(open_price, current_price) * (1 - ((seed % 50) / 20000))
-            close_price = current_price
-            
-            # Volume with some correlation to price movement
-            base_volume = {
-                'BTCUSDT': 150000,
-                'ETHUSDT': 200000,
-                'ADAUSDT': 500000,
-                'SOLUSDT': 80000,
-                'DOTUSDT': 100000
-            }.get(symbol, 50000)
-            
-            price_move_factor = abs(price_change) * 10
-            volume = base_volume * (1 + price_move_factor + ((seed % 200) / 1000))
-            
-            data.append({
-                'timestamp': int(timestamp.timestamp() * 1000),
-                'open': round(open_price, 6),
-                'high': round(high_price, 6),
-                'low': round(low_price, 6),
-                'close': round(close_price, 6),
-                'volume': round(volume, 2)
-            })
-        
-        return data
+        # NO FALLBACK TO SYNTHETIC DATA - REAL API ONLY!
+        error_msg = f"❌ CRITICAL: Failed to fetch REAL data for {symbol} {timeframe}. NO SYNTHETIC DATA ALLOWED!"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
     
     def get_historical_data(self, symbol: str, timeframe: str, start_time: datetime, end_time: datetime) -> List[Dict]:
         """Get historical data for specified time range"""
