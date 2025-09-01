@@ -15,6 +15,8 @@ Features:
 import asyncio
 import time
 import logging
+import random
+import secrets
 from enum import Enum
 from typing import Any, Callable, Dict, Optional, Tuple
 import httpx
@@ -128,7 +130,7 @@ class CircuitBreaker:
     def _record_failure(self) -> None:
         """Record failed operation"""
         self.failure_count += 1
-        self.last_failure_time = time.time()"""
+        self.last_failure_time = time.time()
 
         if self.failure_count >= self.failure_threshold:
             self.state = CircuitState.OPEN
@@ -138,7 +140,7 @@ class CircuitBreaker:
 
     def can_execute(self) -> bool:
         """Check if request can be executed"""
-        self._load_state_from_redis()"""
+        self._load_state_from_redis()
 
         if self.state == CircuitState.CLOSED:
             return True
@@ -191,20 +193,16 @@ class RetryLogic:
 
     def _calculate_delay(self, attempt: int) -> float:
         """Calculate delay for current attempt"""
-        delay = min(self.base_delay * (self.backoff_factor ** attempt), self.max_delay)"""
+        delay = min(self.base_delay * (self.backoff_factor ** attempt), self.max_delay)
 
         if self.jitter:
             # Add random jitter (±25%)
-import random
-
-import secrets
-
             jitter_amount = delay * 0.25
             delay += random.uniform(-jitter_amount, jitter_amount)
 
         return max(0.1, delay)  # Minimum 100ms delay
 
-    async def execute_with_retry():
+    async def execute_with_retry(
         self,
         func: Callable,
         *args,
@@ -213,7 +211,7 @@ import secrets
         """Execute function with retry logic"""
         last_exception = None
 
-        for attempt in range(self.max_retries + 1)"""
+        for attempt in range(self.max_retries + 1):
             try:
                 if attempt > 0:
                     delay = self._calculate_delay(attempt - 1)
@@ -314,13 +312,13 @@ class ServiceClient:
         }
 
 # Global service registry
-_service_clients = {}"""
+_service_clients = {}
 
-def get_service_client()
+def get_service_client(
     service_name: str,
     base_url: str,
     redis_client: Optional[redis.Redis] = None
-def example_service_with_circuit_breaker() -> ServiceClient:
+) -> ServiceClient:
     """Get or create service client instance"""
     key = f"{service_name}:{base_url}"
 
@@ -329,22 +327,23 @@ def example_service_with_circuit_breaker() -> ServiceClient:
 
     return _service_clients[key]
 
-async def call_service():
+async def call_service(
     service_name: str,
     endpoint: str,
     method: str = "GET",
     redis_client: Optional[redis.Redis] = None,
     **kwargs
-def example_async_service() -> Dict:
+) -> Dict:
     """
     Convenience function to call a service with circuit breaker protection
 
     Example:
-        result = await call_service()
+        result = await call_service(
             "data-manager",
             "/api/ticker/BTCUSDT",
             redis_client=redis_client
         )
+    """
     
     # Get service URL from environment
     base_url = os.getenv(f"{service_name.upper()}_URL", f"http://{service_name}:8000")
@@ -368,7 +367,7 @@ async def example_service_call():
     """Example of how to use the circuit breaker in a service"""
     try:
         # Call data-manager service
-        result = await call_service()
+        result = await call_service(
             "data-manager",
             "/api/ticker/BTCUSDT",
             method="GET"
