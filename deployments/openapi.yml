@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: VIPER MCP API
+  title: VIPER API
   description: |
     # A high-performance automated trading system with mandatory Docker and MCP (Model Context Protocol) enforcement for live cryptocurrency trading.
     ## Unified API for MCP Swap Trading, Error Fixing, and Batch Processing.  
