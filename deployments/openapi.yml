@@ -1,0 +1,195 @@
+openapi: 3.1.0
+info:
+  title: VIPER MCP API
+  description: |
+    # A high-performance automated trading system with mandatory Docker and MCP (Model Context Protocol) enforcement for live cryptocurrency trading.
+    ## Unified API for MCP Swap Trading, Error Fixing, and Batch Processing.  
+    This API powers automated trading, bug fixing, and orchestration in the VIPER system.
+  version: 1.0.0
+  contact:
+    name: VIPER Development Team
+    email: dev-team@viper.ai
+servers:
+  - url: http://localhost:3000
+    description: Local MCP server
+  - url: https://api.viper-mcp.com
+    description: Production MCP API
+
+tags:
+  - name: Health
+  - name: Trading
+  - name: Orders
+  - name: ErrorFix
+  - name: BatchProcessing
+  - name: Monitoring
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      description: Verify MCP server is alive and ready.
+      responses:
+        '200':
+          description: MCP server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /trade:
+    post:
+      tags: [Trading]
+      summary: Execute trade
+      description: Place a new trade via MCP Swap Trader.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symbol:
+                  type: string
+                  example: BTCUSDT
+                side:
+                  type: string
+                  enum: [buy, sell]
+                quantity:
+                  type: number
+                  example: 0.01
+                price:
+                  type: number
+                  example: 50000
+      responses:
+        '200':
+          description: Trade executed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [submitted, filled, rejected]
+
+  /order/{order_id}:
+    get:
+      tags: [Orders]
+      summary: Get order status
+      description: Retrieve the status of an order by ID.
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id: { type: string }
+                  status: { type: string }
+                  filled_qty: { type: number }
+                  remaining_qty: { type: number }
+
+  /fix/batch:
+    post:
+      tags: [ErrorFix]
+      summary: Submit batch job
+      description: Submit a batch of fixes for processing.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_path: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      description: { type: string }
+                      severity:
+                        type: string
+                        enum: [CRITICAL, HIGH, MEDIUM, LOW]
+      responses:
+        '200':
+          description: Batch submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id: { type: string }
+                  status: { type: string }
+
+  /fix/queue:
+    get:
+      tags: [BatchProcessing]
+      summary: Queue status
+      description: Retrieve the current batch job queue status.
+      responses:
+        '200':
+          description: Queue details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  queue_size: { type: integer }
+                  active_jobs: { type: integer }
+                  completed_jobs: { type: integer }
+                  failed_jobs: { type: integer }
+                  is_empty: { type: boolean }
+
+  /fix/orchestrate:
+    post:
+      tags: [BatchProcessing]
+      summary: Orchestrate fixes
+      description: Run the orchestrator on a scan file and generate a full report.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scan_file: { type: string }
+      responses:
+        '200':
+          description: Orchestration results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results: { type: object }
+                  report_path: { type: string }
+                  success: { type: boolean }
+
+  /metrics:
+    get:
+      tags: [Monitoring]
+      summary: Metrics endpoint
+      description: Exposes Prometheus-compatible metrics.
+      responses:
+        '200':
+          description: Metrics data (text format)
+          content:
+            text/plain:
+              schema:
+                type: string
